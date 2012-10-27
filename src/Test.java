@@ -64,10 +64,14 @@ public class Test {
          while (line.getBufferSize()/2 < line.available())   
             Thread.sleep(1);
 
-      // TODO: MAKE THIS raw BECOME A BYTE ARRAY!
-      double[] raw = {8.0, -8.0};
-      byte[] sound = toByta(raw);
-      line.write(sound, 0, 32);
+      int i = 0;
+      while (i<10000000)
+      {
+          byte[] sound = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+          line.write(sound, 0, 32);
+          Thread.sleep(1);
+          i++;
+      }
          
 
       //Done playing the whole waveform, now wait until the queued samples finish 
