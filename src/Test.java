@@ -64,13 +64,13 @@ public class Test {
          while (line.getBufferSize()/2 < line.available())   
             Thread.sleep(1);
 
-      int i = 0;
-      while (i<10000000)
+      while (true)
       {
           byte[] sound = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
           line.write(sound, 0, 32);
           Thread.sleep(1);
-          i++;
+          if (false)
+        	  break;
       }
          
 
