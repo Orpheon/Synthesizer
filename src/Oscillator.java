@@ -8,30 +8,32 @@
  * @author orpheon
  *
  */
-public abstract class Oscillator
+// TODO: Make this abstract
+public class Oscillator
 {
-	private int frequency;
-	private double phase_offset;
+	private int frequency = 1;
+	private double phase_offset = 0.0;
 
-	private double period;
-	private double current_position;
+	// 6.28318530718 = 2*pi
+	private double period = 6.28318530718;
+	private double current_position = 0.0;
 	
-	private int samplerate;
-	private double samplelength;
+	private int samplerate = 1;
+	private double samplelength = 1;
 	
 	public Oscillator(int frequency, double phase_offset, int samplerate)
 	{
-		this.frequency = frequency;
+		this.set_frequency(frequency);
 		this.set_period(Functions.get_period(frequency));
-		this.current_position = phase_offset;
-		this.phase_offset = phase_offset;
+		this.current_position = 0.0;
+		this.set_phase(phase_offset);
 		this.set_samplerate(samplerate);
 	}
 	
-	public byte[] get_sound(int length)
+	public byte[] get_sound(int num_samples)
 	{
 		// 16 bytes per sample, so "length" samples will mean 16*length bytes
-		int output_length = length*16;
+		int output_length = num_samples*16;
 		double sample;
 
 		byte[] output;
@@ -40,11 +42,14 @@ public abstract class Oscillator
 		for (int i=0; i<output_length; i+=16)
 		{
 			sample = this.get_value(this.current_position);
-			// Frequency and phase offset are implicitely handled in samplelength
 			this.current_position += this.samplelength;
+//			while (this.current_position > this.period)
+//			{
+//				this.current_position -= this.period;
+//			}
 			// Then convert "sample" into a byte array and copy that to the output buffer
 			// FIXME: This is pretty inefficient, a casting for every number, is it possible to convert the whole array at once?
-			System.arraycopy(Functions.convert_to_bytearray(sample), 0, output, i, 16);
+			System.arraycopy(Functions.convert_to_bytearray(sample), 0, output, i, 2);
 		}
 
 		return output;
@@ -86,7 +91,7 @@ public abstract class Oscillator
 	public void set_samplerate(int samplerate)
 	{
 		this.samplerate = samplerate;
-		this.samplelength = this.samplerate / this.period;
+		this.samplelength = 1.0 / this.samplerate;
 	}
 
 	public double get_period()
@@ -97,7 +102,6 @@ public abstract class Oscillator
 	public void set_period(double period)
 	{
 		this.period = period;
-		this.samplelength = this.samplerate / this.period;
 		while (this.current_position >= this.period)
 		{
 			this.current_position -= this.period;
@@ -106,11 +110,12 @@ public abstract class Oscillator
 	
 	private double get_value(double position)
 	{
-		// SHOULD BE OVERWRITTEN
+		// !!! OVERWRITE THIS !!!
+
 		// This method returns the actual sound value at a certain position
 		// Requires a position in time
 		
 		// DEBUGTOOL:
-		return Math.sin(position);
+		return Math.sin(this.frequency * position);
 	}
 }
