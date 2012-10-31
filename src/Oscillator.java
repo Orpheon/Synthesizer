@@ -39,7 +39,7 @@ public class Oscillator
 		byte[] output;
 		output = new byte[output_length];
 
-		for (int i=0; i<output_length; i+=16)
+		for (int i=0; i<output_length; i+=2)
 		{
 			sample = this.get_value(this.current_position);
 			this.current_position += this.samplelength;
