@@ -19,6 +19,8 @@ public class Main
 	final static int SAMPLING_RATE = 44100;
     // Audio sample size in bytes
     final static int SAMPLE_SIZE = 2;
+    // Length of tone (in seconds)
+    final static int LENGTH_OF_TONE = 5;
 	
 	/**
 	 * @param args
@@ -56,22 +58,11 @@ public class Main
 		line.open(format);  
 		line.start();
 
+		// Create the oscillator (args: frequency, phase offset, sampling rate)
 		Oscillator osc = new Oscillator(440, 0.0, SAMPLING_RATE);
 
-//		double time = 0.0;
-//		while (time < 5.0)
-//		{
-//			int free_room = line.available()/SAMPLE_SIZE;
-//			time += (double)free_room / SAMPLING_RATE;
-//
-//			//array_write(osc.get_sound(free_room), "output");
-//			line.write(osc.get_sound(free_room), 0, line.available());
-//
-//			//Wait until the buffer is empty before we add more
-//			while (line.available() <= 0)   
-//				Thread.sleep(1);
-//		}
-		line.write(osc.get_sound(SAMPLING_RATE * 5), 0, SAMPLING_RATE * 5);
+		// Generate "LENGTH_OF_TONE" seconds of sound and write them to the output line
+		line.write(osc.get_sound(SAMPLING_RATE*LENGTH_OF_TONE), 0, SAMPLING_RATE*LENGTH_OF_TONE);
 		System.out.println("Done");
 
 		//Done playing the whole waveform, now wait until the queued samples finish playing, then clean up and exit
