@@ -15,12 +15,12 @@ import javax.sound.sampled.*;
 
 public class Main
 {
-	// Audio sampling rate
-	final static int SAMPLING_RATE = 44100;
+    // Audio sampling rate
+    private final static int SAMPLING_RATE = 44100;
     // Audio sample size in bytes
-    final static int SAMPLE_SIZE = 2;
+    private final static int SAMPLE_SIZE = 2;
     // Length of tone (in seconds)
-    final static int LENGTH_OF_TONE = 5;
+    private final static int LENGTH_OF_TONE = 5;
 	
 	/**
 	 * @param args
