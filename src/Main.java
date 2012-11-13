@@ -66,7 +66,7 @@ public class Main
 		System.out.println("Done");
 
 		//Done playing the whole waveform, now wait until the queued samples finish playing, then clean up and exit
-		line.drain();                                         
+		line.drain();
 		line.close();
 	}
 }

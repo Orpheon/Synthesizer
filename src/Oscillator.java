@@ -42,7 +42,7 @@ public class Oscillator
 		for (int i=0; i<output_length; i+=2)
 		{
 			sample = this.get_value(this.current_position);
-			this.current_position += this.samplelength;
+			this.current_position += this.samplelength * this.frequency;
 //			while (this.current_position > this.period)
 //			{
 //				this.current_position -= this.period;
@@ -116,6 +116,6 @@ public class Oscillator
 		// Requires a position in time
 		
 		// DEBUGTOOL:
-		return Math.sin(this.frequency * position);
+		return Math.sin(position);
 	}
 }
