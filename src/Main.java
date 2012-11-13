@@ -50,8 +50,8 @@ public class Main
 	public static void main(String[] args) throws LineUnavailableException, InterruptedException
 	{
 		SourceDataLine line;
-		//Open up audio output, using 44100hz sampling rate, 16 bit samples, mono, signed and little endian byte ordering
-		AudioFormat format = new AudioFormat(SAMPLING_RATE, 16, 1, true, false);
+		//Open up audio output, using 44100hz sampling rate, SAMPLE_SIZE*8 bit samples, mono, signed and little endian byte ordering
+		AudioFormat format = new AudioFormat(SAMPLING_RATE, SAMPLE_SIZE*8, 1, true, false);
 		DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
 		
 		line = (SourceDataLine)AudioSystem.getLine(info);
@@ -62,8 +62,8 @@ public class Main
 		Oscillator osc = new Oscillator(440, 0.0, SAMPLING_RATE);
 
 		// Generate "LENGTH_OF_TONE" seconds of sound (with 2 bytes per sample) and write them to the output line
-		byte[] array = new byte[SAMPLING_RATE*LENGTH_OF_TONE*2];
-		array = osc.get_sound(SAMPLING_RATE*LENGTH_OF_TONE, 2);
+		byte[] array = new byte[SAMPLING_RATE*LENGTH_OF_TONE*SAMPLE_SIZE];
+		array = osc.get_sound(SAMPLING_RATE*LENGTH_OF_TONE, SAMPLE_SIZE);
 		line.write(array, 0, SAMPLING_RATE*LENGTH_OF_TONE);
 		array_write(array, "output");// DEBUGTOOL
 		System.out.println("Done");
