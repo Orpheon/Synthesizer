@@ -12,7 +12,7 @@ offset = 1
 
 while len(data) > 0:
     a = struct.unpack_from("<h", data)[0]
-    a /= 32767.0
+    a /= 32767.0 # Max short size ( = normalize the shorts from -1 to 1)
     data = data[struct.calcsize("<h"):]
     #print(a)
     image.putpixel((offset, int(50 + 50*a)), (0, 255, 0))

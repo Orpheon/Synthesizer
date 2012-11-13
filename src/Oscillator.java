@@ -30,16 +30,15 @@ public class Oscillator
 		this.set_samplerate(samplerate);
 	}
 	
-	public byte[] get_sound(int num_samples)
+	public byte[] get_sound(int num_samples, int sample_size)
 	{
-		// 16 bytes per sample, so "length" samples will mean 16*length bytes
-		int output_length = num_samples*16;
+		int output_length = num_samples*sample_size;
 		double sample;
 
 		byte[] output;
 		output = new byte[output_length];
 
-		for (int i=0; i<output_length; i+=2)
+		for (int i=0; i<output_length; i+=sample_size)
 		{
 			sample = this.get_value(this.current_position);
 			this.current_position += this.samplelength * this.frequency;
@@ -49,7 +48,7 @@ public class Oscillator
 //			}
 			// Then convert "sample" into a byte array and copy that to the output buffer
 			// FIXME: This is pretty inefficient, a casting for every number, is it possible to convert the whole array at once?
-			System.arraycopy(Functions.convert_to_bytearray(sample), 0, output, i, 2);
+			System.arraycopy(Functions.convert_to_16bit_bytearray(sample), 0, output, i, sample_size);
 		}
 
 		return output;

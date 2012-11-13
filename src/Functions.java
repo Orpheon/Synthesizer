@@ -14,7 +14,7 @@ public class Functions
 		return 6.28318530718/frequency;
 	}
 	
-	public static byte[] convert_to_bytearray(double x)
+	public static byte[] convert_to_16bit_bytearray(double x)
 	{
 		// LITTLE ENDIAN!!!
 		if (Math.abs(x) > 1)
