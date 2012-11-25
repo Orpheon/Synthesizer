@@ -1,3 +1,4 @@
+package Engine;
 /** This class defines all the general miscellanious math functions
  *  Should never be instanciated
  */
@@ -8,7 +9,7 @@
  */
 public class Functions
 {
-	public static double get_period(int frequency)
+	public static double get_period(double frequency)
 	{
 		// 6.28318530718 = 2*pi
 		return 6.28318530718/frequency;
@@ -29,6 +30,7 @@ public class Functions
 		}
 		// First cast it to short and multiply it with the size of short to use all of those 16 bits
 		short a = (short) (x * 32767);
+//		System.out.println("\nUnscaled: "+x+"\nScaled: "+a);
 		// Then convert that short into a byte array
 		// Code origin: http://stackoverflow.com/questions/2188660/convert-short-to-byte-in-java
 		byte[] ret = new byte[2];

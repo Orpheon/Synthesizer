@@ -1,3 +1,5 @@
+package Engine;
+
 /** This class defines a general analog oscillator.
  *  Should be inherited from by specific oscillators.
  *  
@@ -11,7 +13,7 @@
 // TODO: Make this abstract
 public class Oscillator
 {
-	private int frequency = 1;
+	private double frequency = 1;
 	private double phase_offset = 0.0;
 
 	// 6.28318530718 = 2*pi
@@ -21,7 +23,7 @@ public class Oscillator
 	private int samplerate = 1;
 	private double samplelength = 1;
 	
-	public Oscillator(int frequency, double phase_offset, int samplerate)
+	public Oscillator(double frequency, double phase_offset, int samplerate)
 	{
 		this.set_frequency(frequency);
 		this.set_period(Functions.get_period(frequency));
@@ -35,13 +37,23 @@ public class Oscillator
 		int output_length = num_samples*sample_size;
 		double sample;
 
+//		System.out.println("\nData:");
+//		System.out.println(this.frequency);
+//		System.out.println(this.period);
+//		System.out.println(this.phase_offset);
+//		System.out.println(this.current_position);
+//		System.out.println(this.samplerate);
+//		System.out.println(this.samplelength);
+
 		byte[] output;
 		output = new byte[output_length];
 
 		for (int i=0; i<output_length; i+=sample_size)
 		{
 			sample = this.get_value(this.current_position);
-			this.current_position += this.samplelength * this.frequency;
+//			System.out.println("\nNew stuff:");
+//			System.out.println("i: "+i+" byte[] length: "+output.length+" num_samples: "+num_samples+" output_length: "+output_length);
+			this.current_position += this.samplelength * this.frequency * 6.28318530718;
 //			while (this.current_position > this.period)
 //			{
 //				this.current_position -= this.period;
@@ -54,12 +66,12 @@ public class Oscillator
 		return output;
 	}
 
-	public int get_frequency()
+	public double get_frequency()
 	{
 		return frequency;
 	}
 
-	public void set_frequency(int frequency)
+	public void set_frequency(double frequency)
 	{
 		this.frequency = frequency;
 		this.set_period(Functions.get_period(frequency));
@@ -116,5 +128,10 @@ public class Oscillator
 		
 		// DEBUGTOOL:
 		return Math.sin(position);
+	}
+
+	public void close()
+	{
+		// We don't really need to do anything here, but still making an abstract method because we might need it someday
 	}
 }
