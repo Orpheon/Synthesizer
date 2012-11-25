@@ -54,7 +54,6 @@ public class EngineMaster
 		byte[] array = new byte[SAMPLING_RATE*duration*SAMPLE_SIZE];
 		array = this.osc.get_sound(SAMPLING_RATE*duration, SAMPLE_SIZE);
 		// Write them to the sound output
-		System.out.println("play_sound");
 		line.write(array, 0, SAMPLING_RATE*duration*SAMPLE_SIZE);
 		//Done playing the whole waveform, now wait until the queued samples finish playing, then clean up and exit
 		this.line.drain();
