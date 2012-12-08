@@ -1,4 +1,8 @@
+package Main;
+
 import javax.sound.sampled.LineUnavailableException;
+
+import GUI.MainWindow;
 
 /**
  * Basic class that calls both the engine and the gui
@@ -18,8 +22,12 @@ public class Main
 	public static void main(String[] args) throws LineUnavailableException, InterruptedException
 	{
 		Engine.EngineMaster engine = new Engine.EngineMaster();
-		GUI.MainWindow window = new GUI.MainWindow();
-		window.createWindow(null);
+		new GUI.MainWindow();
+		MainWindow.createWindow(null);
 		engine.play_sound(5, 440, 0.0);
+		while (true)
+		{
+			engine.update();
+		}
 	}
 }
