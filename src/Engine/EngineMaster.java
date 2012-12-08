@@ -18,13 +18,19 @@ public class EngineMaster
     private final static int SAMPLING_RATE = 44100;
     // Audio sample size in bytes
     private final static int SAMPLE_SIZE = 2;
+    // Max length of a single sound request
+    private final static int MAX_SOUND_LENGTH = 2;
     
 	private javax.sound.sampled.SourceDataLine line;
 	private Oscillator osc;
+	
+	private byte[] sound_buffer = new byte[SAMPLE_SIZE*SAMPLING_RATE*MAX_SOUND_LENGTH];
+	private int sound_buffer_offset = sound_buffer.length;
+	private int sound_duration = MAX_SOUND_LENGTH*SAMPLING_RATE;
     
     /*
-	 * @throws LineUnavailableException 
-	 * @throws InterruptedException 
+	 * @throws LineUnavailableException
+	 * @throws InterruptedException
 	 */
 
     public EngineMaster() throws LineUnavailableException, InterruptedException
@@ -48,19 +54,39 @@ public class EngineMaster
     	this.osc.set_frequency(new_frequency);
     }
     
+    public void update()
+    {
+    	// If we still need to play something
+    	if (this.sound_buffer_offset < this.sound_duration)
+    	{
+    		int dif = Math.min(this.sound_duration-this.sound_buffer_offset, this.line.available());
+    		this.line.write(this.sound_buffer, sound_buffer_offset, dif);
+    		this.sound_buffer_offset += dif;
+    	}
+    }
+    
     public void play_sound(int duration, double frequency, double phase_offset)
     {
+    	// TODO: Make a good duration system
+    	duration = Math.min(EngineMaster.MAX_SOUND_LENGTH, duration);
+    	
+    	this.osc.set_frequency(frequency);
 		// Generate "LENGTH_OF_TONE" seconds of sound (with 2 bytes per sample) and write them to the output line
-		byte[] array = new byte[SAMPLING_RATE*duration*SAMPLE_SIZE];
-		array = this.osc.get_sound(SAMPLING_RATE*duration, SAMPLE_SIZE);
-		// Write them to the sound output
-		line.write(array, 0, SAMPLING_RATE*duration*SAMPLE_SIZE);
-		//Done playing the whole waveform, now wait until the queued samples finish playing, then clean up and exit
-		this.line.drain();
+    	System.arraycopy(this.osc.get_sound(EngineMaster.SAMPLING_RATE*duration, EngineMaster.SAMPLE_SIZE), 0,
+    					 this.sound_buffer, 0, EngineMaster.SAMPLING_RATE*duration*EngineMaster.SAMPLE_SIZE);
+		this.sound_buffer_offset = 0;
+		this.sound_duration = EngineMaster.SAMPLING_RATE*duration;
+    }
+    
+    public boolean is_playing()
+    {
+    	return this.sound_buffer_offset < this.sound_duration;
     }
     
     public void close()
     {
+		//Done playing the whole waveform, now wait until the queued samples finish playing, then clean up and exit
+		this.line.drain();
     	this.line.close();
     	this.osc.close();
     }
