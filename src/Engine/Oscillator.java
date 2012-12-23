@@ -16,8 +16,7 @@ public class Oscillator
 	private double frequency = 1;
 	private double phase_offset = 0.0;
 
-	// 6.28318530718 = 2*pi
-	private double period = 6.28318530718;
+	private double period = Engine.Constants.pi_times_2;
 	private double current_position = 0.0;
 	
 	private int samplerate = 1;

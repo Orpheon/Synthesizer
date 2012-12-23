@@ -14,19 +14,15 @@ import javax.sound.sampled.SourceDataLine;
  */
 public class EngineMaster
 {
-    // Audio sampling rate
-    private final static int SAMPLING_RATE = 44100;
-    // Audio sample size in bytes
-    private final static int SAMPLE_SIZE = 2;
     // Max length of a single sound request
     private final static int MAX_SOUND_LENGTH = 2;
     
 	private javax.sound.sampled.SourceDataLine line;
 	private Oscillator osc;
 	
-	private byte[] sound_buffer = new byte[SAMPLE_SIZE*SAMPLING_RATE*MAX_SOUND_LENGTH];
+	private byte[] sound_buffer = new byte[Engine.Constants.SAMPLE_SIZE*Engine.Constants.SAMPLING_RATE*MAX_SOUND_LENGTH];
 	private int sound_buffer_offset = sound_buffer.length;
-	private int sound_duration = MAX_SOUND_LENGTH*SAMPLING_RATE;
+	private int sound_duration = MAX_SOUND_LENGTH*Engine.Constants.SAMPLING_RATE;
     
     /*
 	 * @throws LineUnavailableException
@@ -36,14 +32,14 @@ public class EngineMaster
     public EngineMaster() throws LineUnavailableException, InterruptedException
     {
 		//Open up audio output, using 44100hz sampl2ing rate, 16 bit samples, mono, signed and little endian byte ordering
-		AudioFormat format = new AudioFormat(SAMPLING_RATE, SAMPLE_SIZE*8, 1, true, false);
+		AudioFormat format = new AudioFormat(Engine.Constants.SAMPLING_RATE, Engine.Constants.SAMPLE_SIZE*8, 1, true, false);
 		
 		this.line = (SourceDataLine)AudioSystem.getSourceDataLine(format);
 		this.line.open(format);  
 		this.line.start();
 
 		// Create the oscillator (args: frequency, phase offset, sampling rate)
-		this.osc = new Oscillator(100, 0.0, SAMPLING_RATE);
+		this.osc = new Oscillator(100, 0.0, Engine.Constants.SAMPLING_RATE);
 		// Playing with infrasound... http://en.wikipedia.org/wiki/Infrasound#Human_reactions_to_infrasound
 		//Oscillator osc = new Oscillator(18.98, 0.0, SAMPLING_RATE);
     }
@@ -72,10 +68,10 @@ public class EngineMaster
     	
     	this.osc.set_frequency(frequency);
 		// Generate "LENGTH_OF_TONE" seconds of sound (with 2 bytes per sample) and write them to the output line
-    	System.arraycopy(this.osc.get_sound(EngineMaster.SAMPLING_RATE*duration, EngineMaster.SAMPLE_SIZE), 0,
-    					 this.sound_buffer, 0, EngineMaster.SAMPLING_RATE*duration*EngineMaster.SAMPLE_SIZE);
+    	System.arraycopy(this.osc.get_sound(Engine.Constants.SAMPLING_RATE*duration, Engine.Constants.SAMPLE_SIZE), 0,
+    					 this.sound_buffer, 0, Engine.Constants.SAMPLING_RATE*duration*Engine.Constants.SAMPLE_SIZE);
 		this.sound_buffer_offset = 0;
-		this.sound_duration = EngineMaster.SAMPLING_RATE*duration;
+		this.sound_duration = Engine.Constants.SAMPLING_RATE*duration;
     }
     
     public boolean is_playing()
