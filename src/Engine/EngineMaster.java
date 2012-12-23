@@ -14,15 +14,17 @@ import javax.sound.sampled.SourceDataLine;
  */
 public class EngineMaster
 {
-    // Max length of a single sound request
-    private final static int MAX_SOUND_LENGTH = 2;
-    
 	private javax.sound.sampled.SourceDataLine line;
-	private Oscillator osc;
 	
-	private byte[] sound_buffer = new byte[Engine.Constants.SAMPLE_SIZE*Engine.Constants.SAMPLING_RATE*MAX_SOUND_LENGTH];
-	private int sound_buffer_offset = sound_buffer.length;
-	private int sound_duration = MAX_SOUND_LENGTH*Engine.Constants.SAMPLING_RATE;
+	private byte[] sound_buffer = new byte[Engine.Constants.SAMPLE_SIZE * Engine.Constants.SNAPSHOT_SIZE];
+	private int sound_buffer_position = sound_buffer.length;
+	
+	private Pipe output;
+	private Generator main_generator;
+	
+	public Module[] all_modules;
+	
+	private boolean is_playing;
     
     /*
 	 * @throws LineUnavailableException
@@ -38,52 +40,82 @@ public class EngineMaster
 		this.line.open(format);  
 		this.line.start();
 
-		// Create the oscillator (args: frequency, phase offset, sampling rate)
-		this.osc = new Oscillator(100, 0.0, Engine.Constants.SAMPLING_RATE);
-		// Playing with infrasound... http://en.wikipedia.org/wiki/Infrasound#Human_reactions_to_infrasound
-		//Oscillator osc = new Oscillator(18.98, 0.0, SAMPLING_RATE);
+		// First an output pipe to hold the outputs
+		output = new Pipe();
+		// Create then a Generator to make everything run
+		main_generator = new Engine.Generator(output, 440.0);
     }
     
     // Not sure if this is the best method
     public void change_frequency(double new_frequency)
     {
-    	this.osc.set_frequency(new_frequency);
+    	main_generator.set_frequency(new_frequency);
     }
     
     public void update()
     {
     	// If we still need to play something
-    	if (this.sound_buffer_offset < this.sound_duration)
+    	if (sound_buffer_position < sound_buffer.length)
     	{
-    		int dif = Math.min(this.sound_duration-this.sound_buffer_offset, this.line.available());
-    		this.line.write(this.sound_buffer, sound_buffer_offset, dif);
-    		this.sound_buffer_offset += dif;
+    		// If we can just play what's left,
+    		if (sound_buffer.length - sound_buffer_position <= line.available())
+    		{
+    			// do so
+    			line.write(sound_buffer, sound_buffer_position, sound_buffer.length - sound_buffer_position);
+    		}
+    		else
+    		{
+    			// play all that we can and update the position counter
+    			int delta = line.available();
+    			line.write(sound_buffer, sound_buffer_position, delta);
+    			sound_buffer_position += delta;
+    		}
+    	}
+    	else
+    	{
+    		// We already played to end the last chunk
+    		// Now either don't do anything if we aren't playing or play the next chunk if we are
+    		if (is_playing)
+    		{
+    			// Run the entire chain of events
+    			// FIXME: There has to be a more efficient way to do this, and is it really better to start from the bottom?
+    			output.get_input().run();
+    			byte[] tmp;
+    			int counter = 0;
+    			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
+    			{
+    				tmp = Functions.convert_to_16bit_bytearray(output.inner_buffer[i]);
+    				System.arraycopy(tmp, 0, sound_buffer, counter+=2, 2);
+    			}
+    			// And then output it (or atleast as much as we can now)
+    			counter = line.available();
+    			line.write(sound_buffer, 0, counter);
+    			sound_buffer_position = counter;
+    		}
     	}
     }
     
-    public void play_sound(int duration, double frequency, double phase_offset)
+    public void play_sound(double frequency)
     {
-    	// TODO: Make a good duration system
-    	duration = Math.min(EngineMaster.MAX_SOUND_LENGTH, duration);
-    	
-    	this.osc.set_frequency(frequency);
-		// Generate "LENGTH_OF_TONE" seconds of sound (with 2 bytes per sample) and write them to the output line
-    	System.arraycopy(this.osc.get_sound(Engine.Constants.SAMPLING_RATE*duration, Engine.Constants.SAMPLE_SIZE), 0,
-    					 this.sound_buffer, 0, Engine.Constants.SAMPLING_RATE*duration*Engine.Constants.SAMPLE_SIZE);
-		this.sound_buffer_offset = 0;
-		this.sound_duration = Engine.Constants.SAMPLING_RATE*duration;
+    	main_generator.set_frequency(frequency);
+    	is_playing = true;
     }
     
+    public void stop_playing()
+    {
+    	is_playing = false;
+    }
+	
     public boolean is_playing()
     {
-    	return this.sound_buffer_offset < this.sound_duration;
+    	return is_playing;
     }
     
     public void close()
     {
 		//Done playing the whole waveform, now wait until the queued samples finish playing, then clean up and exit
-		this.line.drain();
-    	this.line.close();
-    	this.osc.close();
+		line.drain();
+    	line.close();
+    	main_generator.close();
     }
 }

@@ -9,28 +9,29 @@ package Engine;
  */
 public abstract class Module
 {
-	private int NUM_INPUTS;
-	private int NUM_OUTPUTS;
-	private Pipe[] inputs;
-	private Pipe[] outputs;
+	protected int NUM_INPUT_PIPES;
+	protected int NUM_OUTPUT_PIPES;
+	protected Pipe[] input_pipes;
+	protected Pipe[] output_pipes;
+	
 	private static int counter;
-	private int index;
-	private int type;
+	protected int index;
+	protected int type;
 	
 	public boolean already_ran = false;
 	
-	public abstract double get_sound();
+	public abstract void get_sound();
 
 	public Module()
 	{
-		inputs = new Pipe[NUM_INPUTS];
-		outputs = new Pipe[NUM_OUTPUTS];
+		input_pipes = new Pipe[NUM_INPUT_PIPES];
+		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		index = counter++;
 	}
 	
 	public boolean connect_input(Pipe pipe, int position)
 	{
-		if (position >= NUM_INPUTS)
+		if (position >= NUM_INPUT_PIPES)
 		{
 			// Trying to connect a cable to an invalid port.
 			// Don't allow this
@@ -39,25 +40,25 @@ public abstract class Module
 			return false;
 		}
 		
-		if (inputs[position] != null)
+		if (input_pipes[position] != null)
 		{
 			// There's already a pipe there, we need to disconnect it first
 			disconnect_input(position);
 		}
 		pipe.set_output(this);
-		inputs[position] = pipe;
+		input_pipes[position] = pipe;
 		return true;
 	}
 	
 	public void disconnect_input(int position)
 	{
-		inputs[position].set_output(null);
-		inputs[position] = null;
+		input_pipes[position].set_output(null);
+		input_pipes[position] = null;
 	}
 
 	public boolean connect_output(Pipe pipe, int position)
 	{
-		if (position >= NUM_OUTPUTS)
+		if (position >= NUM_OUTPUT_PIPES)
 		{
 			// Trying to connect a cable to an invalid port.
 			// Don't allow this
@@ -66,20 +67,20 @@ public abstract class Module
 			return false;
 		}
 		
-		if (outputs[position] != null)
+		if (output_pipes[position] != null)
 		{
 			// There's already a pipe there, we need to disconnect it first
 			disconnect_output(position);
 		}
 		pipe.set_input(this);
-		outputs[position] = pipe;
+		output_pipes[position] = pipe;
 		return true;
 	}
 	
 	public void disconnect_output(int position)
 	{
-		outputs[position].set_input(null);
-		outputs[position] = null;
+		output_pipes[position].set_input(null);
+		output_pipes[position] = null;
 	}
 	
 	public void run()
@@ -87,21 +88,21 @@ public abstract class Module
 		// This prevents recursive infinite loops
 		// It gets set back to false in the EngineMaster get_sound method
 		already_ran = true;
-		for (int i=0; i<NUM_INPUTS; i++)
+		for (int i=0; i<NUM_INPUT_PIPES; i++)
 		{
-			if (inputs[i] != null)
+			if (input_pipes[i] != null)
 			{
-				if (inputs[i].get_input() != null)
+				if (input_pipes[i].get_input() != null)
 				{
-					if (!inputs[i].get_input().already_ran)
+					if (!input_pipes[i].get_input().already_ran)
 					{
-						// If inputs exist and they haven't done something yet, call them
-						inputs[i].get_input().run();
+						// If input_pipes exist and they haven't done something yet, call them
+						input_pipes[i].get_input().run();
 					}
 				}
 			}
 		}
-		// Do whatever this module is supposed to do and write it in the outputs
+		// Do whatever this module is supposed to do and write it in the output_pipes
 		get_sound();
 	}
 	
