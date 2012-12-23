@@ -110,20 +110,4 @@ public class Oscillator
 			this.current_position -= this.period;
 		}
 	}
-	
-	private double get_value(double position)
-	{
-		// !!! OVERWRITE THIS !!!
-
-		// This method returns the actual sound value at a certain position
-		// Requires a position in time
-		
-		// DEBUGTOOL:
-		return Math.sin(position);
-	}
-
-	public void close()
-	{
-		// We don't really need to do anything here, but still making an abstract method because we might need it someday
-	}
 }

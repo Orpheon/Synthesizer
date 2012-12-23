@@ -115,4 +115,17 @@ public abstract class Module
 	{
 		return type;
 	}
+	
+	public void close()
+	{
+		// Clean everything up
+		for (int i=0; i<NUM_INPUT_PIPES; i++)
+		{
+			disconnect_input(i);
+		}
+		for (int i=0; i<NUM_OUTPUT_PIPES; i++)
+		{
+			disconnect_output(i);
+		}
+	}
 }
