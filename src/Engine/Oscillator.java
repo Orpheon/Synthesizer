@@ -66,7 +66,7 @@ public class Oscillator
 	public void set_frequency(double frequency)
 	{
 		this.frequency = frequency;
-		this.set_period(Functions.get_period(frequency));
+		set_period(1/frequency);
 	}
 
 	public double get_phase()

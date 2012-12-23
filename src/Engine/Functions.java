@@ -9,11 +9,6 @@ package Engine;
  */
 public class Functions
 {
-	public static double get_period(double frequency)
-	{
-		return Engine.Constants.pi_times_2/frequency;
-	}
-	
 	public static byte[] convert_to_16bit_bytearray(double x)
 	{
 		// LITTLE ENDIAN!!!
