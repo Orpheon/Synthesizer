@@ -97,24 +97,13 @@ public abstract class Oscillator extends Module
 	public void set_phase(double phase_offset)
 	{
 		// Move the current_pos by the same offset
-		this.current_position += (phase_offset - this.phase_offset);
-		while (this.current_position >= this.period)
+		current_position += (phase_offset - this.phase_offset);
+		while (current_position >= period)
 		{
-			this.current_position -= this.period;
+			current_position -= period;
 		}
 
 		this.phase_offset = phase_offset;
-	}
-
-	public int get_samplerate()
-	{
-		return samplerate;
-	}
-
-	public void set_samplerate(int samplerate)
-	{
-		this.samplerate = samplerate;
-		this.samplelength = 1.0 / this.samplerate;
 	}
 
 	public double get_period()
@@ -125,9 +114,9 @@ public abstract class Oscillator extends Module
 	public void set_period(double period)
 	{
 		this.period = period;
-		while (this.current_position >= this.period)
+		while (current_position >= this.period)
 		{
-			this.current_position -= this.period;
+			current_position -= this.period;
 		}
 	}
 }
