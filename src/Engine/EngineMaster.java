@@ -22,7 +22,7 @@ public class EngineMaster
 	
 	private Pipe input, output;
 	
-	public Module[] all_modules;
+	public Module[] module_list;
 	
 	private double frequency;
     
@@ -96,7 +96,11 @@ public class EngineMaster
     				System.arraycopy(tmp, 0, sound_buffer, counter+=2, 2);
     			}
     			
-    			// TODO: DO NOT FORGET! RESET Module.already_ran HERE!
+    			// Reset "already_ran" for the next run
+    			for (int i=0; i<module_list.length; i++)
+    			{
+    				module_list[i].already_ran = false;
+    			}
     			
     			// And then output it (or atleast as much as we can now)
     			counter = line.available();
