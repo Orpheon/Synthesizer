@@ -21,8 +21,8 @@ public class Functions
 		{
 			System.out.println("ERROR: Too large x value given for byte converting!");
 			System.out.println(x);
-			// FIXME: There has to be a better way to do this:
 			byte[] error = {1};
+			// FIXME: Use some python "raise" equivalent for stopping java
 			// This will call out a runtime error, only way I can think of to stop Java
 			System.out.println(error[4]);
 			return error;

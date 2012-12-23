@@ -1,11 +1,4 @@
 package Engine;
-
-/** This class defines a general analog oscillator.
- *  Should be inherited from by specific oscillators.
- *  
- *  All (void) methods should return 0 if execution succeeded, a positive error code if not
- */
-
 /**
  * @author orpheon
  *
