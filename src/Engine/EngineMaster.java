@@ -18,13 +18,13 @@ public class EngineMaster
 	
 	private byte[] sound_buffer = new byte[Engine.Constants.SAMPLE_SIZE * Engine.Constants.SNAPSHOT_SIZE];
 	private int sound_buffer_position = sound_buffer.length;
+	private boolean is_playing;
 	
-	private Pipe output;
-	private Generator main_generator;
+	private Pipe input, output;
 	
 	public Module[] all_modules;
 	
-	private boolean is_playing;
+	private double frequency;
     
     /*
 	 * @throws LineUnavailableException
@@ -40,16 +40,24 @@ public class EngineMaster
 		this.line.open(format);  
 		this.line.start();
 
-		// First an output pipe to hold the outputs
+		// First an input pipe to hold the (one) input: Frequency
+		// TODO: Replace this with a MidiHandler object once implemented
+		input = new Pipe();
+		for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
+		{
+			input.inner_buffer[i] = frequency;
+		}
+		// Then an output pipe to hold the outputs
 		output = new Pipe();
-		// Create then a Generator to make everything run
-		main_generator = new Engine.Generator(output, 440.0);
     }
-    
-    // Not sure if this is the best method
+    // FIXME: This too should be replaced by the MidiHandler once implemented
     public void change_frequency(double new_frequency)
     {
-    	main_generator.set_frequency(new_frequency);
+    	frequency = new_frequency;
+		for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
+		{
+			input.inner_buffer[i] = frequency;
+		}
     }
     
     public void update()
@@ -79,7 +87,7 @@ public class EngineMaster
     		{
     			// Run the entire chain of events
     			// FIXME: There has to be a more efficient way to do this, and is it really better to start from the bottom?
-    			output.get_input().run();
+    			input.get_output().run();
     			byte[] tmp;
     			int counter = 0;
     			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
@@ -87,6 +95,9 @@ public class EngineMaster
     				tmp = Functions.convert_to_16bit_bytearray(output.inner_buffer[i]);
     				System.arraycopy(tmp, 0, sound_buffer, counter+=2, 2);
     			}
+    			
+    			// TODO: DO NOT FORGET! RESET Module.already_ran HERE!
+    			
     			// And then output it (or atleast as much as we can now)
     			counter = line.available();
     			line.write(sound_buffer, 0, counter);
@@ -97,7 +108,7 @@ public class EngineMaster
     
     public void play_sound(double frequency)
     {
-    	main_generator.set_frequency(frequency);
+    	change_frequency(frequency);
     	is_playing = true;
     }
     
@@ -116,6 +127,5 @@ public class EngineMaster
 		//Done playing the whole waveform, now wait until the queued samples finish playing, then clean up and exit
 		line.drain();
     	line.close();
-    	main_generator.close();
     }
 }

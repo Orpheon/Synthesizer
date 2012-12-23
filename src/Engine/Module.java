@@ -88,22 +88,25 @@ public abstract class Module
 		// This prevents recursive infinite loops
 		// It gets set back to false in the EngineMaster get_sound method
 		already_ran = true;
-		for (int i=0; i<NUM_INPUT_PIPES; i++)
+		
+		// Do whatever this module is supposed to do and write it in the output_pipes
+		get_sound();
+		
+		// Then call all of the modules on the other side
+		for (int i=0; i<NUM_OUTPUT_PIPES; i++)
 		{
-			if (input_pipes[i] != null)
+			if (output_pipes[i] != null)
 			{
-				if (input_pipes[i].get_input() != null)
+				if (output_pipes[i].get_output() != null)
 				{
-					if (!input_pipes[i].get_input().already_ran)
+					if (!output_pipes[i].get_output().already_ran)
 					{
-						// If input_pipes exist and they haven't done something yet, call them
-						input_pipes[i].get_input().run();
+						// If output modules exist and they haven't done something yet, call them
+						output_pipes[i].get_output().run();
 					}
 				}
 			}
 		}
-		// Do whatever this module is supposed to do and write it in the output_pipes
-		get_sound();
 	}
 	
 	public int get_index()
