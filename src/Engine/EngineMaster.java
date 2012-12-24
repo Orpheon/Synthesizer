@@ -1,6 +1,3 @@
-/**
- * 
- */
 package Engine;
 
 import javax.sound.sampled.AudioFormat;

@@ -24,7 +24,7 @@ public class MainWindow
 	/**
 	 * Launch the application.
 	 */
-	public static void createWindow(String[] args)
+	public void createWindow(String[] args)
 	{
 		EventQueue.invokeLater(new Runnable()
 		{

@@ -1,5 +1,7 @@
 package Engine;
-/** This class defines all the general miscellanious math functions
+
+import java.io.*;
+/** This class defines all the general miscellaneous math functions
  *  Should never be instanciated
  */
 
@@ -9,6 +11,7 @@ package Engine;
  */
 public class Functions
 {
+	// Converts a signed double into a 16bit bytearray (for outputting as sound)
 	public static byte[] convert_to_16bit_bytearray(double x)
 	{
 		// LITTLE ENDIAN!!!

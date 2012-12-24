@@ -2,7 +2,6 @@ package Main;
 
 import javax.sound.sampled.LineUnavailableException;
 
-import GUI.MainWindow;
 
 /**
  * Basic class that calls both the engine and the gui
