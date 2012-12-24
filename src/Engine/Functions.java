@@ -36,4 +36,26 @@ public class Functions
 
 		return ret;
 	}
+	
+	// Copy-pasted from StackOverflow as well, this is just a debugging tool
+	// It outputs a byte array written to it as a file
+    static void array_write(byte[] aInput, String aOutputFileName){
+    	System.out.println("Writing binary file...");
+        try {
+          OutputStream output = null;
+          try {
+            output = new BufferedOutputStream(new FileOutputStream(aOutputFileName));
+            output.write(aInput);
+          }
+          finally {
+            output.close();
+          }
+        }
+        catch(FileNotFoundException ex){
+        	System.out.println("File not found.");
+        }
+        catch(IOException ex){
+        	System.out.println(ex);
+        }
+      }
 }
