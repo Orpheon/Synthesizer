@@ -23,7 +23,8 @@ public class Main
 		Engine.EngineMaster engine = new Engine.EngineMaster();
 		GUI.MainWindow window = new GUI.MainWindow();
 		window.createWindow(null);
-		engine.play_sound(5, 110, 0.0);
+		engine.add_oscillator(440, 0, Engine.Constants.SINE_OSCILLATOR);
+		engine.start_playing(440);
 		while (true)
 		{
 			engine.update();

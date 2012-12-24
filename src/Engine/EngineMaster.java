@@ -138,7 +138,23 @@ public class EngineMaster
     	}
     }
     
-    public void play_sound(double frequency)
+    public void add_oscillator(double frequency, double phase_offset, int type)
+    {
+    	switch (type)
+    	{
+    		case Constants.SINE_OSCILLATOR:
+    			Oscillators.SineOscillator m = new Oscillators.SineOscillator(this, frequency, phase_offset);
+    			// FIXME: Make this be called by the GUI somewhere else, not hardcoded
+    			m.connect_input(input, Oscillator.FREQUENCY_PIPE);
+    			m.connect_output(output, Oscillator.OUTPUT_PIPE);
+    			break;
+    			
+    		default:
+    			System.out.println("ERROR: Request to create invalid oscillator");
+    	}
+    }
+    
+    public void start_playing(double frequency)
     {
     	change_frequency(frequency);
     	is_playing = true;
