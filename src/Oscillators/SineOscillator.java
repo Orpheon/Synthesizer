@@ -4,9 +4,9 @@ import Engine.Oscillator;
 
 public class SineOscillator extends Oscillator
 {
-	public SineOscillator(double frequency, double phase_offset, int samplerate)
+	public SineOscillator(Engine.EngineMaster engine, double frequency, double phase_offset)
 	{
-		super(frequency, phase_offset, samplerate);
+		super(engine, frequency, phase_offset);
 	}
 
 	protected double get_value(double position)

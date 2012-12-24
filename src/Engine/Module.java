@@ -22,10 +22,9 @@ public abstract class Module
 	
 	public abstract void get_sound();
 
-	public Module()
+	public Module(EngineMaster engine)
 	{
-		input_pipes = new Pipe[NUM_INPUT_PIPES];
-		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
+		engine.module_list.add(this);
 		index = counter++;
 	}
 	
@@ -119,7 +118,7 @@ public abstract class Module
 		return type;
 	}
 	
-	public void close()
+	public void close(EngineMaster engine)
 	{
 		// Clean everything up
 		for (int i=0; i<NUM_INPUT_PIPES; i++)
@@ -130,5 +129,7 @@ public abstract class Module
 		{
 			disconnect_output(i);
 		}
+		
+		engine.module_list.remove(this);
 	}
 }
