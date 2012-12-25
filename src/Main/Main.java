@@ -29,8 +29,8 @@ public class Main
 		// Hardcoded situation
 		Modules.Splitter source = (Modules.Splitter) engine.add_module(Engine.Constants.MODULE_SPLITTER);
 		source.set_num_outputs(3);
-		engine.connect_modules(engine.main_container, 0, source, Modules.Splitter.INPUT_PIPE);
-		
+		engine.connect_modules(engine.main_container, 0, source, 0);
+
 		Modules.Oscillator osc1, osc2, osc3;
 		osc1 = (Modules.Oscillator) engine.add_module(Engine.Constants.MODULE_OSCILLATOR);
 		osc2 = (Modules.Oscillator) engine.add_module(Engine.Constants.MODULE_OSCILLATOR);

@@ -78,7 +78,7 @@ public class EngineMaster
 	    			
 	    			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 	    			{
-	    				tmp = Functions.convert_to_16bit_bytearray(main_container.get_output_pipe(0).inner_buffer[i]);
+	    				tmp = Functions.convert_to_16bit_bytearray(main_container.get_inner_output_pipe(0).inner_buffer[i]);
 	    				System.arraycopy(tmp, 0, sound_buffer, counter, 2);
 	    				counter += 2;
 	    			}
@@ -119,7 +119,7 @@ public class EngineMaster
     	// TODO: Another thing that's going to have to disappear when GUI is here.
     	for (int i=0; i<Constants.SNAPSHOT_SIZE; i++)
     	{
-    		main_container.get_input_pipe(i).inner_buffer[i] = frequency;
+    		main_container.get_inner_input_pipe(0).inner_buffer[i] = frequency;
     	}
     }
     

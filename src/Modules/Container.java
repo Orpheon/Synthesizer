@@ -45,7 +45,10 @@ public class Container extends Module
 	{
 		for (int i=0; i<NUM_INPUT_PIPES; i++)
 		{
-			System.arraycopy(input_pipes[i].inner_buffer, 0, inner_input_pipes[i].inner_buffer, 0, Engine.Constants.SNAPSHOT_SIZE);
+			if (input_pipes[i] != null && inner_input_pipes[i] != null)
+			{
+				System.arraycopy(input_pipes[i].inner_buffer, 0, inner_input_pipes[i].inner_buffer, 0, Engine.Constants.SNAPSHOT_SIZE);
+			}
 		}
 		
 		// TODO: Use iterators here
@@ -56,7 +59,10 @@ public class Container extends Module
 		
 		for (int i=0; i<NUM_OUTPUT_PIPES; i++)
 		{
-			System.arraycopy(inner_output_pipes[i].inner_buffer, 0, output_pipes[i].inner_buffer, 0, Engine.Constants.SNAPSHOT_SIZE);
+			if (output_pipes[i] != null && inner_output_pipes[i] != null)
+			{
+				System.arraycopy(inner_output_pipes[i].inner_buffer, 0, output_pipes[i].inner_buffer, 0, Engine.Constants.SNAPSHOT_SIZE);
+			}
 		}
 	}
 	
@@ -104,18 +110,22 @@ public class Container extends Module
     	if (module_1 == this)
     	{
     		// If a module wants to connect with our inner input ports
-    		((Container) module_1).connect_inner_input(pipe, out_port);
+    		this.connect_inner_input(pipe, out_port);
     		module_2.connect_input(pipe, in_port);
     	}
     	else if (module_2 == this)
     	{
     		// A module wants to export its output to the general container inner output ports
     		module_1.connect_output(pipe, out_port);
-    		((Container) module_2).connect_inner_output(pipe, in_port);
+    		this.connect_inner_output(pipe, in_port);
     	}
-    	// Remember that the pipe must be connected to the output of the first module and go in the second.
-    	module_1.connect_output(pipe, out_port);
-    	module_2.connect_input(pipe, in_port);
+    	else
+    	{
+    		// Two random modules want to be connected
+    		// Remember that the pipe must be connected to the output of the first module and go in the second.
+        	module_1.connect_output(pipe, out_port);
+        	module_2.connect_input(pipe, in_port);
+    	}
     }
 
 	public boolean connect_inner_input(Pipe pipe, int position)
