@@ -30,6 +30,8 @@ public class Merger extends Module
 		
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
+		
+		type = Engine.Constants.MODULE_MERGER;
 	}
 	
 	public Merger(EngineMaster engine, int num_inputs)

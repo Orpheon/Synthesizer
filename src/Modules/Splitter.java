@@ -18,6 +18,8 @@ public class Splitter extends Module
 		
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
+		
+		type = Engine.Constants.MODULE_SPLITTER;
 	}
 	
 	public Splitter(EngineMaster engine, int num_outputs)
