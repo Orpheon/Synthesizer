@@ -12,8 +12,10 @@ public class Constants
     public final static double pi_times_2 = 6.28318530718;
     
     // Module type constants
-    public final static int SINE_OSCILLATOR = 1;
-    
+    public final static int MODULE_OSCILLATOR = 1;
+    public final static int MODULE_MERGER = 2;
+    public final static int MODULE_SPLITTER = 3;
+
     // Pipe type constants
     public final static int SOUND_PIPE = 1;
 }
