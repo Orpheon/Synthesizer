@@ -19,11 +19,12 @@ public class EngineMaster
 	private int sound_buffer_position = sound_buffer.length;
 	private boolean is_playing;
 	
-	private Pipe input, output;
+	// FIXME: Neither of these should exist in this form
+	public Pipe input, output;
 	
 	public LinkedList<Engine.Module> module_list;
 	
-	// TODO: This should be part of MidiHandler once implemented
+	// FIXME: This should be part of MidiHandler once implemented
 	private double frequency;
     
     /*
