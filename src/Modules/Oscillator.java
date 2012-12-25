@@ -12,7 +12,7 @@ public class Oscillator extends Module
 {
 	private double frequency = 1;
 	private double phase_offset = 0.0;
-	private double amplitude = 0.5;
+	private double amplitude = 1.0;
 	private double detune = 0;
 	
 	private double period = Engine.Constants.pi_times_2;
@@ -75,6 +75,12 @@ public class Oscillator extends Module
 				set_phase(input_pipes[PHASE_PIPE].inner_buffer[i]);
 			}
 			current_position += frequency * 1/Constants.SAMPLING_RATE;
+			// FIXME: Find a way to make this entire method cleaner and more efficient by restructuring stuff
+			// And check the period setting stuff etc, not sure whether it checks the sign and can't take care of it now.
+			while (Math.abs(current_position) > 1)
+			{
+				current_position -= Math.signum(current_position);
+			}
 
 			output_pipes[OUTPUT_PIPE].inner_buffer[i] = get_value(current_position) * amplitude;
 		}
