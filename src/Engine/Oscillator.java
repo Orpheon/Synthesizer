@@ -3,23 +3,27 @@ package Engine;
  * @author orpheon
  *
  */
-// TODO: Make this abstract
-public abstract class Oscillator extends Module
+public class Oscillator extends Module
 {
-	protected double frequency = 1;
-	protected double phase_offset = 0.0;
+	private double frequency = 1;
+	private double phase_offset = 0.0;
+	private double amplitude = 0.5;
 	
-	protected double period = Engine.Constants.pi_times_2;
-	protected double current_position = 0.0;
+	private double period = Engine.Constants.pi_times_2;
+	private double current_position = 0.0;
 	
 	public static final int FREQUENCY_PIPE = 0;
 	public static final int PHASE_PIPE = 1;
 	
 	public static final int OUTPUT_PIPE = 0;
 	
-	protected abstract double get_value(double position);
+	public static final int SINE_WAVE = 0;
+	public static final int SAW_WAVE = 1;
+	public static final int SQUARE_WAVE = 2;
 	
-	public Oscillator(EngineMaster engine, double frequency, double phase_offset)
+	private int osc_type = SINE_WAVE;
+	
+	public Oscillator(EngineMaster engine, double frequency, double phase_offset, int osc_type)
 	{		
 		super(engine);
 		
@@ -33,6 +37,7 @@ public abstract class Oscillator extends Module
 		set_frequency(frequency);
 		set_period(1/frequency);
 		set_phase(phase_offset);
+		set_osctype(osc_type);
 	}
 
 	public void get_sound()
@@ -49,7 +54,33 @@ public abstract class Oscillator extends Module
 			}
 			current_position += frequency * 1/Constants.SAMPLING_RATE;
 
-			output_pipes[OUTPUT_PIPE].inner_buffer[i] = get_value(current_position);
+			output_pipes[OUTPUT_PIPE].inner_buffer[i] = get_value(current_position) * amplitude;
+		}
+	}
+	
+	protected double get_value(double position)
+	{
+		switch (osc_type)
+		{
+			case SINE_WAVE:
+				return Math.sin(position*Constants.pi_times_2);
+			
+			case SAW_WAVE:
+				return position;
+				
+			case SQUARE_WAVE:
+				if (position < 0.5)
+				{
+					return 0.0;
+				}
+				else
+				{
+					return 1.0;
+				}
+				
+			default:
+				System.out.println("ERROR: Oscillator "+index+" has the invalid osc_type "+osc_type+"!");
+				return 0;
 		}
 	}
 
@@ -93,5 +124,25 @@ public abstract class Oscillator extends Module
 		{
 			current_position -= 1;
 		}
+	}
+	
+	public void set_osctype(int type)
+	{
+		osc_type = type;
+	}
+	
+	public int get_osctype()
+	{
+		return osc_type;
+	}
+
+	public double get_amplitude()
+	{
+		return amplitude;
+	}
+
+	public void set_amplitude(double amplitude)
+	{
+		this.amplitude = amplitude;
 	}
 }

@@ -23,7 +23,7 @@ public class Main
 		Engine.EngineMaster engine = new Engine.EngineMaster();
 		GUI.MainWindow window = new GUI.MainWindow();
 		window.createWindow(null);
-		engine.add_oscillator(440, 0, Engine.Constants.SINE_OSCILLATOR);
+		engine.add_oscillator(440, 0, Engine.Oscillator.SINE_WAVE);
 		engine.start_playing(440);
 		while (true)
 		{
