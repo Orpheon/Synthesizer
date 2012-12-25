@@ -84,6 +84,9 @@ public abstract class Module
 	
 	public void run()
 	{
+//		System.out.println("Running!");
+//		System.out.println("Type: "+type+"; Index: "+index);
+//		System.out.println();
 		// This prevents recursive infinite loops
 		// It gets set back to false in the EngineMaster get_sound method
 		already_ran = true;
