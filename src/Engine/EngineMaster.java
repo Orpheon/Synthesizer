@@ -5,8 +5,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
-import Modules.Oscillator;
-
 import java.util.LinkedList;
 
 /**
@@ -140,12 +138,29 @@ public class EngineMaster
     	}
     }
     
-    public void add_oscillator(double frequency, double phase_offset, int type)
+    public int add_module(int type)
     {
-		Oscillator m = new Oscillator(this, frequency, phase_offset, type);
-		// FIXME: Make this be called by the GUI somewhere else, not hardcoded
-		m.connect_input(input, Oscillator.FREQUENCY_PIPE);
-		m.connect_output(output, Oscillator.OUTPUT_PIPE);
+    	Module m;
+    	switch (type)
+    	{
+    		case Constants.MODULE_OSCILLATOR:
+    			m = new Modules.Oscillator(this);
+    			break;
+    			
+    		case Constants.MODULE_MERGER:
+    			m = new Modules.Merger(this);
+    			break;
+    			
+    		case Constants.MODULE_SPLITTER:
+    			m = new Modules.Splitter(this);
+    			break;
+    			
+    		default:
+    			System.out.println("ERROR: Invalid module type requested: "+type);
+    			return -1;
+    	}
+
+    	return m.get_index();
     }
     
     public void start_playing(double frequency)
