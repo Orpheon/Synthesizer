@@ -45,6 +45,19 @@ public class Oscillator extends Module
 		set_phase(phase_offset);
 		set_osctype(osc_type);
 	}
+	
+	public Oscillator(EngineMaster engine)
+	{		
+		super(engine);
+		
+		NUM_INPUT_PIPES = 2;
+		NUM_OUTPUT_PIPES = 1;
+		
+		input_pipes = new Pipe[NUM_INPUT_PIPES];
+		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
+		
+		current_position = 0.0;
+	}
 
 	public void get_sound()
 	{
