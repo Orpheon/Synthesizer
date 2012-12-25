@@ -29,8 +29,7 @@ public class Main
 		// Hardcoded situation
 		Modules.Splitter source = (Modules.Splitter) engine.add_module(Engine.Constants.MODULE_SPLITTER);
 		source.set_num_outputs(3);
-		// Yes, engine.input is the source pipe, that was a naming mistake I'll fix later
-		source.connect_input(engine.input, Modules.Splitter.INPUT_PIPE);
+		engine.connect_modules(engine.main_container, 0, source, Modules.Splitter.INPUT_PIPE);
 		
 		Modules.Oscillator osc1, osc2, osc3;
 		osc1 = (Modules.Oscillator) engine.add_module(Engine.Constants.MODULE_OSCILLATOR);
@@ -56,9 +55,10 @@ public class Main
 		engine.connect_modules(osc2, Modules.Oscillator.OUTPUT_PIPE, adder, 1);
 		engine.connect_modules(osc3, Modules.Oscillator.OUTPUT_PIPE, adder, 2);
 		
-		adder.connect_output(engine.output, Modules.Merger.OUTPUT_PIPE);
+		engine.connect_modules(adder, Modules.Merger.OUTPUT_PIPE, engine.main_container, 0);
 
-		engine.start_playing(440);
+		engine.set_frequency(440);
+		engine.start_playing();
 		while (true)
 		{
 			engine.update();

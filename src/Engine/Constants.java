@@ -15,6 +15,7 @@ public class Constants
     public final static int MODULE_OSCILLATOR = 1;
     public final static int MODULE_MERGER = 2;
     public final static int MODULE_SPLITTER = 3;
+    public final static int MODULE_CONTAINER = 4;
 
     // Pipe type constants
     public final static int SOUND_PIPE = 1;

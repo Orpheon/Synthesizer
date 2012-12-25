@@ -3,7 +3,6 @@
  */
 package Modules;
 
-import Engine.EngineMaster;
 import Engine.Module;
 import Engine.Pipe;
 import Engine.Constants;
@@ -21,9 +20,9 @@ public class Merger extends Module
 	
 	private int operation = ADDITION;
 	
-	public Merger(EngineMaster engine)
+	public Merger(Container container)
 	{
-		super(engine);
+		super(container);
 		
 		NUM_INPUT_PIPES = 2;
 		NUM_OUTPUT_PIPES = 1;
@@ -34,9 +33,9 @@ public class Merger extends Module
 		type = Engine.Constants.MODULE_MERGER;
 	}
 	
-	public Merger(EngineMaster engine, int num_inputs)
+	public Merger(Container container, int num_inputs)
 	{
-		super(engine);
+		super(container);
 		
 		NUM_INPUT_PIPES = num_inputs;
 		NUM_OUTPUT_PIPES = 1;
@@ -46,7 +45,7 @@ public class Merger extends Module
 	}
 
 	@Override
-	public void get_sound()
+	public void run()
 	{
 		if (output_pipes[OUTPUT_PIPE] != null)
 		{

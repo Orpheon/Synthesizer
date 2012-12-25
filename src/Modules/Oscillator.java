@@ -1,7 +1,6 @@
 package Modules;
 
 import Engine.Constants;
-import Engine.EngineMaster;
 import Engine.Module;
 import Engine.Pipe;
 
@@ -30,9 +29,9 @@ public class Oscillator extends Module
 	
 	private int osc_type = SINE_WAVE;
 	
-	public Oscillator(EngineMaster engine, double frequency, double phase_offset, double detune, int osc_type)
+	public Oscillator(Container container, double frequency, double phase_offset, double detune, int osc_type)
 	{		
-		super(engine);
+		super(container);
 		
 		NUM_INPUT_PIPES = 2;
 		NUM_OUTPUT_PIPES = 1;
@@ -50,9 +49,9 @@ public class Oscillator extends Module
 		set_osctype(osc_type);
 	}
 	
-	public Oscillator(EngineMaster engine)
+	public Oscillator(Container container)
 	{		
-		super(engine);
+		super(container);
 		
 		NUM_INPUT_PIPES = 2;
 		NUM_OUTPUT_PIPES = 1;
@@ -63,7 +62,7 @@ public class Oscillator extends Module
 		current_position = 0.0;
 	}
 
-	public void get_sound()
+	public void run()
 	{
 		for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 		{

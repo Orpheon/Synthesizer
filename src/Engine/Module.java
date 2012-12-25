@@ -3,6 +3,8 @@
  */
 package Engine;
 
+import Modules.Container;
+
 /**
  * @author orpheon
  *
@@ -14,17 +16,20 @@ public abstract class Module
 	protected Pipe[] input_pipes;
 	protected Pipe[] output_pipes;
 	
-	private static int counter;
+	protected static int counter;
 	protected int index;
+	
 	protected int type;
 	
-	public boolean already_ran = false;
-	
-	public abstract void get_sound();
+	public abstract void run();
 
-	public Module(EngineMaster engine)
+	public Module(Container container)
 	{
-		engine.module_list.add(this);
+		index = counter++;
+	}
+	
+	public Module()
+	{
 		index = counter++;
 	}
 	
@@ -82,35 +87,6 @@ public abstract class Module
 		output_pipes[position] = null;
 	}
 	
-	public void run()
-	{
-//		System.out.println("Running!");
-//		System.out.println("Type: "+type+"; Index: "+index);
-//		System.out.println();
-		// This prevents recursive infinite loops
-		// It gets set back to false in the EngineMaster get_sound method
-		already_ran = true;
-		
-		// Do whatever this module is supposed to do and write it in the output_pipes
-		get_sound();
-		
-		// Then call all of the modules on the other side
-		for (int i=0; i<NUM_OUTPUT_PIPES; i++)
-		{
-			if (output_pipes[i] != null)
-			{
-				if (output_pipes[i].get_output() != null)
-				{
-					if (!output_pipes[i].get_output().already_ran)
-					{
-						// If output modules exist and they haven't done something yet, call them
-						output_pipes[i].get_output().run();
-					}
-				}
-			}
-		}
-	}
-	
 	public int get_index()
 	{
 		return index;
@@ -121,7 +97,17 @@ public abstract class Module
 		return type;
 	}
 	
-	public void close(EngineMaster engine)
+	public Pipe get_input_pipe(int i)
+	{
+		return input_pipes[i];
+	}
+	
+	public Pipe get_output_pipe(int i)
+	{
+		return output_pipes[i];
+	}
+	
+	public void close(Container container)
 	{
 		// Clean everything up
 		for (int i=0; i<NUM_INPUT_PIPES; i++)
@@ -133,6 +119,6 @@ public abstract class Module
 			disconnect_output(i);
 		}
 		
-		engine.module_list.remove(this);
+		container.remove_module(this);
 	}
 }

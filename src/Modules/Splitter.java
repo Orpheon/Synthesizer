@@ -1,6 +1,5 @@
 package Modules;
 
-import Engine.EngineMaster;
 import Engine.Module;
 import Engine.Pipe;
 import Engine.Constants;
@@ -9,9 +8,9 @@ public class Splitter extends Module
 {
 	public static final int INPUT_PIPE = 0;
 	
-	public Splitter(EngineMaster engine)
+	public Splitter(Container container)
 	{
-		super(engine);
+		super(container);
 		
 		NUM_INPUT_PIPES = 1;
 		NUM_OUTPUT_PIPES = 2;
@@ -22,9 +21,9 @@ public class Splitter extends Module
 		type = Engine.Constants.MODULE_SPLITTER;
 	}
 	
-	public Splitter(EngineMaster engine, int num_outputs)
+	public Splitter(Container container, int num_outputs)
 	{
-		super(engine);
+		super(container);
 		
 		NUM_INPUT_PIPES = 1;
 		NUM_OUTPUT_PIPES = num_outputs;
@@ -34,7 +33,7 @@ public class Splitter extends Module
 	}
 
 	@Override
-	public void get_sound()
+	public void run()
 	{
 		if (input_pipes[INPUT_PIPE] != null)
 		{

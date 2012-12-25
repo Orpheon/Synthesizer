@@ -5,7 +5,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
-import java.util.LinkedList;
+import Modules.Container;
 
 /**
  * @author orpheon
@@ -19,13 +19,8 @@ public class EngineMaster
 	private int sound_buffer_position = sound_buffer.length;
 	private boolean is_playing;
 	
-	// FIXME: Neither of these should exist in this form
-	public Pipe input, output;
-	
-	public LinkedList<Engine.Module> module_list;
-	
-	// FIXME: This should be part of MidiHandler once implemented
-	private double frequency;
+	// FIXME: Should be private but can't if a window can't touch it
+	public Container main_container;
     
     /*
 	 * @throws LineUnavailableException
@@ -41,28 +36,8 @@ public class EngineMaster
 		this.line.open(format);  
 		this.line.start();
 
-		// First an input pipe to hold the (one) input: Frequency
-		// TODO: Replace this with a MidiHandler object once implemented
-		input = new Pipe();
-		for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
-		{
-			input.inner_buffer[i] = frequency;
-		}
-		// Then an output pipe to hold the outputs
-		output = new Pipe();
-		
-		// Also create a general list to hold all modules
-		module_list = new LinkedList<Module>();
-    }
-    
-    // FIXME: This too should be replaced by the MidiHandler once implemented
-    public void change_frequency(double new_frequency)
-    {
-    	frequency = new_frequency;
-		for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
-		{
-			input.inner_buffer[i] = frequency;
-		}
+		// Create a container to hold everything
+		main_container = new Container();
     }
     
     public void update()
@@ -97,42 +72,31 @@ public class EngineMaster
     			while (true)
     			{
 	    			// Run the entire chain of events
-	    			if (input.get_output() != null)
+	    			main_container.run();
+	    			byte[] tmp;
+	    			int counter=0;
+	    			
+	    			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 	    			{
-	    				// TODO: Think of a system that works if nothing is connected to input
-		    			input.get_output().run();
-		    			byte[] tmp;
-		    			int counter=0;
-		    			
-		    			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
-		    			{
-		    				tmp = Functions.convert_to_16bit_bytearray(output.inner_buffer[i]);
-		    				System.arraycopy(tmp, 0, sound_buffer, counter, 2);
-		    				counter += 2;
-		    			}
-	    				
-		    			// Reset "already_ran" for the next run
-		    			// TODO: Use iterators
-		    			for (int i=0; i<module_list.size(); i++)
-		    			{
-		    				module_list.get(i).already_ran = false;
-		    			}
-		    			
-		    			// And then output it (or atleast as much as we can now)
-		    			counter = line_available;
-		    			if (counter <= sound_buffer.length)
-		    			{
-		    				// If we can fill the entire line
-			    			line.write(sound_buffer, 0, counter);
-			    			sound_buffer_position = counter;
-			    			// Stop for now
-			    			break;
-		    			}
-		    			else
-		    			{
-		    				// If we can't, then output all we have and generate more sound (this is inside a while loop)
-		    				line.write(sound_buffer, 0, sound_buffer.length);
-		    			}
+	    				tmp = Functions.convert_to_16bit_bytearray(main_container.get_output_pipe(0).inner_buffer[i]);
+	    				System.arraycopy(tmp, 0, sound_buffer, counter, 2);
+	    				counter += 2;
+	    			}
+	    			
+	    			// And then output it (or atleast as much as we can now)
+	    			counter = line_available;
+	    			if (counter <= sound_buffer.length)
+	    			{
+	    				// If we can fill the entire line
+		    			line.write(sound_buffer, 0, counter);
+		    			sound_buffer_position = counter;
+		    			// Stop for now
+		    			break;
+	    			}
+	    			else
+	    			{
+	    				// If we can't, then output all we have and generate more sound (this is inside a while loop)
+	    				line.write(sound_buffer, 0, sound_buffer.length);
 	    			}
     			}
     		}
@@ -141,34 +105,26 @@ public class EngineMaster
     
     public Module add_module(int type)
     {
-    	switch (type)
-    	{
-    		case Constants.MODULE_OSCILLATOR:
-    			return new Modules.Oscillator(this);
-    			
-    		case Constants.MODULE_MERGER:
-    			return new Modules.Merger(this);
-    			
-    		case Constants.MODULE_SPLITTER:
-    			return new Modules.Splitter(this);
-    			
-    		default:
-    			System.out.println("ERROR: Invalid module type requested: "+type);
-    			return null;
-    	}
+    	return main_container.add_module(type);
     }
     
     public void connect_modules(Module module_1, int out_port, Module module_2, int in_port)
     {
-    	Pipe pipe = new Pipe();
-    	// Remember that the pipe must be connected to the output of the first module and go in the second.
-    	module_1.connect_output(pipe, out_port);
-    	module_2.connect_input(pipe, in_port);
+    	// TODO: Another thing that's going to have to disappear when GUI is here.
+    	main_container.connect_modules(module_1, out_port, module_2, in_port);
     }
     
-    public void start_playing(double frequency)
+    public void set_frequency(double frequency)
     {
-    	change_frequency(frequency);
+    	// TODO: Another thing that's going to have to disappear when GUI is here.
+    	for (int i=0; i<Constants.SNAPSHOT_SIZE; i++)
+    	{
+    		main_container.get_input_pipe(i).inner_buffer[i] = frequency;
+    	}
+    }
+    
+    public void start_playing()
+    {
     	is_playing = true;
     }
     
@@ -188,13 +144,6 @@ public class EngineMaster
 		line.drain();
     	line.close();
     	
-    	// Also destroy and disconnect all the modules (who will take care of the pipes themselves)
-    	Module m;
-    	while (module_list.size() > 0)
-    	{
-    		m = module_list.getFirst();
-    		// Modules disconnect themselves from EngineMaster.module_list automatically
-    		m.close(this);
-    	}
+    	main_container.close();
     }
 }
