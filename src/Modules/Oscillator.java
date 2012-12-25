@@ -14,6 +14,7 @@ public class Oscillator extends Module
 	private double frequency = 1;
 	private double phase_offset = 0.0;
 	private double amplitude = 0.5;
+	private double detune = 0;
 	
 	private double period = Engine.Constants.pi_times_2;
 	private double current_position = 0.0;
@@ -29,7 +30,7 @@ public class Oscillator extends Module
 	
 	private int osc_type = SINE_WAVE;
 	
-	public Oscillator(EngineMaster engine, double frequency, double phase_offset, int osc_type)
+	public Oscillator(EngineMaster engine, double frequency, double phase_offset, double detune, int osc_type)
 	{		
 		super(engine);
 		
@@ -45,6 +46,7 @@ public class Oscillator extends Module
 		set_frequency(frequency);
 		set_period(1/frequency);
 		set_phase(phase_offset);
+		set_detune(detune);
 		set_osctype(osc_type);
 	}
 	
@@ -67,7 +69,7 @@ public class Oscillator extends Module
 		{
 			if (input_pipes[FREQUENCY_PIPE] != null)
 			{
-				set_frequency(input_pipes[FREQUENCY_PIPE].inner_buffer[i]);
+				set_frequency(input_pipes[FREQUENCY_PIPE].inner_buffer[i] + detune);
 			}
 			if (input_pipes[PHASE_PIPE] != null)
 			{
@@ -165,5 +167,15 @@ public class Oscillator extends Module
 	public void set_amplitude(double amplitude)
 	{
 		this.amplitude = amplitude;
+	}
+
+	public double get_detune()
+	{
+		return detune;
+	}
+
+	public void set_detune(double detune)
+	{
+		this.detune = detune;
 	}
 }
