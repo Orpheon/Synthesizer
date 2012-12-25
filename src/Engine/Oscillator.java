@@ -53,41 +53,6 @@ public abstract class Oscillator extends Module
 		}
 	}
 
-	// TODO: Get rid of this function
-/*	public byte[] get_sound(int num_samples, int sample_size)
-	{
-		int output_length = num_samples*sample_size;
-		double sample;
-
-//		System.out.println("\nData:");
-//		System.out.println(frequency);
-//		System.out.println(period);
-//		System.out.println(phase_offset);
-//		System.out.println(current_position);
-//		System.out.println(samplerate);
-//		System.out.println(samplelength);
-
-		byte[] output;
-		output = new byte[output_length];
-
-		for (int i=0; i<output_length; i+=sample_size)
-		{
-			sample = get_value(current_position);
-//			System.out.println("\nNew stuff:");
-//			System.out.println("i: "+i+" byte[] length: "+output.length+" num_samples: "+num_samples+" output_length: "+output_length);
-			current_position += samplelength * frequency * 6.28318530718;
-//			while (current_position > period)
-//			{
-//				current_position -= period;
-//			}
-			// Then convert "sample" into a byte array and copy that to the output buffer
-			// FIXME: This is pretty inefficient, a casting for every number, is it possible to convert the whole array at once?
-			System.arraycopy(Functions.convert_to_16bit_bytearray(sample), 0, output, i, sample_size);
-		}
-
-		return output;
-	}*/
-
 	public double get_frequency()
 	{
 		return frequency;

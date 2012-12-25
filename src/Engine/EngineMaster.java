@@ -23,6 +23,7 @@ public class EngineMaster
 	
 	public LinkedList<Engine.Module> module_list;
 	
+	// TODO: This should be part of MidiHandler once implemented
 	private double frequency;
     
     /*
@@ -108,7 +109,6 @@ public class EngineMaster
 		    				System.arraycopy(tmp, 0, sound_buffer, counter, 2);
 		    				counter += 2;
 		    			}
-	    				Functions.array_write(sound_buffer, "output");
 	    				
 		    			// Reset "already_ran" for the next run
 		    			// TODO: Use iterators
