@@ -19,7 +19,18 @@ public class Merger extends Module
 	
 	private int operation = ADDITION;
 	
-	public Merger(EngineMaster engine, int num_inputs, int operation)
+	public Merger(EngineMaster engine)
+	{
+		super(engine);
+		
+		NUM_INPUT_PIPES = 2;
+		NUM_OUTPUT_PIPES = 1;
+		
+		input_pipes = new Pipe[NUM_INPUT_PIPES];
+		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
+	}
+	
+	public Merger(EngineMaster engine, int num_inputs)
 	{
 		super(engine);
 		
@@ -28,8 +39,6 @@ public class Merger extends Module
 		
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
-		
-		this.operation = operation;
 	}
 
 	@Override
@@ -88,4 +97,31 @@ public class Merger extends Module
 		this.operation = operation;
 	}
 
+	public int get_num_inputs()
+	{
+		return NUM_INPUT_PIPES;
+	}
+	
+	public void set_num_inputs(int num)
+	{
+		// No need to change anything if there's no change
+		if (num != NUM_INPUT_PIPES)
+		{
+			// If we want to lower the number of connections, then disconnect all the superfluous ones
+			if (NUM_INPUT_PIPES > num)
+			{ 
+				for (int i=num; i<NUM_INPUT_PIPES; i++)
+				{
+					if (input_pipes[i] != null)
+					{
+						disconnect_input(i);
+					}
+				}
+			}
+			NUM_INPUT_PIPES = num;
+			Pipe[] tmp = new Pipe[NUM_INPUT_PIPES];
+			System.arraycopy(input_pipes, 0, tmp, 0, Math.min(input_pipes.length, NUM_INPUT_PIPES));
+			input_pipes = tmp;
+		}
+	}
 }
