@@ -17,6 +17,8 @@ public class Merger extends Module
 	public static final int ADDITION = 1;
 	public static final int MULTIPLICATION = 2;
 	
+	public static final int OUTPUT_PIPE = 0;
+	
 	private int operation = ADDITION;
 	
 	public Merger(EngineMaster engine)
@@ -44,7 +46,7 @@ public class Merger extends Module
 	@Override
 	public void get_sound()
 	{
-		if (output_pipes[0] != null)
+		if (output_pipes[OUTPUT_PIPE] != null)
 		{
 			int i, j;
 			switch (operation)
@@ -77,7 +79,7 @@ public class Merger extends Module
 								product *= input_pipes[j].inner_buffer[i];
 							}
 						}
-						output_pipes[0].inner_buffer[i] = product;
+						output_pipes[OUTPUT_PIPE].inner_buffer[i] = product;
 					}
 					break;
 					

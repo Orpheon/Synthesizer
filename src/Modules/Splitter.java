@@ -7,6 +7,8 @@ import Engine.Constants;
 
 public class Splitter extends Module
 {
+	public static final int INPUT_PIPE = 0;
+	
 	public Splitter(EngineMaster engine)
 	{
 		super(engine);
@@ -32,14 +34,14 @@ public class Splitter extends Module
 	@Override
 	public void get_sound()
 	{
-		if (input_pipes[0] != null)
+		if (input_pipes[INPUT_PIPE] != null)
 		{
 			for (int i=0; i<NUM_OUTPUT_PIPES; i++)
 			{
-				if (output_pipes[0] != null)
+				if (output_pipes[i] != null)
 				{
 					// Copy the input directly in the output
-					System.arraycopy(input_pipes[0].inner_buffer, 0, output_pipes[i].inner_buffer, 0, Constants.SNAPSHOT_SIZE);
+					System.arraycopy(input_pipes[INPUT_PIPE].inner_buffer, 0, output_pipes[i].inner_buffer, 0, Constants.SNAPSHOT_SIZE);
 				}
 			}
 		}
