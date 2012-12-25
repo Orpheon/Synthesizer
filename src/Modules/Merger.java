@@ -54,7 +54,7 @@ public class Merger extends Module
 			switch (operation)
 			{
 				case ADDITION:
-					int sum;
+					double sum;
 					for (i=0; i<Constants.SNAPSHOT_SIZE; i++)
 					{
 						sum = 0;
@@ -65,12 +65,13 @@ public class Merger extends Module
 								sum += input_pipes[j].inner_buffer[i];
 							}
 						}
-						output_pipes[0].inner_buffer[i] = sum;
+						// Don't forget to normalize from -1 to 1 again
+						output_pipes[OUTPUT_PIPE].inner_buffer[i] = sum / NUM_INPUT_PIPES;
 					}
 					break;
 					
 				case MULTIPLICATION:
-					int product;
+					double product;
 					for (i=0; i<Constants.SNAPSHOT_SIZE; i++)
 					{
 						product = 1;
