@@ -139,29 +139,31 @@ public class EngineMaster
     	}
     }
     
-    public int add_module(int type)
+    public Module add_module(int type)
     {
-    	Module m;
     	switch (type)
     	{
     		case Constants.MODULE_OSCILLATOR:
-    			m = new Modules.Oscillator(this);
-    			break;
+    			return new Modules.Oscillator(this);
     			
     		case Constants.MODULE_MERGER:
-    			m = new Modules.Merger(this);
-    			break;
+    			return new Modules.Merger(this);
     			
     		case Constants.MODULE_SPLITTER:
-    			m = new Modules.Splitter(this);
-    			break;
+    			return new Modules.Splitter(this);
     			
     		default:
     			System.out.println("ERROR: Invalid module type requested: "+type);
-    			return -1;
+    			return null;
     	}
-
-    	return m.get_index();
+    }
+    
+    public void connect_modules(Module module_1, int out_port, Module module_2, int in_port)
+    {
+    	Pipe pipe = new Pipe();
+    	// Remember that the pipe must be connected to the output of the first module and go in the second.
+    	module_1.connect_output(pipe, out_port);
+    	module_2.connect_input(pipe, in_port);
     }
     
     public void start_playing(double frequency)
