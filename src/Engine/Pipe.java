@@ -6,7 +6,7 @@ public class Pipe
 	private int index;
 	private int type;
 	
-	double inner_buffer[] = new double[Engine.Constants.SNAPSHOT_SIZE];
+	public double inner_buffer[] = new double[Engine.Constants.SNAPSHOT_SIZE];
 	
 	private Module input;
 	private Module output;

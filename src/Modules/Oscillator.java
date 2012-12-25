@@ -1,4 +1,10 @@
-package Engine;
+package Modules;
+
+import Engine.Constants;
+import Engine.EngineMaster;
+import Engine.Module;
+import Engine.Pipe;
+
 /**
  * @author orpheon
  *
