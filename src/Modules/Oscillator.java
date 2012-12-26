@@ -77,7 +77,6 @@ public class Oscillator extends Module
 			}
 			current_position += frequency * 1/Constants.SAMPLING_RATE;
 			// FIXME: Find a way to make this entire method cleaner and more efficient by restructuring stuff
-			// And check the period setting stuff etc, not sure whether it checks the sign and can't take care of it now.
 			while (Math.abs(current_position) > 1)
 			{
 				current_position -= Math.signum(current_position);
@@ -133,9 +132,9 @@ public class Oscillator extends Module
 	{
 		// Move the current_pos by the same offset
 		current_position += (phase_offset - this.phase_offset);
-		while (current_position >= 1)
+		while (Math.abs(current_position) > 1)
 		{
-			current_position -= 1;
+			current_position -= Math.signum(current_position);
 		}
 
 		this.phase_offset = phase_offset;
@@ -149,9 +148,9 @@ public class Oscillator extends Module
 	public void set_period(double period)
 	{
 		this.period = period;
-		while (current_position > 1)
+		while (Math.abs(current_position) > 1)
 		{
-			current_position -= 1;
+			current_position -= Math.signum(current_position);
 		}
 	}
 	
