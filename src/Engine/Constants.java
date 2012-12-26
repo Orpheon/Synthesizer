@@ -16,4 +16,5 @@ public class Constants
     public final static int MODULE_MERGER = 2;
     public final static int MODULE_SPLITTER = 3;
     public final static int MODULE_CONTAINER = 4;
+	public static final int MODULE_RANGEMODIFIER = 5;
 }
