@@ -39,7 +39,7 @@ public class Oscillator extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
-		type = Engine.Constants.MODULE_OSCILLATOR;
+		module_type = Engine.Constants.MODULE_OSCILLATOR;
 		
 		current_position = 0.0;
 		set_frequency(frequency);

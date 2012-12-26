@@ -19,7 +19,7 @@ public abstract class Module
 	protected static int counter;
 	protected int index;
 	
-	protected int type;
+	protected int module_type;
 	
 	public abstract void run();
 
@@ -39,7 +39,7 @@ public abstract class Module
 		{
 			// Trying to connect a cable to an invalid port.
 			// Don't allow this
-			System.out.println("ERROR: Tried to connect a pipe "+pipe.get_index()+" to an invalid input port "+position+" to Module number "+index+" of type "+type+".");
+			System.out.println("ERROR: Tried to connect a pipe "+pipe.get_index()+" to an invalid input port "+position+" to Module number "+index+" of type "+module_type+".");
 			// Just return false
 			return false;
 		}
@@ -66,7 +66,7 @@ public abstract class Module
 		{
 			// Trying to connect a cable to an invalid port.
 			// Don't allow this
-			System.out.println("ERROR: Tried to connect a pipe "+pipe.get_index()+" to an invalid output port "+position+" to Module number "+index+" of type "+type+".");
+			System.out.println("ERROR: Tried to connect a pipe "+pipe.get_index()+" to an invalid output port "+position+" to Module number "+index+" of type "+module_type+".");
 			// Just return false
 			return false;
 		}
@@ -92,9 +92,9 @@ public abstract class Module
 		return index;
 	}
 
-	public int get_type()
+	public int get_moduletype()
 	{
-		return type;
+		return module_type;
 	}
 	
 	public Pipe get_input_pipe(int i)

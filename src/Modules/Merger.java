@@ -30,7 +30,7 @@ public class Merger extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
-		type = Engine.Constants.MODULE_MERGER;
+		module_type = Engine.Constants.MODULE_MERGER;
 	}
 	
 	public Merger(Container container, int num_inputs)

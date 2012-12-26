@@ -20,7 +20,7 @@ public class RangeModifier extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
-		type = Engine.Constants.MODULE_RANGEMODIFIER;
+		module_type = Engine.Constants.MODULE_RANGEMODIFIER;
 		
 		range_in = new double[2];
 		range_out = new double[2];

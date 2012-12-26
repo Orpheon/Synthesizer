@@ -35,7 +35,7 @@ public class Container extends Module
 		inner_input_pipes = new Pipe[NUM_INPUT_PIPES];
 		inner_output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
-		type = Constants.MODULE_CONTAINER;
+		module_type = Constants.MODULE_CONTAINER;
 		
 		module_list = new LinkedList<Engine.Module>();
 	}
@@ -134,7 +134,7 @@ public class Container extends Module
 		{
 			// Trying to connect a cable to an invalid port.
 			// Don't allow this
-			System.out.println("ERROR: Tried to connect a pipe "+pipe.get_index()+" to an invalid inner input port "+position+" to Module number "+index+" of type "+type+".");
+			System.out.println("ERROR: Tried to connect a pipe "+pipe.get_index()+" to an invalid inner input port "+position+" to Module number "+index+" of type "+module_type+".");
 			// Just return false
 			return false;
 		}
@@ -161,7 +161,7 @@ public class Container extends Module
 		{
 			// Trying to connect a cable to an invalid port.
 			// Don't allow this
-			System.out.println("ERROR: Tried to connect a pipe "+pipe.get_index()+" to an invalid inner output port "+position+" to Module number "+index+" of type "+type+".");
+			System.out.println("ERROR: Tried to connect a pipe "+pipe.get_index()+" to an invalid inner output port "+position+" to Module number "+index+" of type "+module_type+".");
 			// Just return false
 			return false;
 		}
