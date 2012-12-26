@@ -17,7 +17,9 @@ public class EngineMaster
 	
 	private byte[] sound_buffer = new byte[Engine.Constants.SAMPLE_SIZE * Engine.Constants.SNAPSHOT_SIZE];
 	private int sound_buffer_position = sound_buffer.length;
+	
 	private boolean is_playing;
+	private double global_volume;
 	
 	// FIXME: Should be private but can't if a window can't touch it
 	public Container main_container;
@@ -78,7 +80,7 @@ public class EngineMaster
 	    			
 	    			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 	    			{
-	    				tmp = Functions.convert_to_16bit_bytearray(main_container.get_inner_output_pipe(0).inner_buffer[i]);
+	    				tmp = Functions.convert_to_16bit_bytearray(global_volume * main_container.get_inner_output_pipe(0).inner_buffer[i]);
 	    				System.arraycopy(tmp, 0, sound_buffer, counter, 2);
 	    				counter += 2;
 	    			}
@@ -138,7 +140,17 @@ public class EngineMaster
     	return is_playing;
     }
 
-    public void close()
+    public double get_globalvolume()
+	{
+		return global_volume;
+	}
+
+	public void set_globalvolume(double global_volume)
+	{
+		this.global_volume = global_volume;
+	}
+
+	public void close()
     {
 		//Done playing the whole waveform, now wait until the queued samples finish playing, then clean up and exit
 		line.drain();
