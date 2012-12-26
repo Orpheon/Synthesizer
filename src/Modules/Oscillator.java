@@ -68,6 +68,7 @@ public class Oscillator extends Module
 		{
 			if (input_pipes[FREQUENCY_PIPE] != null)
 			{
+				// TODO: Make detune work in half-tone percentage and so dependent on frequency
 				set_frequency(input_pipes[FREQUENCY_PIPE].inner_buffer[i] + detune);
 			}
 			if (input_pipes[PHASE_PIPE] != null)
