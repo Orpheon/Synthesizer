@@ -18,4 +18,8 @@ public class Constants
     public final static int MODULE_CONTAINER = 4;
 	public static final int MODULE_RANGEMODIFIER = 5;
 	public static final int MODULE_DISTORTION = 6;
+	
+	public static final int DISTORTION_OVERDRIVE = 0;
+	
+	public static final int OSCILLATOR_SINE = 0;
 }

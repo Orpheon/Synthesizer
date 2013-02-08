@@ -23,7 +23,7 @@ public class Main
 	public static void main(String[] args) throws LineUnavailableException, InterruptedException
 	{
 		Engine.EngineMaster engine = new Engine.EngineMaster();
-		GUI.MainWindow window = new GUI.MainWindow();
+		//GUI.MainWindow window = new GUI.MainWindow();
 		//window.createWindow(null);
 		
 		// Hardcoded situation
@@ -55,18 +55,22 @@ public class Main
 		engine.connect_modules(osc2, Modules.Oscillator.OUTPUT_PIPE, adder, 1);
 		engine.connect_modules(osc3, Modules.Oscillator.OUTPUT_PIPE, adder, 2);
 		
-		engine.connect_modules(adder, Modules.Merger.OUTPUT_PIPE, engine.main_container, 0);
+		Distortion.OverdriveDistortion dist = (Distortion.OverdriveDistortion) engine.add_module(Engine.Constants.MODULE_DISTORTION, Engine.Constants.DISTORTION_OVERDRIVE);
+		dist.set_level(1.5);
+		
+		engine.connect_modules(adder, Modules.Merger.OUTPUT_PIPE, dist, Modules.Distortion.INPUT_PIPE);
+		engine.connect_modules(dist, Modules.Distortion.OUTPUT_PIPE, engine.main_container, 0);
 
-		engine.set_frequency(220);
+		engine.set_frequency(440);
 		engine.set_globalvolume(0.1);
-		//engine.start_playing();
-		/*while (true)
+		engine.start_playing();
+		while (true)
 		{
 			engine.update();
-		}*/
+		}
 		
 		
 		
-		window.createWindow();
+		//window.createWindow();
 	}
 }

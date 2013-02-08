@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import Engine.Constants;
 import Engine.Module;
 import Engine.Pipe;
+import Distortion.OverdriveDistortion;
 
 public class Container extends Module
 {
@@ -89,6 +90,36 @@ public class Container extends Module
     			
     		default:
     			System.out.println("ERROR: Invalid module type requested: "+type);
+    			m = null;
+    	}
+    	// Goddamn java and it's obsession with the possibility that some code might never be executed
+    	if (m != null)
+    	{
+    		module_list.add(m);
+    	}
+    	return m;
+	}
+	
+	public Module add_module(int type, int subtype)
+	{
+		Module m;
+    	switch (type)
+    	{
+    		case Constants.MODULE_DISTORTION:
+    			switch (subtype)
+    			{
+    				case Constants.DISTORTION_OVERDRIVE:
+    					m = new OverdriveDistortion(this);
+    					break;
+    					
+    				default:
+    					System.out.println("ERROR: Invalid module subtype requested: "+type+"; "+subtype);
+    	    			m = null;
+    			}
+    			break;
+    			
+    		default:
+    			System.out.println("ERROR: Invalid module type requested: "+type+"; "+subtype);
     			m = null;
     	}
     	// Goddamn java and it's obsession with the possibility that some code might never be executed

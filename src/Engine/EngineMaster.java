@@ -110,6 +110,11 @@ public class EngineMaster
     	return main_container.add_module(type);
     }
     
+    public Module add_module(int type, int subtype)
+    {
+    	return main_container.add_module(type, subtype);
+    }
+    
     public void connect_modules(Module module_1, int out_port, Module module_2, int in_port)
     {
     	// TODO: Another thing that's going to have to disappear when GUI is here.
