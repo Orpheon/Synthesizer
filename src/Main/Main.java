@@ -57,12 +57,16 @@ public class Main
 		
 		engine.connect_modules(adder, Modules.Merger.OUTPUT_PIPE, engine.main_container, 0);
 
-		engine.set_frequency(440);
+		engine.set_frequency(220);
 		engine.set_globalvolume(0.1);
-		engine.start_playing();
-		while (true)
+		//engine.start_playing();
+		/*while (true)
 		{
 			engine.update();
-		}
+		}*/
+		
+		
+		
+		window.createWindow();
 	}
 }
