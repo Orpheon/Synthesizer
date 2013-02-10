@@ -20,10 +20,9 @@ public class Main
 	 * @throws InterruptedException 
 	 * @throws LineUnavailableException 
 	 */
-	public static void main(String[] args) throws LineUnavailableException, InterruptedException
+	/*public static void main(String[] args) throws LineUnavailableException, InterruptedException
 	{
 		Engine.EngineMaster engine = new Engine.EngineMaster();
-		GUI.MainWindow window = new GUI.MainWindow();
 		//window.createWindow(null);
 		
 		// Hardcoded situation
@@ -60,6 +59,17 @@ public class Main
 		engine.set_frequency(440);
 		engine.set_globalvolume(0.1);
 		engine.start_playing();
+		while (true)
+		{
+			engine.update();
+		}
+	}*/
+	
+	public static void main(String[] args) throws LineUnavailableException, InterruptedException
+	{
+		Engine.EngineMaster engine = new Engine.EngineMaster();
+		GUI.ContainerGUI main_window = new GUI.ContainerGUI(engine.main_container);
+		main_window.setVisible(true);
 		while (true)
 		{
 			engine.update();
