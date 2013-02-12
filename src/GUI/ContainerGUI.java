@@ -1,6 +1,9 @@
 package GUI;
 
 import java.awt.*;
+import java.awt.event.*;
+import java.io.IOException;
+
 import javax.swing.*;
 
 public class ContainerGUI extends JFrame
@@ -35,7 +38,7 @@ public class ContainerGUI extends JFrame
         // FIXME: Don't hardcode position
         setBounds(683 - window_width/2, 384 - window_height/2, window_width, window_height);
         
-        // Remember what container we belong to
-        this.container = container;
+        this.m = new ModuleGUI(new Modules.Splitter(container));
+        add(m);
 	}
 }
