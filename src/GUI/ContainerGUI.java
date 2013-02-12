@@ -11,17 +11,22 @@ public class ContainerGUI extends JFrame
 	private static final long serialVersionUID = 2466772835685193131L;
 	
 	private Modules.Container container;
-
-	public ContainerGUI(Modules.Container container)
+	
+	// FIXME: Remove this
+	private ModuleGUI m;
+	
+	private static final int DEFAULT_WINDOW_WIDTH = 900;
+	private static final int DEFAULT_WINDOW_HEIGHT = 600;
+	
+	public ContainerGUI(Modules.Container container) throws IOException
 	{
-		init_GUI(container, 900, 600);
+		this(container, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);		
 	}
 	
-	private void init_GUI(Modules.Container container, int window_width, int window_height)
+	public ContainerGUI(Modules.Container container, int window_width, int window_height) throws IOException
 	{
-		// Create a new panel to draw stuff on
-        JPanel panel = new JPanel(new FlowLayout());
-        add(panel);
+		// We keep a pointer to the our container
+		this.container = container;
 
         // Basic GUI stuff
         setTitle("");
