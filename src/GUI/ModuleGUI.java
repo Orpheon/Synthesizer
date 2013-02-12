@@ -48,6 +48,8 @@ public class ModuleGUI extends JPanel
         g2d.drawLine(x, y+portbox_height/2, x+portbox_width, y+portbox_height/2);        
 		g2d.setColor(Color.gray);
 		g2d.drawRect(x+1, y+1, portbox_width-1, portbox_height-1);
+		// [/Copying]
+		
 		
 		// Drawing sprites
 		int tmpx, tmpy;
