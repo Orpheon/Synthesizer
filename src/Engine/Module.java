@@ -11,8 +11,8 @@ import Modules.Container;
  */
 public abstract class Module
 {
-	protected int NUM_INPUT_PIPES;
-	protected int NUM_OUTPUT_PIPES;
+	public int NUM_INPUT_PIPES;
+	public int NUM_OUTPUT_PIPES;
 	protected Pipe[] input_pipes;
 	protected Pipe[] output_pipes;
 	
