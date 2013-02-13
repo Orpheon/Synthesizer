@@ -20,6 +20,8 @@ public class Merger extends Module
 	
 	private int operation = ADDITION;
 	
+	public final static String MODULE_NAME = "Merger";
+	
 	public Merger(Container container)
 	{
 		super(container);

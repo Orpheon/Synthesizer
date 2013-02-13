@@ -27,6 +27,8 @@ public class Oscillator extends Module
 	public static final int SAW_WAVE = 1;
 	public static final int SQUARE_WAVE = 2;
 	
+	public final static String MODULE_NAME = "Oscillator";
+	
 	private int osc_type = SINE_WAVE;
 	
 	public Oscillator(Container container, double frequency, double phase_offset, double detune, int osc_type)

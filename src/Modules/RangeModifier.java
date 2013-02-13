@@ -11,6 +11,8 @@ public class RangeModifier extends Module
 	private static final int INPUT_PIPE = 0;
 	private static final int OUTPUT_PIPE = 0;
 	
+	public final static String MODULE_NAME = "Range Modifier";
+	
 	public RangeModifier(Container container)
 	{
 		super(container);

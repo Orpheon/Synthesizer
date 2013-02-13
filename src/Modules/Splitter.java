@@ -8,6 +8,8 @@ public class Splitter extends Module
 {
 	public static final int INPUT_PIPE = 0;
 	
+	public final static String MODULE_NAME = "Splitter";
+	
 	public Splitter(Container container)
 	{
 		super(container);

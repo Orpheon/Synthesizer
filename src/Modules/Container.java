@@ -12,6 +12,8 @@ public class Container extends Module
 	private Pipe[] inner_output_pipes;
 	private LinkedList<Engine.Module> module_list;
 	
+	public final static String MODULE_NAME = "Container";
+	
 	public Container()
 	{
 		super();
