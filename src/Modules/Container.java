@@ -12,8 +12,6 @@ public class Container extends Module
 	private Pipe[] inner_output_pipes;
 	private LinkedList<Engine.Module> module_list;
 	
-	public final static String MODULE_NAME = "Container";
-	
 	public Container()
 	{
 		super();
@@ -40,6 +38,8 @@ public class Container extends Module
 		module_type = Constants.MODULE_CONTAINER;
 		
 		module_list = new LinkedList<Engine.Module>();
+		
+		MODULE_NAME = "Container";
 	}
 	
 	@Override

@@ -20,8 +20,6 @@ public class Merger extends Module
 	
 	private int operation = ADDITION;
 	
-	public final static String MODULE_NAME = "Merger";
-	
 	public Merger(Container container)
 	{
 		super(container);
@@ -33,6 +31,8 @@ public class Merger extends Module
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
 		module_type = Engine.Constants.MODULE_MERGER;
+		
+		MODULE_NAME = "Merger";
 	}
 	
 	public Merger(Container container, int num_inputs)
@@ -44,6 +44,8 @@ public class Merger extends Module
 		
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
+		
+		MODULE_NAME = "Merger";
 	}
 
 	@Override

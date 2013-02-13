@@ -11,8 +11,6 @@ public class RangeModifier extends Module
 	private static final int INPUT_PIPE = 0;
 	private static final int OUTPUT_PIPE = 0;
 	
-	public final static String MODULE_NAME = "Range Modifier";
-	
 	public RangeModifier(Container container)
 	{
 		super(container);
@@ -23,6 +21,8 @@ public class RangeModifier extends Module
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
 		module_type = Engine.Constants.MODULE_RANGEMODIFIER;
+		
+		MODULE_NAME = "Range Modifier";
 		
 		range_in = new double[2];
 		range_out = new double[2];

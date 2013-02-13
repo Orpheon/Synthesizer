@@ -21,13 +21,14 @@ public abstract class Module
 	
 	protected int module_type;
 	
-	public final static String MODULE_NAME = "Default Module";
+	public String MODULE_NAME;
 	
 	public abstract void run();
 
 	public Module(Container container)
 	{
 		index = counter++;
+		MODULE_NAME = "Default Module";
 	}
 	
 	public Module()

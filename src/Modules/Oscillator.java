@@ -27,8 +27,6 @@ public class Oscillator extends Module
 	public static final int SAW_WAVE = 1;
 	public static final int SQUARE_WAVE = 2;
 	
-	public final static String MODULE_NAME = "Oscillator";
-	
 	private int osc_type = SINE_WAVE;
 	
 	public Oscillator(Container container, double frequency, double phase_offset, double detune, int osc_type)
@@ -42,6 +40,8 @@ public class Oscillator extends Module
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
 		module_type = Engine.Constants.MODULE_OSCILLATOR;
+		
+		MODULE_NAME = "Oscillator";
 		
 		current_position = 0.0;
 		set_frequency(frequency);
@@ -62,6 +62,10 @@ public class Oscillator extends Module
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
 		current_position = 0.0;
+		
+		module_type = Engine.Constants.MODULE_OSCILLATOR;
+		
+		MODULE_NAME = "Oscillator";
 	}
 
 	public void run()

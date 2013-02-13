@@ -38,7 +38,7 @@ public class ContainerGUI extends JFrame
         // FIXME: Don't hardcode position
         setBounds(683 - window_width/2, 384 - window_height/2, window_width, window_height);
         
-        this.m = new ModuleGUI(new Modules.Splitter(container));
+        this.m = new ModuleGUI(new Modules.Oscillator(container));
         add(m);
 	}
 }
