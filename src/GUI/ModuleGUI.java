@@ -10,6 +10,7 @@ public class ModuleGUI extends JPanel
 	// FIXME: There has to be an inbuilt-constant for this
 	private int x, y;
 	private int portbox_width, portbox_height;
+	private int text_width, text_height;
 	private Engine.Module module;
 	private Image port_icon;
 	
@@ -18,6 +19,10 @@ public class ModuleGUI extends JPanel
 		// FIXME: Make all these magic numbers constants or lookups
 		portbox_width = 16 + 20*Math.max(module.NUM_INPUT_PIPES, module.NUM_OUTPUT_PIPES) - 10;
 		portbox_height = 2*10 + 10;
+		
+		// FIXME: Find out how to guess the length of a string
+		text_width = module.MODULE_NAME.length()*6+2;
+		text_height = 10+2;
 		
 		x = 300;
 		y = 300;
@@ -43,11 +48,17 @@ public class ModuleGUI extends JPanel
         BasicStroke bs3 = new BasicStroke(1, BasicStroke.CAP_BUTT,
                 BasicStroke.JOIN_ROUND, 1.0f, dash3, 2f );	
 		
+        Font font = new Font("Arial", Font.BOLD, text_height-2);
+		g2d.setFont(font);
+        g2d.drawString(module.MODULE_NAME, x+1, y-1);
+        
+        int tmpwidth = Math.max(text_width, portbox_width);
+        
+
 		g2d.setColor(Color.black);
-		g2d.drawRect(x, y, portbox_width, portbox_height);
-        g2d.drawLine(x, y+portbox_height/2, x+portbox_width, y+portbox_height/2);        
-		g2d.setColor(Color.gray);
-		g2d.drawRect(x+1, y+1, portbox_width-1, portbox_height-1);
+		g2d.drawRect(x, y - text_height, tmpwidth, text_height+portbox_height);// Implicit 2-point distance to text
+		g2d.drawRect(x, y, tmpwidth, portbox_height);
+        g2d.drawLine(x, y+portbox_height/2, x+tmpwidth, y+portbox_height/2);        
 		// [/Copying]
 		
 		
@@ -56,7 +67,7 @@ public class ModuleGUI extends JPanel
 		// First draw the input ports
 		for (int i=0; i<module.NUM_INPUT_PIPES; i++)
 		{
-			double d = (portbox_width - 10.0*(module.NUM_INPUT_PIPES)) / (module.NUM_INPUT_PIPES + 1.0);
+			double d = (tmpwidth - 10.0*(module.NUM_INPUT_PIPES)) / (module.NUM_INPUT_PIPES + 1.0);
 			tmpx = (int) Math.round(d+i*(10+d));
 			// Should be 2.5; FIXME: Replace with portbox_height
 			tmpy = 3;
@@ -67,10 +78,10 @@ public class ModuleGUI extends JPanel
 		// Then the output ports
 		for (int i=0; i<module.NUM_OUTPUT_PIPES; i++)
 		{
-			double d = (portbox_width - 10.0*(module.NUM_OUTPUT_PIPES)) / (module.NUM_OUTPUT_PIPES + 1.0);
+			double d = (tmpwidth - 10.0*(module.NUM_OUTPUT_PIPES)) / (module.NUM_OUTPUT_PIPES + 1.0);
 			tmpx = (int) Math.round(d+i*(10+d));
 			// Should be 7.5; FIXME: Replace with portbox_height
-			tmpy = 17;
+			tmpy = 18;
 			
 			g2d.drawImage(port_icon, x+tmpx, y+tmpy, null);
 		}
