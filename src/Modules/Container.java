@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import Engine.Constants;
 import Engine.Module;
 import Engine.Pipe;
-import Distortion.OverdriveDistortion;
+import Distortion.TanhDistortion;
 
 public class Container extends Module
 {
@@ -110,8 +110,8 @@ public class Container extends Module
     		case Constants.MODULE_DISTORTION:
     			switch (subtype)
     			{
-    				case Constants.DISTORTION_OVERDRIVE:
-    					m = new OverdriveDistortion(this);
+    				case Constants.DISTORTION_TANH:
+    					m = new TanhDistortion(this);
     					break;
     					
     				default:

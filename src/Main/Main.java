@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.sound.sampled.LineUnavailableException;
 
 import Modules.Oscillator;
+import GUI.ContainerGUI;
 
 
 /**
@@ -23,7 +24,7 @@ public class Main
 	 * @throws LineUnavailableException 
 	 * @throws IOException 
 	 */
-	/*public static void main(String[] args) throws LineUnavailableException, InterruptedException
+	public static void main(String[] args) throws LineUnavailableException, InterruptedException
 	{
 		Engine.EngineMaster engine = new Engine.EngineMaster();
 		//GUI.MainWindow window = new GUI.MainWindow();
@@ -58,8 +59,8 @@ public class Main
 		engine.connect_modules(osc2, Modules.Oscillator.OUTPUT_PIPE, adder, 1);
 		engine.connect_modules(osc3, Modules.Oscillator.OUTPUT_PIPE, adder, 2);
 		
-		Distortion.OverdriveDistortion dist = (Distortion.OverdriveDistortion) engine.add_module(Engine.Constants.MODULE_DISTORTION, Engine.Constants.DISTORTION_OVERDRIVE);
-		dist.set_level(1.5);
+		Distortion.TanhDistortion dist = (Distortion.TanhDistortion) engine.add_module(Engine.Constants.MODULE_DISTORTION, Engine.Constants.DISTORTION_TANH);
+		dist.set_level(10);
 		
 		engine.connect_modules(adder, Modules.Merger.OUTPUT_PIPE, dist, Modules.Distortion.INPUT_PIPE);
 		engine.connect_modules(dist, Modules.Distortion.OUTPUT_PIPE, engine.main_container, 0);
@@ -75,9 +76,9 @@ public class Main
 		
 		
 		//window.createWindow();
-	}*/
+	}
 	
-	public static void main(String[] args) throws LineUnavailableException, InterruptedException, IOException
+	/*public static void main(String[] args) throws LineUnavailableException, InterruptedException, IOException
 	{
 		Engine.EngineMaster engine = new Engine.EngineMaster();
 		GUI.ContainerGUI main_window = new GUI.ContainerGUI(engine.main_container);
@@ -86,5 +87,5 @@ public class Main
 		{
 			engine.update();
 		}
-	}
+	}*/
 }
