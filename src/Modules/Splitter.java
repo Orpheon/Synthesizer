@@ -19,6 +19,8 @@ public class Splitter extends Module
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
 		module_type = Engine.Constants.MODULE_SPLITTER;
+		
+		MODULE_NAME = "Splitter";
 	}
 	
 	public Splitter(Container container, int num_outputs)
@@ -30,6 +32,8 @@ public class Splitter extends Module
 		
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
+		
+		MODULE_NAME = "Splitter";
 	}
 
 	@Override

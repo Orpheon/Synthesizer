@@ -22,6 +22,8 @@ public class RangeModifier extends Module
 		
 		module_type = Engine.Constants.MODULE_RANGEMODIFIER;
 		
+		MODULE_NAME = "Range Modifier";
+		
 		range_in = new double[2];
 		range_out = new double[2];
 	}

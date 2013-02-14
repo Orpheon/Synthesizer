@@ -1,5 +1,7 @@
 package Main;
 
+import java.io.IOException;
+
 import javax.sound.sampled.LineUnavailableException;
 
 import Modules.Oscillator;
@@ -19,8 +21,9 @@ public class Main
 	 * @param args
 	 * @throws InterruptedException 
 	 * @throws LineUnavailableException 
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) throws LineUnavailableException, InterruptedException
+	/*public static void main(String[] args) throws LineUnavailableException, InterruptedException
 	{
 		Engine.EngineMaster engine = new Engine.EngineMaster();
 		//GUI.MainWindow window = new GUI.MainWindow();
@@ -72,5 +75,16 @@ public class Main
 		
 		
 		//window.createWindow();
+	}*/
+	
+	public static void main(String[] args) throws LineUnavailableException, InterruptedException, IOException
+	{
+		Engine.EngineMaster engine = new Engine.EngineMaster();
+		GUI.ContainerGUI main_window = new GUI.ContainerGUI(engine.main_container);
+		main_window.setVisible(true);
+		while (true)
+		{
+			engine.update();
+		}
 	}
 }

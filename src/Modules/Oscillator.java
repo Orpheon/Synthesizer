@@ -41,6 +41,8 @@ public class Oscillator extends Module
 		
 		module_type = Engine.Constants.MODULE_OSCILLATOR;
 		
+		MODULE_NAME = "Oscillator";
+		
 		current_position = 0.0;
 		set_frequency(frequency);
 		set_period(1/frequency);
@@ -60,6 +62,10 @@ public class Oscillator extends Module
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
 		current_position = 0.0;
+		
+		module_type = Engine.Constants.MODULE_OSCILLATOR;
+		
+		MODULE_NAME = "Oscillator";
 	}
 
 	public void run()

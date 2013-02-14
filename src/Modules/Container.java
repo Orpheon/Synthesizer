@@ -39,6 +39,8 @@ public class Container extends Module
 		module_type = Constants.MODULE_CONTAINER;
 		
 		module_list = new LinkedList<Engine.Module>();
+		
+		MODULE_NAME = "Container";
 	}
 	
 	@Override

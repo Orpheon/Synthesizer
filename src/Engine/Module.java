@@ -11,8 +11,8 @@ import Modules.Container;
  */
 public abstract class Module
 {
-	protected int NUM_INPUT_PIPES;
-	protected int NUM_OUTPUT_PIPES;
+	public int NUM_INPUT_PIPES;
+	public int NUM_OUTPUT_PIPES;
 	protected Pipe[] input_pipes;
 	protected Pipe[] output_pipes;
 	
@@ -21,11 +21,14 @@ public abstract class Module
 	
 	protected int module_type;
 	
+	public String MODULE_NAME;
+	
 	public abstract void run();
 
 	public Module(Container container)
 	{
 		index = counter++;
+		MODULE_NAME = "Default Module";
 	}
 	
 	public Module()
