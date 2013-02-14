@@ -24,7 +24,7 @@ public class Main
 	 * @throws LineUnavailableException 
 	 * @throws IOException 
 	 */
-	public static void main(String[] args) throws LineUnavailableException, InterruptedException
+	/*public static void main(String[] args) throws LineUnavailableException, InterruptedException
 	{
 		Engine.EngineMaster engine = new Engine.EngineMaster();
 		//GUI.MainWindow window = new GUI.MainWindow();
@@ -76,9 +76,9 @@ public class Main
 		
 		
 		//window.createWindow();
-	}
+	}*/
 	
-	/*public static void main(String[] args) throws LineUnavailableException, InterruptedException, IOException
+	public static void main(String[] args) throws LineUnavailableException, InterruptedException, IOException
 	{
 		Engine.EngineMaster engine = new Engine.EngineMaster();
 		GUI.ContainerGUI main_window = new GUI.ContainerGUI(engine.main_container);
@@ -87,5 +87,5 @@ public class Main
 		{
 			engine.update();
 		}
-	}*/
+	}
 }
