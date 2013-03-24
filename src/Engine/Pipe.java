@@ -1,18 +1,22 @@
 package Engine;
 
-public class Pipe
+public abstract class Pipe
 {
 	private static int counter;
 	private int index;
-	private int type;
-	
-	public double inner_buffer[] = new double[Engine.Constants.SNAPSHOT_SIZE];
+	protected int type;
 	
 	private Module input;
 	private Module output;
 	
+	public double[] activation_times = new double[Constants.NUM_CHANNELS];
+	
 	public Pipe()
 	{
+		for (int i=0; i<activation_times.length; i++)
+		{
+			activation_times[i] = -1;
+		}
 		index = counter++;
 	}
 	

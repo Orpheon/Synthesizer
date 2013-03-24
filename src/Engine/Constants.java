@@ -8,6 +8,8 @@ public class Constants
     public final static int SAMPLE_SIZE = 2;
     // Size of a single snapshot buffer
     public final static int SNAPSHOT_SIZE = 512;
+    // Degree of polyphony / Number of simultaneous independent notes
+    public final static int NUM_CHANNELS = 8;
     // 2*pi
     public final static double pi_times_2 = 6.28318530718;
     
@@ -22,4 +24,7 @@ public class Constants
 	public static final int DISTORTION_TANH = 0;
 	
 	public static final int OSCILLATOR_SINE = 0;
+	
+	public static final int MONO = 0;
+	public static final int STEREO = 1;
 }

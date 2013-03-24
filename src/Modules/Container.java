@@ -50,7 +50,38 @@ public class Container extends Module
 		{
 			if (input_pipes[i] != null && inner_input_pipes[i] != null)
 			{
-				System.arraycopy(input_pipes[i].inner_buffer, 0, inner_input_pipes[i].inner_buffer, 0, Engine.Constants.SNAPSHOT_SIZE);
+				if (input_pipes[i].get_type() != inner_input_pipes[i].get_type())
+				{
+					System.out.println("Error in Container "+index+"; incoming I/O Pipes "+i+" are incompatible.");
+					continue;
+				}
+				for (int j=0; j<Constants.NUM_CHANNELS; j++)
+				{
+					if (input_pipes[i].activation_times[j] < 0)
+					{
+						continue;
+					}
+					else if (input_pipes[i].get_type() == Constants.MONO)
+					{
+						// Huge hack, but can't think of a really cleaner way
+						// FIXME: Do something better than this
+						Engine.MonoPipe a = (Engine.MonoPipe) input_pipes[i];
+						Engine.MonoPipe b = (Engine.MonoPipe) inner_input_pipes[i];
+						
+						System.arraycopy(a.get_pipe(j), 0, b.get_pipe(j), 0, Engine.Constants.SNAPSHOT_SIZE);
+					}
+					else // Stereo
+					{
+						Engine.StereoPipe a = (Engine.StereoPipe) input_pipes[i];
+						Engine.StereoPipe b = (Engine.StereoPipe) inner_input_pipes[i];
+						
+						System.arraycopy(a.get_pipe(j)[0], 0, b.get_pipe(j)[0], 0, Engine.Constants.SNAPSHOT_SIZE);
+						System.arraycopy(a.get_pipe(j)[1], 0, b.get_pipe(j)[1], 0, Engine.Constants.SNAPSHOT_SIZE);
+					}
+					
+					inner_input_pipes[i].activation_times[j] = input_pipes[i].activation_times[j];
+				}
+				
 			}
 		}
 		
@@ -64,7 +95,38 @@ public class Container extends Module
 		{
 			if (output_pipes[i] != null && inner_output_pipes[i] != null)
 			{
-				System.arraycopy(inner_output_pipes[i].inner_buffer, 0, output_pipes[i].inner_buffer, 0, Engine.Constants.SNAPSHOT_SIZE);
+				if (output_pipes[i].get_type() != inner_output_pipes[i].get_type())
+				{
+					System.out.println("Error in Container "+index+"; outgoing I/O Pipes "+i+" are incompatible.");
+					continue;
+				}
+				for (int j=0; j<Constants.NUM_CHANNELS; j++)
+				{
+					if (output_pipes[i].activation_times[j] < 0)
+					{
+						continue;
+					}
+					else if (output_pipes[i].get_type() == Constants.MONO)
+					{
+						// Huge hack, but can't think of a really cleaner way
+						// FIXME: Do something better than this
+						Engine.MonoPipe a = (Engine.MonoPipe) inner_output_pipes[i];
+						Engine.MonoPipe b = (Engine.MonoPipe) output_pipes[i];
+						
+						System.arraycopy(a.get_pipe(j), 0, b.get_pipe(j), 0, Engine.Constants.SNAPSHOT_SIZE);
+					}
+					else // Stereo
+					{
+						Engine.StereoPipe a = (Engine.StereoPipe) inner_output_pipes[i];
+						Engine.StereoPipe b = (Engine.StereoPipe) output_pipes[i];
+						
+						System.arraycopy(a.get_pipe(j)[0], 0, b.get_pipe(j)[0], 0, Engine.Constants.SNAPSHOT_SIZE);
+						System.arraycopy(a.get_pipe(j)[1], 0, b.get_pipe(j)[1], 0, Engine.Constants.SNAPSHOT_SIZE);
+					}
+					
+					inner_output_pipes[i].activation_times[j] = output_pipes[i].activation_times[j];
+				}
+				
 			}
 		}
 	}

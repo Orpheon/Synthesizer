@@ -126,7 +126,8 @@ public class EngineMaster
     	// TODO: Another thing that's going to have to disappear when GUI is here.
     	for (int i=0; i<Constants.SNAPSHOT_SIZE; i++)
     	{
-    		main_container.get_inner_input_pipe(0).inner_buffer[i] = frequency;
+    		main_container.get_inner_input_pipe(0).activation_times[0] = 0;
+    		main_container.get_inner_input_pipe(0).get_pipe(0)[i] = frequency;
     	}
     }
     
