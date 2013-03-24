@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.sound.sampled.LineUnavailableException;
 
 import Modules.Oscillator;
-import GUI.ContainerGUI;
+import GUI.ContainerWindow;
 
 
 /**

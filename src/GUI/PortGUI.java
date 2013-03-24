@@ -16,8 +16,9 @@ public class PortGUI extends JButton
 	
 	public PortGUI(Engine.Module module, int port_number)
 	{
+		super((Icon) port_image);
+		
 		this.module = module;
 		this.port_number = port_number;
 	}
-	// TODO: I need a this.getPosition() function
 }
