@@ -60,12 +60,12 @@ public class Main
 		engine.connect_modules(osc3, Modules.Oscillator.OUTPUT_PIPE, adder, 2);
 		
 		Distortion.TanhDistortion dist = (Distortion.TanhDistortion) engine.add_module(Engine.Constants.MODULE_DISTORTION, Engine.Constants.DISTORTION_TANH);
-		dist.set_level(10);
+		dist.set_level(1);
 		
 		engine.connect_modules(adder, Modules.Merger.OUTPUT_PIPE, dist, Modules.Distortion.INPUT_PIPE);
 		engine.connect_modules(dist, Modules.Distortion.OUTPUT_PIPE, engine.main_container, 0);
 
-		engine.set_frequency(440);
+		engine.set_frequency(30);
 		engine.set_globalvolume(0.1);
 		engine.start_playing();
 		while (true)
@@ -78,14 +78,49 @@ public class Main
 		//window.createWindow();
 	}*/
 	
-	public static void main(String[] args) throws LineUnavailableException, InterruptedException, IOException
+	public static void main(String[] args) throws LineUnavailableException, InterruptedException
 	{
 		Engine.EngineMaster engine = new Engine.EngineMaster();
-		GUI.ContainerGUI main_window = new GUI.ContainerGUI(engine.main_container);
-		main_window.setVisible(true);
+		
+		// Hardcoded situation
+		Modules.Splitter source = (Modules.Splitter) engine.add_module(Engine.Constants.MODULE_SPLITTER);
+		source.set_num_outputs(3);
+		engine.connect_modules(engine.main_container, 0, source, 0);
+
+		Modules.Oscillator osc1, osc2, osc3;
+		osc1 = (Modules.Oscillator) engine.add_module(Engine.Constants.MODULE_OSCILLATOR);
+		osc2 = (Modules.Oscillator) engine.add_module(Engine.Constants.MODULE_OSCILLATOR);
+		osc3 = (Modules.Oscillator) engine.add_module(Engine.Constants.MODULE_OSCILLATOR);
+		
+		osc1.set_osctype(Modules.Oscillator.SINE_WAVE);
+		osc2.set_osctype(Modules.Oscillator.SINE_WAVE);
+		osc3.set_osctype(Modules.Oscillator.SINE_WAVE);
+		
+		engine.connect_modules(source, 0, osc1, Modules.Oscillator.FREQUENCY_PIPE);
+		engine.connect_modules(osc1, Modules.Oscillator.OUTPUT_PIPE, engine.main_container, 0);
+		
+		engine.connect_modules(source, 1, osc2, Modules.Oscillator.FREQUENCY_PIPE);
+		engine.connect_modules(osc2, Modules.Oscillator.OUTPUT_PIPE, engine.main_container, 0);
+		
+		engine.connect_modules(source, 2, osc3, Modules.Oscillator.FREQUENCY_PIPE);
+		engine.connect_modules(osc3, Modules.Oscillator.OUTPUT_PIPE, engine.main_container, 0);
+
+		engine.set_frequency(440);
+		engine.start_playing();
 		while (true)
 		{
 			engine.update();
 		}
 	}
+	
+/*	public static void main(String[] args) throws LineUnavailableException, InterruptedException, IOException
+	{
+		Engine.EngineMaster engine = new Engine.EngineMaster();
+		GUI.ContainerWindow main_window = new GUI.ContainerWindow(engine.main_container);
+		main_window.setVisible(true);
+		while (true)
+		{
+			engine.update();
+		}
+	}*/
 }
