@@ -7,3 +7,181 @@ http://www.google.ch/url?sa=t&rct=j&q=&esrc=s&source=web&cd=6&ved=0CFIQFjAF&url=
 http://www.csounds.com/journal/issue11/distortionSynthesis.html
 
 
+* Now talking on ##java
+* Topic for ##java is: A channel for java development questions | Paste limit is 2 lines.  ~pastebin lists options | Read this first:  http://javachannel.net | Android in #android-dev | JavaScript is in ##javascript | No applets | This channel is logged
+* Topic for ##java set by tjsnell at Thu Sep  6 14:23:55 2012
+* [freenode-info] channel trolls and no channel staff around to help? please check with freenode support: http://freenode.net/faq.shtml#gettinghelp
+-ChanServ- [##java] Please read the topic for basic channel guidelines. Thanks.
+* Linkandzelda has quit (Ping timeout: 245 seconds)
+<Orpheon> https://gist.github.com/Orpheon/5284637
+<Orpheon> For some reason it can't detect the variable "pipe"
+<Orpheon> even though it is declared in every possible path
+<ojacobson> Orpheon: Java has nested scopes
+<Orpheon> even inside if?
+<ojacobson> Both 'pipe' variables are only in scope for the blocks they're declared in; they're out of scope afterwards.
+<Orpheon> ok
+<Orpheon> and what would be a clean/good way to do this?
+<Orpheon> I want them to be different objects depending on the arguments
+<ojacobson> Pipe pipe = createPipe(stereo); where createPipe contains the 'if' and replaces the assignment with a return statement
+<ojacobson> assuming 'Pipe' is the most useful common supertype of both MonoPipe and StereoPipe
+<Orpheon> it is
+<Orpheon> it's the only one
+<Orpheon> but ok
+<ojacobson> No it ain't :)
+<Orpheon> well, right
+<Orpheon> java.lang.object
+<ojacobson> Hence "useful" :)
+<Orpheon> wait, what would the return type be?
+<Orpheon> Pipe?
+<ojacobson> Yep.
+* iLogical (~iLogical@unaffiliated/ilogical) has joined ##java
+* imp3rator is now known as sonotos
+<cthulhufish> this http://docs.oracle.com/javase/1.5.0/docs/api/java/util/concurrent/Executor.html ?
+<cthulhufish> woah chat didn't scroll
+* rohdef (~rohdef@0133900164.0.fullrate.dk) has joined ##java
+* OchoZero9 (~OchoZero9@n128-227-185-140.xlate.ufl.edu) has joined ##java
+* tomtiger11 (~tomtiger1@Tom4u/founder/tomtiger11) has joined ##java
+* yaswanth has quit (Ping timeout: 245 seconds)
+* Bombe has quit (Ping timeout: 246 seconds)
+<mescalinum> how can I run a class (which has a public static void main(String args[]) method) and redirect its output to a file, all from java?
+<ojacobson> ~~ Orpheon conventions
+<javabot> Orpheon, conventions is http://java.sun.com/docs/codeconv/html/CodeConvTOC.doc.html , or "ThisIsAClassName, thisIsAVariableOrMethodName, THIS_IS_A_CONSTANT_NAME".  See also http://java.sun.com/docs/codeconv/html/CodeConventions.doc8.html. To camelcase an acronym, do DvdPlayer, not DVDPlayer.
+<ojacobson> While I'm at it. :)
+<cheeser> mescalinum: you can assign System.out to something else
+* teralaser (tera@unaffiliated/teralaser) has joined ##java
+<ojacobson> mescalinum: by doing exactly that. java.lang.System has methods for replacing the in, out, and err streams, and you can invoke main as a method, since it's a method
+* rauhfasertapete (~Thunderbi@p57941497.dip0.t-ipconnect.de) has joined ##java
+<ojacobson> A better approach is probably to run the class in a subprocess, if only for memory isolation
+* daybyter (~andreas@88-134-94-69-dynip.superkabel.de) has joined ##java
+<mescalinum> oh, that looks simpler than I thought
+<ojacobson> (but then you need to deal with transplanting its output to a file; there's no magic "redirect to a file" for Process and you can't do the POSIX stunt of fdup'ing a file descriptor into each slot)
+<mescalinum> (yep I initially thought as a subprocess)
+* iLogical has quit (Ping timeout: 246 seconds)
+* iLogical_ (~iLogical@unaffiliated/ilogical) has joined ##java
+* nn0101 has quit (Ping timeout: 276 seconds)
+* Bombe (~bombe@freenet/developer/Bombe) has joined ##java
+* deSilva (~deSilva@host-95-199-141-160.mobileonline.telia.com) has joined ##java
+* nn0101 (~nn0101@unaffiliated/nn0101) has joined ##java
+* The_Phoenix has quit (Ping timeout: 246 seconds)
+* anon117 has quit (Quit: Zsákjaidból tolvaj se kér. Miért hitted el hogy valamit ér.)
+* mebigfatguy (~dave@38.102.19.7) has joined ##java
+* akamus has quit (Read error: Connection reset by peer)
+* phao has quit (Quit: Not Here)
+* dmlloyd_ is now known as dmlloyd
+<dmlloyd> well, there is ProcessBuilder.Redirect
+<dmlloyd> since 1.7
+<dmlloyd> you can redirect to/from Files in this case
+* pradhand has quit (Ping timeout: 245 seconds)
+<ojacobson> mm, does it map to the same file-descriptor mechanism shells use, if available? Or does it spin up threads and do it the dumb way? :)
+* pradhand_ (~pradhand@142.68.241.199) has joined ##java
+<Orpheon> doesn't java support function overloading?
+<ojacobson> Why do you ask?
+<Orpheon> it complains of a duplicate method with different arguments
+<Orpheon> and different return type
+<ojacobson> does it, now
+<dmlloyd> Orpheon, it won't let you have a duplicate method with the same arguments and different return type
+<dmlloyd> if the arguments are different then you're gtg
+<dmlloyd> no idea on PB ojacobson
+<wlfshmn> ojacobson: Arguments are not diffrent if they only differ in generics
+<ojacobson> dmlloyd: it's okay, I know how to read the source :)
+* petoo has quit (Disconnected by services)
+* petoo (~user_name@unaffiliated/petoo) has joined ##java
+<Orpheon> nvm, solved. My bad
+* rauhfasertapete has quit (Ping timeout: 245 seconds)
+* oO0Oo (oO0Oo@gateway/shell/elitebnc/x-auwkulufnrikygte) has joined ##java
+* batuhan has quit (Ping timeout: 245 seconds)
+* alyawn has quit (Quit: alyawn)
+* onats has quit (Ping timeout: 246 seconds)
+* S_T_A_N (~textual@ip142-157.wlan-zone2.WKU.EDU) has joined ##java
+* mintux (~mrg@unaffiliated/mintux) has left ##java
+* redeeman (~redeeman@static-ip-188-138-109-205.inaddr.ip-pool.com) has joined ##java
+<redeeman> hello, can anyone tell me if theres some way i can create an updatable resultset (jdbc), then update it once, commit that, then update it again?
+<dreamreal> ~tias
+<javabot> Try it and see. You learn much more by experimentation than by asking without having even tried.
+<redeeman> that has some limitations though, keep in mind that jdbc is not just jdbc, what works on the exact database might not work on the next, and it may well be that someone knows that and could warn me beforehand
+<acuzio> redeeman: you clearly havent tried out jdbc -
+<dreamreal> sure, I'm slightly familiar with jdbc
+<redeeman> acuzio, so who wrote the code i already have?
+<ojacobson> redeeman: wow, someone actually uses updatable resultsets?
+<acuzio> redeeman: ^^^
+<Orpheon> Is there some way to make a child object not have to implement all abstract methods?
+<ojacobson> That always seemed like one of those awful features Microsoft wedged into ODBC that people have been aping ever since
+<Xgc> Orpheon: Make it abstract
+<acuzio> redeeman: my suggestion would be to read the docs and try it out rather than attempting to be sarcastic , it doesnt help your case
+<redeeman> ojacobson, well i just browsed the jdbc docs, and it was there
+<Orpheon> Xgc, but I want to instantiate it
+<ojacobson> redeeman: whether it works at all is up to the driver vendor, basically
+<Xgc> Orpheon: You can't.
+<redeeman> the docs are not really specific on this as far as i saw
+* mizu_no_oto has quit (Quit: Computer has gone to sleep.)
+<Orpheon> and get an error if an unimplemented function gets called
+<acuzio> Orpheon: or you can implement it and throw UnsupportedOperationExecption - its upto you
+<sonOfRa> non-abstract classes cannot have abstract methods
+<ojacobson> for non-trivial queries there aren't any good ways to map resultset records to groups of rows, so not every driver bothers
+<Orpheon> ah ok
+* elegos (~elegos@93-50-175-24.ip153.fastwebnet.it) has joined ##java
+<redeeman> ojacobson, makes sense, but does that mean that assuming updatable rows work, it would also work to update, commit, update, commit?
+<ojacobson> redeeman: It's permitted to.
+<ojacobson> The constraints around them are so loose that asking about the required behaviour is a waste of time and energy
+<redeeman> ok
+<redeeman> thanks
+<ojacobson> if you want to work with multiple DBMSes, don't use updatable result sets. If you want to use updatable result sets, figure out the constraints of the DBMS you care about and write to those.
+<Orpheon> can a child that inherits an abstract method somehow change the return type?
+* systemfault (~systemfau@oftn/member/systemfault) has joined ##java
+* onats (~onats@unaffiliated/onats) has joined ##java
+<ojacobson> Orpheon: only covariantly
+<ojacobson> that is, override a less-specific return type with a more-specific one
+<Orpheon> ok
+<ojacobson> The type of the method-invoking expression will depend on the type of the reference used in it, though, so that may not help you depending on why you asked
+<Orpheon> I have two children classes with a pair of identical methods that only differ in the return type (one is double[] and the other is double[][]). Can I somehow make this method visible from the parent object?
+<ojacobson> No, those types are unrelated
+<ojacobson> (except via Object)
+<Orpheon> I can't define them both because the arguments are the same
+* Vutral (ss@mirbsd/special/Vutral) has joined ##java
+<ojacobson> Either make them two methods or pick a return type they can both satisfy, and use that in both places
+* Vutral has quit (Excess Flood)
+<ojacobson> What's the method do?
+<Orpheon> return a private array
+<ojacobson> (this seems like a place where you've used subclassing where the subclasses aren't actually the same type)
+* sphenxes has quit (Ping timeout: 246 seconds)
+<ojacobson> (that is, they don't behave interchangeably)
+<Orpheon> isn't that the point of subclasses?
+<ojacobson> The ways in which subclasses differ from one another still have to have compatible interfaces & behaviours in some sense
+* redeeman (~redeeman@static-ip-188-138-109-205.inaddr.ip-pool.com) has left ##java ("Leaving")
+* epalm (epalm@TOROON12-1178068039.sdsl.bell.ca) has joined ##java
+<ojacobson> otherwise, how would callers that don't know which subclass they're operating on make any kind of sense of the behaviour of whichever one they actually end up using?
+<Orpheon> callers that don't know do operations that work on both
+<Orpheon> if they try to do a specific operation, they either have to check or they error
+<ojacobson> For example, if your parent class describes a source of audio samples, code that uses the parent class doesn't need to care how the actual subclasses produce audio samples
+<ojacobson> they'll work the same way with a subclass that samples a mic, a subclass that reads an audio file, and a subclass that generates samples randomly
+<Orpheon> In my case, the parent class is a carrier of audio samples, and the two children are mono and stereo versions
+* Vutral (ss@mirbsd/special/Vutral) has joined ##java
+* OchoZero9 has quit (Ping timeout: 252 seconds)
+<ojacobson> Ok; so they both provide one or more suites of samples (one suite per channel)
+* sphenxes (~sphenxes@91-119-203-3.dynamic.xdsl-line.inode.at) has joined ##java
+<Orpheon> yes
+<ojacobson> Callers shouldn't have to care if they have a mono source (one suite), a stereo source (two suites), or a Dolby theater source (~32 suiteS)
+<Orpheon> they need to do operations on the contents themselves
+<Orpheon> so unless I return every array every time (which is a lot, because there are a number of different channels for polyphony involved too), they need to understand the innards
+<ojacobson> Is mono special enough to justify having a different return type for that case? Or should it be a collection of streams in every case, with a different number of streams depending on how many channels you have?
+<wassup> hi
+* bigoldrock (~noel@70-36-195-32.dsl.dynamic.sonic.net) has joined ##java
+<Orpheon> that is sort of what I'm thinking will have to happen
+<wassup> is there some kind of a 'live ' java interpreter, like a python one?
+<ojacobson> wassup: not really, no
+<wassup> ojacobson: thanks
+<ojacobson> (the term you're looking for is "repl" usually -- "read/eval/print loop")
+<Orpheon> so basically mono would be [1][num samples] while stereo would be [2][num samples]?
+<acuzio> wassup: You can use a Clojure repl to run Java code - but its nowhere near as good as the Python repl
+<wassup> acuzio: I'll give it a try ;-)
+<wassup> I would probably use it for some easy bits anyway
+* thispixel (~thispixel@cpc24-mapp10-2-0-cust213.12-4.cable.virginmedia.com) has joined ##java
+<wassup> ok, it's really nowehere near the python one
+* Xabster (~Xabster@unaffiliated/xabster) has joined ##java
+<Teckla> wassup: There's something called BeanShell that you might want to look into.
+* Matthias|PC (Matthias@13.127-65-87.adsl-dyn.isp.belgacom.be) has joined ##java
+<Orpheon> ojacobson, yeah, this cleans everything up pretty nicely. Thanks
+
+
+
+
