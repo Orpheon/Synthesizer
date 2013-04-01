@@ -4,11 +4,11 @@ import Engine.Module;
 import Engine.Pipe;
 import Engine.Constants;
 
-public class Splitter extends Module
+public class Copyer extends Module
 {
 	public static final int INPUT_PIPE = 0;
 	
-	public Splitter(Container container)
+	public Copyer(Container container)
 	{
 		super(container);
 		
@@ -18,12 +18,12 @@ public class Splitter extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
-		module_type = Engine.Constants.MODULE_SPLITTER;
+		module_type = Engine.Constants.MODULE_COPYER;
 		
 		MODULE_NAME = "Splitter";
 	}
 	
-	public Splitter(Container container, int num_outputs)
+	public Copyer(Container container, int num_outputs)
 	{
 		super(container);
 		
@@ -37,16 +37,26 @@ public class Splitter extends Module
 	}
 
 	@Override
-	public void run()
+	public void run(int channel)
 	{
 		if (input_pipes[INPUT_PIPE] != null)
 		{
 			for (int i=0; i<NUM_OUTPUT_PIPES; i++)
 			{
+				if (input_pipes[INPUT_PIPE].get_type() != output_pipes[i].get_type())
+				{
+					System.out.println("Error in Copyer "+index+"; Input pipe and output pipe "+i+" have different types.");
+					continue;
+				}
+				
 				if (output_pipes[i] != null)
 				{
 					// Copy the input directly in the output
-					System.arraycopy(input_pipes[INPUT_PIPE].inner_buffer, 0, output_pipes[i].inner_buffer, 0, Constants.SNAPSHOT_SIZE);
+					System.arraycopy(input_pipes[INPUT_PIPE].get_pipe(channel)[0], 0, output_pipes[i].get_pipe(channel)[0], 0, Constants.SNAPSHOT_SIZE);
+					if (input_pipes[INPUT_PIPE].get_type() == Engine.Constants.STEREO)
+					{
+						System.arraycopy(input_pipes[INPUT_PIPE].get_pipe(channel)[1], 0, output_pipes[i].get_pipe(channel)[1], 0, Constants.SNAPSHOT_SIZE);
+					}
 				}
 			}
 		}

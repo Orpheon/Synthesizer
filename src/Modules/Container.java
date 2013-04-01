@@ -4,7 +4,9 @@ import java.util.LinkedList;
 
 import Engine.Constants;
 import Engine.Module;
+import Engine.MonoPipe;
 import Engine.Pipe;
+import Engine.StereoPipe;
 import Distortion.TanhDistortion;
 
 public class Container extends Module
@@ -44,7 +46,7 @@ public class Container extends Module
 	}
 	
 	@Override
-	public void run()
+	public void run(int channel)
 	{
 		for (int i=0; i<NUM_INPUT_PIPES; i++)
 		{
@@ -55,32 +57,20 @@ public class Container extends Module
 					System.out.println("Error in Container "+index+"; incoming I/O Pipes "+i+" are incompatible.");
 					continue;
 				}
-				for (int j=0; j<Constants.NUM_CHANNELS; j++)
+
+				if (input_pipes[i].activation_times[channel] < 0)
 				{
-					if (input_pipes[i].activation_times[j] < 0)
-					{
-						continue;
-					}
-					else if (input_pipes[i].get_type() == Constants.MONO)
-					{
-						// Huge hack, but can't think of a really cleaner way
-						// FIXME: Do something better than this
-						Engine.MonoPipe a = (Engine.MonoPipe) input_pipes[i];
-						Engine.MonoPipe b = (Engine.MonoPipe) inner_input_pipes[i];
-						
-						System.arraycopy(a.get_pipe(j), 0, b.get_pipe(j), 0, Engine.Constants.SNAPSHOT_SIZE);
-					}
-					else // Stereo
-					{
-						Engine.StereoPipe a = (Engine.StereoPipe) input_pipes[i];
-						Engine.StereoPipe b = (Engine.StereoPipe) inner_input_pipes[i];
-						
-						System.arraycopy(a.get_pipe(j)[0], 0, b.get_pipe(j)[0], 0, Engine.Constants.SNAPSHOT_SIZE);
-						System.arraycopy(a.get_pipe(j)[1], 0, b.get_pipe(j)[1], 0, Engine.Constants.SNAPSHOT_SIZE);
-					}
-					
-					inner_input_pipes[i].activation_times[j] = input_pipes[i].activation_times[j];
+					// Nothing is going on in this channel yet
+					continue;
 				}
+				
+				System.arraycopy(input_pipes[i].get_pipe(channel)[0], 0, inner_input_pipes[i].get_pipe(channel)[0], 0, Engine.Constants.SNAPSHOT_SIZE);
+				if (input_pipes[i].get_type() == Constants.STEREO)
+				{
+					System.arraycopy(input_pipes[i].get_pipe(channel)[1], 0, inner_input_pipes[i].get_pipe(channel)[1], 0, Engine.Constants.SNAPSHOT_SIZE);
+				}
+
+				inner_input_pipes[i].activation_times[channel] = input_pipes[i].activation_times[channel];
 				
 			}
 		}
@@ -88,7 +78,7 @@ public class Container extends Module
 		// TODO: Use iterators here
 		for (int i=0; i<module_list.size(); i++)
 		{
-			module_list.get(i).run();
+			module_list.get(i).run(channel);
 		}
 		
 		for (int i=0; i<NUM_OUTPUT_PIPES; i++)
@@ -100,33 +90,15 @@ public class Container extends Module
 					System.out.println("Error in Container "+index+"; outgoing I/O Pipes "+i+" are incompatible.");
 					continue;
 				}
-				for (int j=0; j<Constants.NUM_CHANNELS; j++)
+				
+				
+				System.arraycopy(inner_output_pipes[i].get_pipe(channel)[0], 0, output_pipes[i].get_pipe(channel)[0], 0, Engine.Constants.SNAPSHOT_SIZE);
+				if (input_pipes[i].get_type() == Constants.STEREO)
 				{
-					if (output_pipes[i].activation_times[j] < 0)
-					{
-						continue;
-					}
-					else if (output_pipes[i].get_type() == Constants.MONO)
-					{
-						// Huge hack, but can't think of a really cleaner way
-						// FIXME: Do something better than this
-						Engine.MonoPipe a = (Engine.MonoPipe) inner_output_pipes[i];
-						Engine.MonoPipe b = (Engine.MonoPipe) output_pipes[i];
-						
-						System.arraycopy(a.get_pipe(j), 0, b.get_pipe(j), 0, Engine.Constants.SNAPSHOT_SIZE);
-					}
-					else // Stereo
-					{
-						Engine.StereoPipe a = (Engine.StereoPipe) inner_output_pipes[i];
-						Engine.StereoPipe b = (Engine.StereoPipe) output_pipes[i];
-						
-						System.arraycopy(a.get_pipe(j)[0], 0, b.get_pipe(j)[0], 0, Engine.Constants.SNAPSHOT_SIZE);
-						System.arraycopy(a.get_pipe(j)[1], 0, b.get_pipe(j)[1], 0, Engine.Constants.SNAPSHOT_SIZE);
-					}
-					
-					inner_output_pipes[i].activation_times[j] = output_pipes[i].activation_times[j];
+					System.arraycopy(inner_output_pipes[i].get_pipe(channel)[1], 0, output_pipes[i].get_pipe(channel)[1], 0, Engine.Constants.SNAPSHOT_SIZE);
 				}
 				
+				output_pipes[i].activation_times[channel] = inner_output_pipes[i].activation_times[channel];
 			}
 		}
 	}
@@ -144,8 +116,8 @@ public class Container extends Module
     			m = new Modules.Merger(this);
     			break;
     			
-    		case Constants.MODULE_SPLITTER:
-    			m = new Modules.Splitter(this);
+    		case Constants.MODULE_COPYER:
+    			m = new Modules.Copyer(this);
     			break;
     			
     		case Constants.MODULE_CONTAINER:
@@ -199,10 +171,23 @@ public class Container extends Module
 		module_list.remove(m);
 	}
 	
-	public void connect_modules(Module module_1, int out_port, Module module_2, int in_port)
+	public Pipe create_pipe(boolean stereo)
+	{
+		if (stereo)
+		{
+			return new StereoPipe();
+		}
+		else
+		{
+			return new MonoPipe();
+		}
+	}
+	
+	public void connect_modules(Module module_1, int out_port, Module module_2, int in_port, boolean stereo)
     {
-    	Pipe pipe = new Pipe();
-    	if (module_1 == this)
+		Pipe pipe = create_pipe(stereo);
+
+		if (module_1 == this)
     	{
     		// If a module wants to connect with our inner input ports
     		this.connect_inner_input(pipe, out_port);

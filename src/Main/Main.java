@@ -85,7 +85,7 @@ public class Main
 		// Hardcoded situation
 		Modules.Splitter source = (Modules.Splitter) engine.add_module(Engine.Constants.MODULE_SPLITTER);
 		source.set_num_outputs(3);
-		engine.connect_modules(engine.main_container, 0, source, 0);
+		engine.connect_modules(engine.main_container, 0, source, 0, true);
 
 		Modules.Oscillator osc1, osc2, osc3;
 		osc1 = (Modules.Oscillator) engine.add_module(Engine.Constants.MODULE_OSCILLATOR);
@@ -96,14 +96,14 @@ public class Main
 		osc2.set_osctype(Modules.Oscillator.SINE_WAVE);
 		osc3.set_osctype(Modules.Oscillator.SINE_WAVE);
 		
-		engine.connect_modules(source, 0, osc1, Modules.Oscillator.FREQUENCY_PIPE);
-		engine.connect_modules(osc1, Modules.Oscillator.OUTPUT_PIPE, engine.main_container, 0);
+		engine.connect_modules(source, 0, osc1, Modules.Oscillator.FREQUENCY_PIPE, true);
+		engine.connect_modules(osc1, Modules.Oscillator.OUTPUT_PIPE, engine.main_container, 0, true);
 		
-		engine.connect_modules(source, 1, osc2, Modules.Oscillator.FREQUENCY_PIPE);
-		engine.connect_modules(osc2, Modules.Oscillator.OUTPUT_PIPE, engine.main_container, 0);
+		engine.connect_modules(source, 1, osc2, Modules.Oscillator.FREQUENCY_PIPE, true);
+		engine.connect_modules(osc2, Modules.Oscillator.OUTPUT_PIPE, engine.main_container, 0, true);
 		
-		engine.connect_modules(source, 2, osc3, Modules.Oscillator.FREQUENCY_PIPE);
-		engine.connect_modules(osc3, Modules.Oscillator.OUTPUT_PIPE, engine.main_container, 0);
+		engine.connect_modules(source, 2, osc3, Modules.Oscillator.FREQUENCY_PIPE, true);
+		engine.connect_modules(osc3, Modules.Oscillator.OUTPUT_PIPE, engine.main_container, 0, true);
 
 		engine.set_frequency(440);
 		engine.start_playing();

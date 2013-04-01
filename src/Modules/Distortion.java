@@ -1,7 +1,6 @@
 package Modules;
 
 import Engine.Module;
-import Engine.Pipe;
 
 public abstract class Distortion extends Module
 {
@@ -19,11 +18,28 @@ public abstract class Distortion extends Module
 	}
 
 	@Override
-	public void run()
+	public void run(int channel)
 	{
-		for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
+		if (input_pipes[INPUT_PIPE].get_type() != output_pipes[OUTPUT_PIPE].get_type())
 		{
-			output_pipes[OUTPUT_PIPE].inner_buffer[i] = Math.min(1, Math.max(-1, distortion_function(input_pipes[INPUT_PIPE].inner_buffer[i])));
+			System.out.println("Error in Distortion Module "+index+"! INPUT_PIPE type is "+input_pipes[INPUT_PIPE].get_type()+" while OUTPUT_PIPE type is "+output_pipes[OUTPUT_PIPE].get_type()+"!");
+		}
+		else if (input_pipes[INPUT_PIPE].get_type() == Engine.Constants.STEREO)
+		{
+			// Stereo
+			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
+			{
+				output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = Math.min(1, Math.max(-1, distortion_function(input_pipes[INPUT_PIPE].get_pipe(channel)[0][i])));
+				output_pipes[OUTPUT_PIPE].get_pipe(channel)[1][i] = Math.min(1, Math.max(-1, distortion_function(input_pipes[INPUT_PIPE].get_pipe(channel)[1][i])));
+			}
+		}
+		else
+		{
+			// Mono
+			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
+			{
+				output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = Math.min(1, Math.max(-1, distortion_function(input_pipes[INPUT_PIPE].get_pipe(channel)[0][i])));
+			}
 		}
 	}
 }

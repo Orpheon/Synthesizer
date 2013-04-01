@@ -22,9 +22,9 @@ public abstract class Module
 	protected int module_type;
 	
 	public String MODULE_NAME;
-	
-	public abstract void run();
 
+	public abstract void run(int channel);
+	
 	public Module(Container container)
 	{
 		index = counter++;

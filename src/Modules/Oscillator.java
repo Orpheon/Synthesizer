@@ -68,27 +68,46 @@ public class Oscillator extends Module
 		MODULE_NAME = "Oscillator";
 	}
 
-	public void run()
+	public void run(int channel)
 	{
+		if (input_pipes[FREQUENCY_PIPE] != null)
+		{
+			if (input_pipes[FREQUENCY_PIPE].get_type() != Constants.MONO)
+			{
+				System.out.println("Error in Oscillator "+index+"; Frequency pipe has type "+input_pipes[FREQUENCY_PIPE].get_type()+".");
+			}
+		}
+		
+		if (input_pipes[PHASE_PIPE] != null)
+		{
+			if (input_pipes[PHASE_PIPE].get_type() != Constants.MONO)
+			{
+				System.out.println("Error in Oscillator "+index+"; Phase pipe has type "+input_pipes[PHASE_PIPE].get_type()+".");
+			}
+		}
+		
 		for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 		{
 			if (input_pipes[FREQUENCY_PIPE] != null)
 			{
 				// TODO: Make detune work in half-tone percentage and so dependent on frequency
-				set_frequency(input_pipes[FREQUENCY_PIPE].inner_buffer[i] + detune);
+				set_frequency(input_pipes[FREQUENCY_PIPE].get_pipe(channel)[0][i] + detune);
 			}
 			if (input_pipes[PHASE_PIPE] != null)
 			{
-				set_phase(input_pipes[PHASE_PIPE].inner_buffer[i]);
+				set_phase(input_pipes[PHASE_PIPE].get_pipe(channel)[0][i]);
 			}
 			current_position += frequency * 1/Constants.SAMPLING_RATE;
-			// FIXME: Find a way to make this entire method cleaner and more efficient by restructuring stuff
 			while (Math.abs(current_position) > 1)
 			{
 				current_position -= Math.signum(current_position);
 			}
 
-			output_pipes[OUTPUT_PIPE].inner_buffer[i] = get_value(current_position) * amplitude;
+			output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = get_value(current_position) * amplitude;
+			if (output_pipes[OUTPUT_PIPE].get_type() == Constants.STEREO)
+			{
+				output_pipes[OUTPUT_PIPE].get_pipe(channel)[1][i] = output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i];
+			}
 		}
 	}
 	

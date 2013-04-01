@@ -29,17 +29,35 @@ public class RangeModifier extends Module
 	}
 
 	@Override
-	public void run()
+	public void run(int channel)
 	{
 		if (input_pipes[INPUT_PIPE] != null && output_pipes[OUTPUT_PIPE] != null)
 		{
+			if (input_pipes[INPUT_PIPE].get_type() != output_pipes[OUTPUT_PIPE].get_type())
+			{
+				System.out.println("Error in RangeModifier "+index+"; Input and output pipes have different types.");
+			}
 			double ratio, offset;
 			ratio = (range_out[1] - range_out[0]) / (range_in[1] - range_in[0]);
 			offset = range_out[0] - (range_in[0] * ratio);
-			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
+			if (input_pipes[INPUT_PIPE].get_type() == Engine.Constants.MONO)
 			{
-				output_pipes[OUTPUT_PIPE].inner_buffer[i] = ratio * input_pipes[INPUT_PIPE].inner_buffer[i] + offset;
+				// Mono
+				for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
+				{
+					output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = ratio * input_pipes[INPUT_PIPE].get_pipe(channel)[0][i] + offset;
+				}
 			}
+			else
+			{
+				// Stereo
+				for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
+				{
+					output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = ratio * input_pipes[INPUT_PIPE].get_pipe(channel)[0][i] + offset;
+					output_pipes[OUTPUT_PIPE].get_pipe(channel)[1][i] = ratio * input_pipes[INPUT_PIPE].get_pipe(channel)[1][i] + offset;
+				}
+			}
+
 		}
 	}
 

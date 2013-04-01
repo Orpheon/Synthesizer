@@ -9,6 +9,7 @@ public abstract class Pipe
 	private Module input;
 	private Module output;
 	
+	public double[][][] inner_buffers;
 	public double[] activation_times = new double[Constants.NUM_CHANNELS];
 	
 	public Pipe()
@@ -48,5 +49,10 @@ public abstract class Pipe
 	public int get_type()
 	{
 		return type;
+	}
+	
+	public double[][] get_pipe(int channel)
+	{
+		return inner_buffers[channel];
 	}
 }

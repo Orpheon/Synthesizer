@@ -49,7 +49,7 @@ public class Merger extends Module
 	}
 
 	@Override
-	public void run()
+	public void run(int channel)
 	{
 		if (output_pipes[OUTPUT_PIPE] != null)
 		{
@@ -65,11 +65,19 @@ public class Merger extends Module
 						{
 							if (input_pipes[j] != null)
 							{
-								sum += input_pipes[j].inner_buffer[i];
+								sum += input_pipes[j].get_pipe(channel)[0][i];
+								if (input_pipes[j].get_type() == Constants.STEREO)
+								{
+									sum += input_pipes[j].get_pipe(channel)[1][i];
+								}
 							}
 						}
 						// Don't forget to normalize from -1 to 1 again
-						output_pipes[OUTPUT_PIPE].inner_buffer[i] = sum / NUM_INPUT_PIPES;
+						output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = sum / NUM_INPUT_PIPES;
+						if (output_pipes[OUTPUT_PIPE].get_type() == Constants.STEREO)
+						{
+							output_pipes[OUTPUT_PIPE].get_pipe(channel)[1][i] = sum / NUM_INPUT_PIPES;
+						}
 					}
 					break;
 					
@@ -82,10 +90,18 @@ public class Merger extends Module
 						{
 							if (input_pipes[j] != null)
 							{
-								product *= input_pipes[j].inner_buffer[i];
+								product *= input_pipes[j].get_pipe(channel)[0][i];
+								if (input_pipes[j].get_type() == Constants.STEREO)
+								{
+									product *= input_pipes[j].get_pipe(channel)[1][i];
+								}
 							}
 						}
-						output_pipes[OUTPUT_PIPE].inner_buffer[i] = product;
+						output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = product;
+						if (output_pipes[OUTPUT_PIPE].get_type() == Constants.STEREO)
+						{
+							output_pipes[OUTPUT_PIPE].get_pipe(channel)[1][i] = product;
+						}
 					}
 					break;
 					
