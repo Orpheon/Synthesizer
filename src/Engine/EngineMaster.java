@@ -74,13 +74,13 @@ public class EngineMaster
     			while (true)
     			{
 	    			// Run the entire chain of events
-	    			main_container.run();
+	    			main_container.run(0);
 	    			byte[] tmp;
 	    			int counter=0;
 	    			
 	    			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 	    			{
-	    				tmp = Functions.convert_to_16bit_bytearray(global_volume * main_container.get_inner_output_pipe(0).inner_buffer[i]);
+	    				tmp = Functions.convert_to_16bit_bytearray(global_volume * main_container.get_inner_output_pipe(0).get_pipe(0)[0][i]);
 	    				System.arraycopy(tmp, 0, sound_buffer, counter, 2);
 	    				counter += 2;
 	    			}
@@ -127,7 +127,7 @@ public class EngineMaster
     	for (int i=0; i<Constants.SNAPSHOT_SIZE; i++)
     	{
     		main_container.get_inner_input_pipe(0).activation_times[0] = 0;
-    		main_container.get_inner_input_pipe(0).get_pipe(0)[i] = frequency;
+    		main_container.get_inner_input_pipe(0).get_pipe(0)[0][i] = frequency;
     	}
     }
     
