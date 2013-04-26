@@ -20,7 +20,7 @@ public class Copyer extends Module
 		
 		module_type = Engine.Constants.MODULE_COPYER;
 		
-		MODULE_NAME = "Splitter";
+		MODULE_NAME = "Copyer";
 	}
 	
 	public Copyer(Container container, int num_outputs)
@@ -33,7 +33,7 @@ public class Copyer extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
-		MODULE_NAME = "Splitter";
+		MODULE_NAME = "Copyer";
 	}
 
 	@Override
