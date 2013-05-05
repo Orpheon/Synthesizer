@@ -38,6 +38,25 @@ public abstract class Module
 		index = counter++;
 	}
 	
+	public void run()
+	{
+		for (int i=0; i<Constants.NUM_CHANNELS; i++)
+		{
+			for (int j=0; j<NUM_INPUT_PIPES; j++)
+			{
+				if (input_pipes[j].activation_times[i] >= 0)
+				{
+					this.run(i);
+					for (int k=0; k<NUM_OUTPUT_PIPES; k++)
+					{
+						output_pipes[k].activation_times[i] = input_pipes[j].activation_times[i];
+					}
+					break;
+				}
+			}
+		}
+	}
+	
 	public boolean connect_input(Pipe pipe, int position)
 	{
 		if (position >= NUM_INPUT_PIPES)

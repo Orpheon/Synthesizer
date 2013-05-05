@@ -48,60 +48,64 @@ public class Container extends Module
 		MODULE_NAME = "Container";
 	}
 	
-	@Override
-	public void run(int channel)
+	public void run()
 	{
-		for (int i=0; i<NUM_INPUT_PIPES; i++)
+		for (int channel = 0; channel < Constants.NUM_CHANNELS; channel++)
 		{
-			if (input_pipes[i] != null && inner_input_pipes[i] != null)
+			for (int i=0; i<NUM_INPUT_PIPES; i++)
 			{
-				if (input_pipes[i].get_type() != inner_input_pipes[i].get_type())
+				if (input_pipes[i] != null && inner_input_pipes[i] != null)
 				{
-					System.out.println("Error in Container "+index+"; incoming I/O Pipes "+i+" are incompatible.");
-					continue;
-				}
+					if (input_pipes[i].get_type() != inner_input_pipes[i].get_type())
+					{
+						System.out.println("Error in Container "+index+"; incoming I/O Pipes "+i+" are incompatible.");
+						continue;
+					}
 
-				if (input_pipes[i].activation_times[channel] < 0)
-				{
-					// Nothing is going on in this channel yet
-					continue;
-				}
-				
-				System.arraycopy(input_pipes[i].get_pipe(channel)[0], 0, inner_input_pipes[i].get_pipe(channel)[0], 0, Engine.Constants.SNAPSHOT_SIZE);
-				if (input_pipes[i].get_type() == Constants.STEREO)
-				{
-					System.arraycopy(input_pipes[i].get_pipe(channel)[1], 0, inner_input_pipes[i].get_pipe(channel)[1], 0, Engine.Constants.SNAPSHOT_SIZE);
-				}
+					if (input_pipes[i].activation_times[channel] < 0)
+					{
+						// Nothing is going on in this channel yet
+						continue;
+					}
+					
+					System.arraycopy(input_pipes[i].get_pipe(channel)[0], 0, inner_input_pipes[i].get_pipe(channel)[0], 0, Engine.Constants.SNAPSHOT_SIZE);
+					if (input_pipes[i].get_type() == Constants.STEREO)
+					{
+						System.arraycopy(input_pipes[i].get_pipe(channel)[1], 0, inner_input_pipes[i].get_pipe(channel)[1], 0, Engine.Constants.SNAPSHOT_SIZE);
+					}
 
-				inner_input_pipes[i].activation_times[channel] = input_pipes[i].activation_times[channel];
-				
+					inner_input_pipes[i].activation_times[channel] = input_pipes[i].activation_times[channel];
+					
+				}
 			}
 		}
 		
 		// TODO: Use iterators here
 		for (int i=0; i<module_list.size(); i++)
 		{
-			module_list.get(i).run(channel);
+			module_list.get(i).run();
 		}
 		
-		for (int i=0; i<NUM_OUTPUT_PIPES; i++)
+		for (int channel = 0; channel < Constants.NUM_CHANNELS; channel++)
 		{
-			if (output_pipes[i] != null && inner_output_pipes[i] != null)
+			for (int i=0; i<NUM_OUTPUT_PIPES; i++)
 			{
-				if (output_pipes[i].get_type() != inner_output_pipes[i].get_type())
+				if (output_pipes[i] != null && inner_output_pipes[i] != null)
 				{
-					System.out.println("Error in Container "+index+"; outgoing I/O Pipes "+i+" are incompatible.");
-					continue;
+					if (output_pipes[i].get_type() != inner_output_pipes[i].get_type())
+					{
+						System.out.println("Error in Container "+index+"; outgoing I/O Pipes "+i+" are incompatible.");
+						continue;
+					}
+					
+					System.arraycopy(inner_output_pipes[i].get_pipe(channel)[0], 0, output_pipes[i].get_pipe(channel)[0], 0, Engine.Constants.SNAPSHOT_SIZE);
+					if (input_pipes[i].get_type() == Constants.STEREO)
+					{
+						System.arraycopy(inner_output_pipes[i].get_pipe(channel)[1], 0, output_pipes[i].get_pipe(channel)[1], 0, Engine.Constants.SNAPSHOT_SIZE);
+					}
+					
+					output_pipes[i].activation_times[channel] = inner_output_pipes[i].activation_times[channel];
 				}
-				
-				
-				System.arraycopy(inner_output_pipes[i].get_pipe(channel)[0], 0, output_pipes[i].get_pipe(channel)[0], 0, Engine.Constants.SNAPSHOT_SIZE);
-				if (input_pipes[i].get_type() == Constants.STEREO)
-				{
-					System.arraycopy(inner_output_pipes[i].get_pipe(channel)[1], 0, output_pipes[i].get_pipe(channel)[1], 0, Engine.Constants.SNAPSHOT_SIZE);
-				}
-				
-				output_pipes[i].activation_times[channel] = inner_output_pipes[i].activation_times[channel];
 			}
 		}
 	}
@@ -375,5 +379,13 @@ public class Container extends Module
     	}
     	
     	container.remove_module(this);
+	}
+
+	@Override
+	public void run(int channel)
+	{
+		// TODO Auto-generated method stub
+		// TODO: Find out how to get rid of this
+		System.out.println("ERROR: run(int channel) method executed on container; this should never happen.");
 	}
 }

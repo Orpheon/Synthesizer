@@ -87,29 +87,15 @@ public class Main
 		 */
 		
 		// Hardcoded situation
-		Modules.Copyer source = (Modules.Copyer) engine.add_module(Engine.Constants.MODULE_COPYER);
-		source.set_num_outputs(3);
-		engine.connect_modules(engine.main_container, 0, source, 0, false);
+		Modules.Oscillator osc;
+		osc = (Modules.Oscillator) engine.add_module(Engine.Constants.MODULE_OSCILLATOR);
+		
+		osc.set_osctype(Modules.Oscillator.SINE_WAVE);
+		
+		engine.connect_modules(engine.main_container, 0, osc, Modules.Oscillator.FREQUENCY_PIPE, false);
+		engine.connect_modules(osc, Modules.Oscillator.OUTPUT_PIPE, engine.main_container, 0, false);
 
-		Modules.Oscillator osc1, osc2, osc3;
-		osc1 = (Modules.Oscillator) engine.add_module(Engine.Constants.MODULE_OSCILLATOR);
-		osc2 = (Modules.Oscillator) engine.add_module(Engine.Constants.MODULE_OSCILLATOR);
-		osc3 = (Modules.Oscillator) engine.add_module(Engine.Constants.MODULE_OSCILLATOR);
-		
-		osc1.set_osctype(Modules.Oscillator.SINE_WAVE);
-		osc2.set_osctype(Modules.Oscillator.SINE_WAVE);
-		osc3.set_osctype(Modules.Oscillator.SINE_WAVE);
-		
-		engine.connect_modules(source, 0, osc1, Modules.Oscillator.FREQUENCY_PIPE, false);
-		engine.connect_modules(osc1, Modules.Oscillator.OUTPUT_PIPE, engine.main_container, 0, false);
-		
-		engine.connect_modules(source, 1, osc2, Modules.Oscillator.FREQUENCY_PIPE, false);
-		engine.connect_modules(osc2, Modules.Oscillator.OUTPUT_PIPE, engine.main_container, 0, false);
-		
-		engine.connect_modules(source, 2, osc3, Modules.Oscillator.FREQUENCY_PIPE, false);
-		engine.connect_modules(osc3, Modules.Oscillator.OUTPUT_PIPE, engine.main_container, 0, false);
-
-		engine.set_frequency(440);
+		engine.set_frequency(440, 523.25, 659.26); // A C E (Am chord)
 		engine.start_playing();
 		while (true)
 		{

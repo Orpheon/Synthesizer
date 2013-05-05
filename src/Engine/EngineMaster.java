@@ -74,7 +74,7 @@ public class EngineMaster
     			while (true)
     			{
 	    			// Run the entire chain of events
-	    			main_container.run(0);
+	    			main_container.run();
 	    			byte[] tmp;
 	    			int counter=0;
 	    			
@@ -121,13 +121,17 @@ public class EngineMaster
     	main_container.connect_modules(module_1, out_port, module_2, in_port, stereo);
     }
     
-    public void set_frequency(double frequency)
+    public void set_frequency(double f1, double f2, double f3)
     {
     	// TODO: Another thing that's going to have to disappear when GUI is here.
     	for (int i=0; i<Constants.SNAPSHOT_SIZE; i++)
     	{
     		main_container.get_inner_input_pipe(0).activation_times[0] = 0;
-    		main_container.get_inner_input_pipe(0).get_pipe(0)[0][i] = frequency;
+    		main_container.get_inner_input_pipe(0).get_pipe(0)[0][i] = f1;
+    		main_container.get_inner_input_pipe(0).activation_times[1] = 0;
+    		main_container.get_inner_input_pipe(0).get_pipe(1)[0][i] = f2;
+    		main_container.get_inner_input_pipe(0).activation_times[2] = 0;
+    		main_container.get_inner_input_pipe(0).get_pipe(2)[0][i] = f3;
     	}
     }
     
