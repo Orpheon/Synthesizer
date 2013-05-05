@@ -82,6 +82,10 @@ public class Main
 	{
 		Engine.EngineMaster engine = new Engine.EngineMaster();
 		
+		/* NOTE:
+		 * If you cannot hear anything, try setting global_volume to 1 in line 22 of EngineMaster.
+		 */
+		
 		// Hardcoded situation
 		Modules.Copyer source = (Modules.Copyer) engine.add_module(Engine.Constants.MODULE_COPYER);
 		source.set_num_outputs(3);

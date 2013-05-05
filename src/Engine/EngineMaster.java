@@ -19,7 +19,7 @@ public class EngineMaster
 	private int sound_buffer_position = sound_buffer.length;
 	
 	private boolean is_playing;
-	private double global_volume = 1;
+	private double global_volume = 0.15;
 	
 	// FIXME: Should be private but can't if a window can't touch it
 	public Container main_container;
