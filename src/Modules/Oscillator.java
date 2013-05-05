@@ -39,6 +39,17 @@ public class Oscillator extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
+		input_pipe_types = new int[NUM_INPUT_PIPES];
+		for (int i=0; i<NUM_INPUT_PIPES; i++)
+		{
+			input_pipe_types[i] = Constants.MONO;
+		}
+		output_pipe_types = new int[NUM_OUTPUT_PIPES];
+		for (int i=0; i<NUM_OUTPUT_PIPES; i++)
+		{
+			output_pipe_types[i] = Constants.MONO;
+		}
+		
 		module_type = Engine.Constants.MODULE_OSCILLATOR;
 		
 		MODULE_NAME = "Oscillator";
@@ -60,6 +71,17 @@ public class Oscillator extends Module
 		
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
+		
+		input_pipe_types = new int[NUM_INPUT_PIPES];
+		for (int i=0; i<NUM_INPUT_PIPES; i++)
+		{
+			input_pipe_types[i] = Constants.MONO;
+		}
+		output_pipe_types = new int[NUM_OUTPUT_PIPES];
+		for (int i=0; i<NUM_OUTPUT_PIPES; i++)
+		{
+			output_pipe_types[i] = Constants.MONO;
+		}
 		
 		current_position = 0.0;
 		
@@ -86,27 +108,30 @@ public class Oscillator extends Module
 			}
 		}
 		
-		for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
+		if (output_pipes[OUTPUT_PIPE] != null)
 		{
-			if (input_pipes[FREQUENCY_PIPE] != null)
+			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 			{
-				// TODO: Make detune work in half-tone percentage and so dependent on frequency
-				set_frequency(input_pipes[FREQUENCY_PIPE].get_pipe(channel)[0][i] + detune);
-			}
-			if (input_pipes[PHASE_PIPE] != null)
-			{
-				set_phase(input_pipes[PHASE_PIPE].get_pipe(channel)[0][i]);
-			}
-			current_position += frequency * 1/Constants.SAMPLING_RATE;
-			while (Math.abs(current_position) > 1)
-			{
-				current_position -= Math.signum(current_position);
-			}
+				if (input_pipes[FREQUENCY_PIPE] != null)
+				{
+					// TODO: Make detune work in half-tone percentage and so dependent on frequency
+					set_frequency(input_pipes[FREQUENCY_PIPE].get_pipe(channel)[0][i] + detune);
+				}
+				if (input_pipes[PHASE_PIPE] != null)
+				{
+					set_phase(input_pipes[PHASE_PIPE].get_pipe(channel)[0][i]);
+				}
+				current_position += frequency * 1/Constants.SAMPLING_RATE;
+				while (Math.abs(current_position) > 1)
+				{
+					current_position -= Math.signum(current_position);
+				}
 
-			output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = get_value(current_position) * amplitude;
-			if (output_pipes[OUTPUT_PIPE].get_type() == Constants.STEREO)
-			{
-				output_pipes[OUTPUT_PIPE].get_pipe(channel)[1][i] = output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i];
+				output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = get_value(current_position) * amplitude;
+				if (output_pipes[OUTPUT_PIPE].get_type() == Constants.STEREO)
+				{
+					output_pipes[OUTPUT_PIPE].get_pipe(channel)[1][i] = output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i];
+				}
 			}
 		}
 	}

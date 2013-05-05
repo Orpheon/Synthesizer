@@ -15,6 +15,8 @@ public abstract class Module
 	public int NUM_OUTPUT_PIPES;
 	protected Pipe[] input_pipes;
 	protected Pipe[] output_pipes;
+	protected int[] input_pipe_types;
+	protected int[] output_pipe_types;
 	
 	protected static int counter;
 	protected int index;
@@ -42,8 +44,15 @@ public abstract class Module
 		{
 			// Trying to connect a cable to an invalid port.
 			// Don't allow this
-			System.out.println("ERROR: Tried to connect a pipe "+pipe.get_index()+" to an invalid input port "+position+" to Module number "+index+" of type "+module_type+".");
+			System.out.println("ERROR: Tried to connect pipe "+pipe.get_index()+" to an invalid input port "+position+" to Module number "+index+" of type "+module_type+".");
 			// Just return false
+			return false;
+		}
+
+		if (input_pipe_types[position] != 0 && input_pipe_types[position] != pipe.type)
+		{
+			// This type of pipe cannot be connected to this input
+			System.out.println("ERROR: Tried to connect pipe "+pipe.get_index()+" to an input port "+position+" of "+MODULE_NAME+" of different type (pipe:"+pipe.type+", port:"+input_pipe_types[position]+").");
 			return false;
 		}
 		
@@ -69,8 +78,15 @@ public abstract class Module
 		{
 			// Trying to connect a cable to an invalid port.
 			// Don't allow this
-			System.out.println("ERROR: Tried to connect a pipe "+pipe.get_index()+" to an invalid output port "+position+" to Module number "+index+" of type "+module_type+".");
+			System.out.println("ERROR: Tried to connect pipe "+pipe.get_index()+" to an invalid output port "+position+" to Module number "+index+" of type "+module_type+".");
 			// Just return false
+			return false;
+		}
+		
+		if (output_pipe_types[position] != 0 && output_pipe_types[position] != pipe.type)
+		{
+			// This type of pipe cannot be connected to this output
+			System.out.println("ERROR: Tried to connect pipe "+pipe.get_index()+" to an output port "+position+" of "+MODULE_NAME+" of different type (pipe:"+pipe.type+", port:"+output_pipe_types[position]+").");
 			return false;
 		}
 		

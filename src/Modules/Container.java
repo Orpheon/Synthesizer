@@ -38,6 +38,9 @@ public class Container extends Module
 		inner_input_pipes = new Pipe[NUM_INPUT_PIPES];
 		inner_output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
+		input_pipe_types = new int[NUM_INPUT_PIPES];
+		output_pipe_types = new int[NUM_OUTPUT_PIPES];
+		
 		module_type = Constants.MODULE_CONTAINER;
 		
 		module_list = new LinkedList<Engine.Module>();

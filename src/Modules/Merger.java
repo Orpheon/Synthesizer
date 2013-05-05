@@ -30,6 +30,9 @@ public class Merger extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
+		input_pipe_types = new int[NUM_INPUT_PIPES];
+		output_pipe_types = new int[NUM_OUTPUT_PIPES];
+		
 		module_type = Engine.Constants.MODULE_MERGER;
 		
 		MODULE_NAME = "Merger";
@@ -44,6 +47,15 @@ public class Merger extends Module
 		
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
+		
+		input_pipe_types = new int[NUM_INPUT_PIPES];
+		for (int i=0; i<NUM_INPUT_PIPES; i++)
+		{
+			input_pipe_types[i] = Constants.MONO;
+		}
+		output_pipe_types = new int[NUM_OUTPUT_PIPES];
+		
+		module_type = Engine.Constants.MODULE_MERGER;
 		
 		MODULE_NAME = "Merger";
 	}

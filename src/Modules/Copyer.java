@@ -18,6 +18,9 @@ public class Copyer extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
+		input_pipe_types = new int[NUM_INPUT_PIPES];
+		output_pipe_types = new int[NUM_OUTPUT_PIPES];
+		
 		module_type = Engine.Constants.MODULE_COPYER;
 		
 		MODULE_NAME = "Copyer";
@@ -32,6 +35,9 @@ public class Copyer extends Module
 		
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
+		
+		input_pipe_types = new int[NUM_INPUT_PIPES];
+		output_pipe_types = new int[NUM_OUTPUT_PIPES];
 		
 		MODULE_NAME = "Copyer";
 	}
@@ -87,6 +93,7 @@ public class Copyer extends Module
 			Pipe[] tmp = new Pipe[NUM_OUTPUT_PIPES];
 			System.arraycopy(output_pipes, 0, tmp, 0, Math.min(output_pipes.length, NUM_OUTPUT_PIPES));
 			output_pipes = tmp;
+			output_pipe_types = new int[NUM_OUTPUT_PIPES];
 		}
 	}
 }

@@ -17,8 +17,12 @@ public class RangeModifier extends Module
 		
 		NUM_INPUT_PIPES = 1;
 		NUM_OUTPUT_PIPES = 1;
+		
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
+		
+		input_pipe_types = new int[NUM_INPUT_PIPES];
+		output_pipe_types = new int[NUM_OUTPUT_PIPES];
 		
 		module_type = Engine.Constants.MODULE_RANGEMODIFIER;
 		

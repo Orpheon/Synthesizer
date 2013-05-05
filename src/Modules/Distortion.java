@@ -15,6 +15,10 @@ public abstract class Distortion extends Module
 
 		module_type = Engine.Constants.MODULE_DISTORTION;
 		MODULE_NAME = "Default Distortion";
+		
+		input_pipe_types = new int[NUM_INPUT_PIPES];
+		input_pipe_types[INPUT_PIPE] = Constants.MONO;
+		output_pipe_types = new int[NUM_OUTPUT_PIPES];
 	}
 
 	@Override
