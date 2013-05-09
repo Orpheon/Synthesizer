@@ -5,26 +5,30 @@ package Engine;
 
 import Modules.Container;
 
-/**
+/*
  * @author orpheon
- *
+ * This class is the baseline Module class. It contains everything which every module should have, and cannot be instanciated.
  */
 public abstract class Module
 {
+	// Constants that hold the number of in and out pipes
 	public int NUM_INPUT_PIPES;
 	public int NUM_OUTPUT_PIPES;
+	// The actual pipe arrays that hold those pipes
 	protected Pipe[] input_pipes;
 	protected Pipe[] output_pipes;
+	// Arrays determining what pipe types are even allowed (1 for MONO, 2 for STEREO, 0 for both)
 	protected int[] input_pipe_types;
 	protected int[] output_pipe_types;
-	
+	// ID system to provide each module with an identifier
 	protected static int counter;
 	protected int index;
-	
+	// Constant holding what type of module it actually is
 	protected int module_type;
-	
+	// A string doing the same as the above constant, but in a human-readable form
 	public String MODULE_NAME;
 
+	// This makes a module actually do whatever it's supposed to do on it's inputs and write to it's outputs
 	public abstract void run(int channel);
 	
 	public Module(Container container)
@@ -40,6 +44,8 @@ public abstract class Module
 	
 	public void run()
 	{
+		// We check every channel, and if there's an input pipe that's active on that channel we execute the run(channel) method to calculate the output
+		// FIXME: Think of a good solution if the input pipes don't agree on the activation times
 		for (int i=0; i<Constants.NUM_CHANNELS; i++)
 		{
 			for (int j=0; j<NUM_INPUT_PIPES; j++)

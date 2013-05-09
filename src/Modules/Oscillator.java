@@ -13,6 +13,7 @@ public class Oscillator extends Module
 	private double frequency = 1;
 	private double phase_offset = 0.0;
 	private double amplitude = 1.0;
+	// FIXME: Not sure if this variable has any right to exist
 	private double detune = 0;
 	
 	private double period = Engine.Constants.pi_times_2;
@@ -39,6 +40,7 @@ public class Oscillator extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
+		// Both inputs and outputs are all MONO
 		input_pipe_types = new int[NUM_INPUT_PIPES];
 		for (int i=0; i<NUM_INPUT_PIPES; i++)
 		{
@@ -56,7 +58,6 @@ public class Oscillator extends Module
 		
 		current_position = 0.0;
 		set_frequency(frequency);
-		set_period(1/frequency);
 		set_phase(phase_offset);
 		set_detune(detune);
 		set_osctype(osc_type);
@@ -72,6 +73,7 @@ public class Oscillator extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
+		// Both inputs and outputs are all MONO
 		input_pipe_types = new int[NUM_INPUT_PIPES];
 		for (int i=0; i<NUM_INPUT_PIPES; i++)
 		{
@@ -92,6 +94,7 @@ public class Oscillator extends Module
 
 	public void run(int channel)
 	{
+		// Set the frequency to whatever the frequency input pipe wants, if it exists
 		if (input_pipes[FREQUENCY_PIPE] != null)
 		{
 			if (input_pipes[FREQUENCY_PIPE].get_type() != Constants.MONO)
@@ -100,6 +103,7 @@ public class Oscillator extends Module
 			}
 		}
 		
+		// Ditto for the phase
 		if (input_pipes[PHASE_PIPE] != null)
 		{
 			if (input_pipes[PHASE_PIPE].get_type() != Constants.MONO)
@@ -108,25 +112,31 @@ public class Oscillator extends Module
 			}
 		}
 		
+		// If we can actually output anything
 		if (output_pipes[OUTPUT_PIPE] != null)
 		{
 			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 			{
+				// If we have freq input, then set out freq to that and add in detuning
 				if (input_pipes[FREQUENCY_PIPE] != null)
 				{
 					// TODO: Make detune work in half-tone percentage and so dependent on frequency
 					set_frequency(input_pipes[FREQUENCY_PIPE].get_pipe(channel)[0][i] + detune);
 				}
+				// Same for phase
 				if (input_pipes[PHASE_PIPE] != null)
 				{
 					set_phase(input_pipes[PHASE_PIPE].get_pipe(channel)[0][i]);
 				}
+				// Calculate what position of our wave we have to sample, thus already taking in count the frequency
 				current_position += frequency * 1/Constants.SAMPLING_RATE;
+				// All waves are periodic, that's a good thing
 				while (Math.abs(current_position) > 1)
 				{
 					current_position -= Math.signum(current_position);
 				}
 
+				// We sample at that position, multiply it with the amplitude and write it in the output
 				output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = get_value(current_position) * amplitude;
 				if (output_pipes[OUTPUT_PIPE].get_type() == Constants.STEREO)
 				{
@@ -138,6 +148,8 @@ public class Oscillator extends Module
 	
 	protected double get_value(double position)
 	{
+		// Sampling at a certain position
+		// TODO: Make anti-aliased saws and squares
 		switch (osc_type)
 		{
 			case SINE_WAVE:

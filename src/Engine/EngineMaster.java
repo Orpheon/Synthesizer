@@ -7,21 +7,23 @@ import javax.sound.sampled.SourceDataLine;
 
 import Modules.Container;
 
-/**
+/*
  * @author orpheon
- *
+ * This class contains the entire audio generating structure, and also handles output and input (although the latter should change someday)
  */
 public class EngineMaster
 {
+	// The line on which sound will be outputted
 	private javax.sound.sampled.SourceDataLine line;
 	
+	// We generate audio in chunks that may not be what the system wants, so we need a buffer between
 	private byte[] sound_buffer = new byte[Engine.Constants.SAMPLE_SIZE * Engine.Constants.SNAPSHOT_SIZE];
 	private int sound_buffer_position = sound_buffer.length;
 	
 	private boolean is_playing;
 	private double global_volume = 0.15;
 	
-	// FIXME: Should be private but can't if a window can't touch it
+	// FIXME: Should be private but GUI windows need to access it
 	public Container main_container;
     
     /*
@@ -34,6 +36,7 @@ public class EngineMaster
 		//Open up audio output, using 44100hz sampl2ing rate, 16 bit samples, mono, signed and little endian byte ordering
 		AudioFormat format = new AudioFormat(Engine.Constants.SAMPLING_RATE, Engine.Constants.SAMPLE_SIZE*8, 1, true, false);
 		
+		// Start up the line
 		this.line = (SourceDataLine)AudioSystem.getSourceDataLine(format);
 		this.line.open(format);  
 		this.line.start();
@@ -73,11 +76,12 @@ public class EngineMaster
     		{
     			while (true)
     			{
-	    			// Run the entire chain of events
+	    			// Run the entire chain of events and generate another chunk of audio
 	    			main_container.run();
 	    			byte[] tmp;
 	    			int counter=0;
 	    			
+	    			// Copy this chunk to the sound buffer
 	    			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 	    			{
 	    				tmp = Functions.convert_to_16bit_bytearray(global_volume * main_container.get_inner_output_pipe(0).get_pipe(0)[0][i]);

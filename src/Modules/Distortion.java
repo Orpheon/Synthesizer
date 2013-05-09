@@ -30,6 +30,7 @@ public abstract class Distortion extends Module
 		}
 		else if (input_pipes[INPUT_PIPE].get_type() == Engine.Constants.STEREO)
 		{
+			// FIXME: This can be done much cleaner
 			// Stereo
 			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 			{

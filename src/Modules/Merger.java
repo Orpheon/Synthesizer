@@ -48,6 +48,7 @@ public class Merger extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
+		// All channels must be MONO
 		input_pipe_types = new int[NUM_INPUT_PIPES];
 		for (int i=0; i<NUM_INPUT_PIPES; i++)
 		{

@@ -3,6 +3,10 @@ package Modules;
 import Engine.Module;
 import Engine.Pipe;
 
+/*
+ * This class takes an array of data from one limit to another, and normalizes it to a different range
+ */
+
 public class RangeModifier extends Module
 {
 	private double[] range_in;
@@ -27,7 +31,7 @@ public class RangeModifier extends Module
 		module_type = Engine.Constants.MODULE_RANGEMODIFIER;
 		
 		MODULE_NAME = "Range Modifier";
-		
+		// To store the ranges involved
 		range_in = new double[2];
 		range_out = new double[2];
 	}
@@ -42,6 +46,7 @@ public class RangeModifier extends Module
 				System.out.println("Error in RangeModifier "+index+"; Input and output pipes have different types.");
 			}
 			double ratio, offset;
+			// Normalizing
 			ratio = (range_out[1] - range_out[0]) / (range_in[1] - range_in[0]);
 			offset = range_out[0] - (range_in[0] * ratio);
 			if (input_pipes[INPUT_PIPE].get_type() == Engine.Constants.MONO)

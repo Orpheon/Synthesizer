@@ -89,6 +89,8 @@ public class Copyer extends Module
 					}
 				}
 			}
+			// If we change the number of output connections to a higher one, we need to redefine output_pipes
+			// And also copy the current data to the new one
 			NUM_OUTPUT_PIPES = num;
 			Pipe[] tmp = new Pipe[NUM_OUTPUT_PIPES];
 			System.arraycopy(output_pipes, 0, tmp, 0, Math.min(output_pipes.length, NUM_OUTPUT_PIPES));

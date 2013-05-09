@@ -9,10 +9,18 @@ import Engine.Pipe;
 import Engine.StereoPipe;
 import Distortion.TanhDistortion;
 
+/*
+ * This class serves as a general container for modules. It is itself a module, but can hold an indefinite amount of modules and pipes in itself
+ * Hopefully things like copying and such will be supported later on, which makes this a very useful module type
+ * Also, EngineMaster.main_container which holds everything is an instance of this
+ */
+
 public class Container extends Module
 {
+	// The pipes with which modules inside the container can communicate with the outside world
 	private Pipe[] inner_input_pipes;
 	private Pipe[] inner_output_pipes;
+	// One needs to keep track of what modules are alive
 	private LinkedList<Engine.Module> module_list;
 	
 	public Container()
@@ -31,13 +39,14 @@ public class Container extends Module
 	{
 		NUM_INPUT_PIPES = 1;
 		NUM_OUTPUT_PIPES = 1;
-		
+		// Outside pipes (going to modules outside the container)
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
-
+		// Inner pipes (going to modules inside the container)
 		inner_input_pipes = new Pipe[NUM_INPUT_PIPES];
 		inner_output_pipes = new Pipe[NUM_OUTPUT_PIPES];
-		
+		// There is no reason to lock a pipe on MONO or STEREO, so these two arrays are only there for completeness.
+		// They are filled with 0s and thus ignored
 		input_pipe_types = new int[NUM_INPUT_PIPES];
 		output_pipe_types = new int[NUM_OUTPUT_PIPES];
 		
@@ -50,6 +59,10 @@ public class Container extends Module
 	
 	public void run()
 	{
+		// Containers work slightly differently than all other modules, and hence need their own run() function
+		
+		// We first go through all channels and check our outer input pipes.
+		// If they are active, we copy data from them to the corresponding inner input pipes.
 		for (int channel = 0; channel < Constants.NUM_CHANNELS; channel++)
 		{
 			for (int i=0; i<NUM_INPUT_PIPES; i++)
@@ -80,12 +93,14 @@ public class Container extends Module
 			}
 		}
 		
+		// Once input data is copied, we execute all modules inside the container
 		// TODO: Use iterators here
 		for (int i=0; i<module_list.size(); i++)
 		{
 			module_list.get(i).run();
 		}
 		
+		// Then we export the output data
 		for (int channel = 0; channel < Constants.NUM_CHANNELS; channel++)
 		{
 			for (int i=0; i<NUM_OUTPUT_PIPES; i++)
@@ -385,7 +400,7 @@ public class Container extends Module
 	public void run(int channel)
 	{
 		// TODO Auto-generated method stub
-		// TODO: Find out how to get rid of this
+		// TODO: Find out how to get rid of this. Since Modules is abstract and declares this function, I need to implement it
 		System.out.println("ERROR: run(int channel) method executed on container; this should never happen.");
 	}
 }

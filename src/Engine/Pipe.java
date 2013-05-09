@@ -2,18 +2,24 @@ package Engine;
 
 public abstract class Pipe
 {
+	// Identification system
 	private static int counter;
 	private int index;
+	// Holds either Constants.MONO or Constants.STEREO (1 or 2)
 	protected int type;
 	
+	// Handles to the modules at both ends of the pipe
 	private Module input;
 	private Module output;
 	
+	// The inner buffers holding the current sound data, in the format [NUMBER OF POLYPHONIC CHANNELS][STEREO/MONO][SNAPSHOT SIZE]
 	public double[][][] inner_buffers;
+	// Array holding the activation times of the different channels
 	public double[] activation_times = new double[Constants.NUM_CHANNELS];
 	
 	public Pipe()
 	{
+		// Deactivated channels can be marked with negative times, so first set everything to -1.
 		for (int i=0; i<activation_times.length; i++)
 		{
 			activation_times[i] = -1;
