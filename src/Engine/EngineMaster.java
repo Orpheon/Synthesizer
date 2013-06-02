@@ -23,6 +23,8 @@ public class EngineMaster
 	private boolean is_playing;
 	private double global_volume = 1;
 	
+	private long snapshot_counter = 0;
+	
 	// FIXME: Should be private but GUI windows need to access it
 	public Container main_container;
     

@@ -15,7 +15,7 @@ public abstract class Pipe
 	// The inner buffers holding the current sound data, in the format [NUMBER OF POLYPHONIC CHANNELS][STEREO/MONO][SNAPSHOT SIZE]
 	public double[][][] inner_buffers;
 	// Array holding the activation times of the different channels
-	public double[] activation_times = new double[Constants.NUM_CHANNELS];
+	public long[] activation_times = new long[Constants.NUM_CHANNELS];
 	
 	public Pipe()
 	{
