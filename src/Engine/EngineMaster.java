@@ -21,7 +21,7 @@ public class EngineMaster
 	private int sound_buffer_position = sound_buffer.length;
 	
 	private boolean is_playing;
-	private double global_volume = 0.15;
+	private double global_volume = 1;
 	
 	// FIXME: Should be private but GUI windows need to access it
 	public Container main_container;
