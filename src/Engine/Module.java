@@ -50,6 +50,10 @@ public abstract class Module
 		{
 			for (int j=0; j<NUM_INPUT_PIPES; j++)
 			{
+				if (input_pipes[j] == null)
+				{
+					continue;
+				}
 				if (input_pipes[j].activation_times[i] >= 0)
 				{
 					this.run(i);

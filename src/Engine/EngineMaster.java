@@ -77,14 +77,54 @@ public class EngineMaster
     			while (true)
     			{
 	    			// Run the entire chain of events and generate another chunk of audio
+    				snapshot_counter++;
 	    			main_container.run();
 	    			byte[] tmp;
 	    			int counter=0;
+	    			double sum=0;
+	    			boolean[] channel_active = new boolean[Engine.Constants.NUM_CHANNELS];
+	    			int num_channels_active = 0;
+	    			
+	    			// Check how many channels actually are outputting
+	    			for (int channel=0; channel<Engine.Constants.NUM_CHANNELS; channel++)
+	    			{
+	    				if (main_container.get_inner_output_pipe(0).activation_times[channel] >= 0)
+	    				{
+	    					channel_active[channel] = true;
+	    					num_channels_active++;
+	    				}
+	    				else
+	    				{
+	    					channel_active[channel] = false;
+	    				}
+	    			}
+	    			
+	    			// DEBUGTOOL
+	    			int c=0;
+	    			for (int i=0; i<3; i++)
+	    			{
+	    				byte[] b = new byte[2*Engine.Constants.SNAPSHOT_SIZE];
+	    				for (int j=0; j<Engine.Constants.SNAPSHOT_SIZE; j++)
+	    				{
+		    				tmp = Functions.convert_to_16bit_bytearray(main_container.get_inner_output_pipe(0).get_pipe(i)[0][j]);
+		    				System.arraycopy(tmp, 0, b, c, 2);
+		    				counter += 2;
+	    				}
+	    				Functions.array_write(b, "Buffer output "+i);
+	    			}
 	    			
 	    			// Copy this chunk to the sound buffer
 	    			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 	    			{
-	    				tmp = Functions.convert_to_16bit_bytearray(global_volume * main_container.get_inner_output_pipe(0).get_pipe(0)[0][i]);
+	    				sum = 0;
+	    				for (int channel=0; channel<Engine.Constants.NUM_CHANNELS; channel++)
+	    				{
+	    					if (channel_active[channel])
+	    					{
+	    						sum += global_volume * main_container.get_inner_output_pipe(0).get_pipe(channel)[0][i];
+	    					}
+	    				}
+	    				tmp = Functions.convert_to_16bit_bytearray(sum/num_channels_active);
 	    				System.arraycopy(tmp, 0, sound_buffer, counter, 2);
 	    				counter += 2;
 	    			}
