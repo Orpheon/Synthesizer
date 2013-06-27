@@ -101,19 +101,19 @@ public class EngineMaster
 	    				}
 	    			}
 	    			
-	    			// DEBUGTOOL
-	    			int c=0;
-	    			for (int i=0; i<3; i++)
-	    			{
-	    				byte[] b = new byte[2*Engine.Constants.SNAPSHOT_SIZE];
-	    				for (int j=0; j<Engine.Constants.SNAPSHOT_SIZE; j++)
-	    				{
-		    				tmp = Functions.convert_to_16bit_bytearray(main_container.get_inner_output_pipe(0).get_pipe(i)[0][j]);
-		    				System.arraycopy(tmp, 0, b, c, 2);
-		    				counter += 2;
-	    				}
-	    				Functions.array_write(b, "Buffer output "+i);
-	    			}
+//	    			// DEBUGTOOL
+//	    			int c=0;
+//	    			for (int i=0; i<3; i++)
+//	    			{
+//	    				byte[] b = new byte[2*Engine.Constants.SNAPSHOT_SIZE];
+//	    				for (int j=0; j<Engine.Constants.SNAPSHOT_SIZE; j++)
+//	    				{
+//		    				tmp = Functions.convert_to_16bit_bytearray(main_container.get_inner_output_pipe(0).get_pipe(i)[0][j]);
+//		    				System.arraycopy(tmp, 0, b, c, 2);
+//		    				counter += 2;
+//	    				}
+//	    				Functions.array_write(b, "Buffer output "+i);
+//	    			}
 	    			
 	    			// Copy this chunk to the sound buffer
 	    			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
