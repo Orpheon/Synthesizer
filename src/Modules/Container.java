@@ -57,7 +57,7 @@ public class Container extends Module
 		MODULE_NAME = "Container";
 	}
 	
-	public void run()
+	public void run(Engine.EngineMaster engine)
 	{
 		// Containers work slightly differently than all other modules, and hence need their own run() function
 		
@@ -97,7 +97,7 @@ public class Container extends Module
 		// TODO: Use iterators here
 		for (int i=0; i<module_list.size(); i++)
 		{
-			module_list.get(i).run();
+			module_list.get(i).run(engine);
 		}
 		
 		// Then we export the output data
@@ -397,7 +397,7 @@ public class Container extends Module
 	}
 
 	@Override
-	public void run(int channel)
+	public void run(Engine.EngineMaster engine, int channel)
 	{
 		// TODO Auto-generated method stub
 		// TODO: Find out how to get rid of this. Since Modules is abstract and declares this function, I need to implement it

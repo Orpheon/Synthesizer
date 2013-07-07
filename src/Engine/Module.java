@@ -29,7 +29,7 @@ public abstract class Module
 	public String MODULE_NAME;
 
 	// This makes a module actually do whatever it's supposed to do on it's inputs and write to it's outputs
-	public abstract void run(int channel);
+	public abstract void run(Engine.EngineMaster engine, int channel);
 	
 	public Module(Container container)
 	{
@@ -42,7 +42,7 @@ public abstract class Module
 		index = counter++;
 	}
 	
-	public void run()
+	public void run(Engine.EngineMaster engine)
 	{
 		// We check every channel, and if there's an input pipe that's active on that channel we execute the run(channel) method to calculate the output
 		// FIXME: Think of a good solution if the input pipes don't agree on the activation times
@@ -56,7 +56,7 @@ public abstract class Module
 				}
 				if (input_pipes[j].activation_times[i] >= 0)
 				{
-					this.run(i);
+					this.run(engine, i);
 					for (int k=0; k<NUM_OUTPUT_PIPES; k++)
 					{
 						output_pipes[k].activation_times[i] = input_pipes[j].activation_times[i];

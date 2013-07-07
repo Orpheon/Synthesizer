@@ -80,7 +80,7 @@ public class EngineMaster
     			{
 	    			// Run the entire chain of events and generate another chunk of audio
     				snapshot_counter++;
-	    			main_container.run();
+	    			main_container.run(this);
 	    			byte[] tmp;
 	    			int counter=0;
 	    			double sum=0;
@@ -149,6 +149,11 @@ public class EngineMaster
     			}
     		}
     	}
+    }
+    
+    public long get_snapshot_counter()
+    {
+    	return snapshot_counter;
     }
     
     public Module add_module(int type)

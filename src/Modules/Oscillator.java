@@ -92,14 +92,15 @@ public class Oscillator extends Module
 		MODULE_NAME = "Oscillator";
 	}
 
-	public void run(int channel)
+	public void run(Engine.EngineMaster engine, int channel)
 	{
-		// Set the frequency to whatever the frequency input pipe wants, if it exists
+		// Check whether the frequency pipe exists and whether it is mono
 		if (input_pipes[FREQUENCY_PIPE] != null)
 		{
 			if (input_pipes[FREQUENCY_PIPE].get_type() != Constants.MONO)
 			{
 				System.out.println("Error in Oscillator "+index+"; Frequency pipe has type "+input_pipes[FREQUENCY_PIPE].get_type()+".");
+				return;
 			}
 		}
 		
@@ -109,59 +110,70 @@ public class Oscillator extends Module
 			if (input_pipes[PHASE_PIPE].get_type() != Constants.MONO)
 			{
 				System.out.println("Error in Oscillator "+index+"; Phase pipe has type "+input_pipes[PHASE_PIPE].get_type()+".");
+				return;
 			}
 		}
 		
-		// If we can actually output anything
+		// And again for the output
 		if (output_pipes[OUTPUT_PIPE] != null)
 		{
-			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
+			if (output_pipes[OUTPUT_PIPE].get_type() != Constants.MONO)
 			{
-				// If we have freq input, then set out freq to that and add in detuning
-				if (input_pipes[FREQUENCY_PIPE] != null)
+				System.out.println("Error in Oscillator "+index+"; Output pipe has type "+output_pipes[OUTPUT_PIPE].get_type()+".");
+				return;
+			}
+			
+			// Check whether we can actually output anything
+			if (input_pipes[FREQUENCY_PIPE].activation_times[channel] >= 0)
+			{
+				double time, value;
+				for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 				{
-					// TODO: Make detune work in half-tone percentage and so dependent on frequency
-					set_frequency(input_pipes[FREQUENCY_PIPE].get_pipe(channel)[0][i] + detune);
-				}
-				// Same for phase
-				if (input_pipes[PHASE_PIPE] != null)
-				{
-					set_phase(input_pipes[PHASE_PIPE].get_pipe(channel)[0][i]);
-				}
-				// Calculate what position of our wave we have to sample, thus already taking in count the frequency
-				current_position += frequency * 1/Constants.SAMPLING_RATE;
-				// All waves are periodic, that's a good thing
-				while (Math.abs(current_position) > 1)
-				{
-					current_position -= Math.signum(current_position);
-				}
-
-				// We sample at that position, multiply it with the amplitude and write it in the output
-				output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = get_value(current_position) * amplitude;
-				if (output_pipes[OUTPUT_PIPE].get_type() == Constants.STEREO)
-				{
-					output_pipes[OUTPUT_PIPE].get_pipe(channel)[1][i] = output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i];
+					// If we have freq input, then set out freq to that and add in detuning
+					if (input_pipes[FREQUENCY_PIPE] != null)
+					{
+						// TODO: Make detune work in half-tone percentage and so dependent on frequency (log etc...)
+						set_frequency(input_pipes[FREQUENCY_PIPE].get_pipe(channel)[0][i] + detune);
+					}
+					
+					// Same for phase
+					if (input_pipes[PHASE_PIPE] != null)
+					{
+						set_phase(input_pipes[PHASE_PIPE].get_pipe(channel)[0][i]);
+					}
+					
+					// Calculate the precise time we wish to sample
+					time = (((double)engine.get_snapshot_counter() * Engine.Constants.SNAPSHOT_SIZE) + i) / (double)Engine.Constants.SAMPLING_RATE;
+					// %1 == get fractional part. This first multiplies time with frequency, cuts it to a period of 0-1 (assuming time >= 0, which it is).
+					// Then it queries the wave value at that time
+					value = get_value((time*frequency) % 1) * amplitude;
+					if (Math.abs(value) > 1)
+					{
+						System.out.println("ALERT! VALUE IS OVER 1 AT "+value+"; time="+time);
+					}
+					// Output is mono. Basta.
+					output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = value;
 				}
 			}
 		}
 	}
 	
-	protected double get_value(double position)
+	protected double get_value(double time)
 	{
 		// Sampling at a certain position
 		// TODO: Make anti-aliased saws and squares
 		switch (osc_type)
 		{
 			case SINE_WAVE:
-				return Math.sin(position*Constants.pi_times_2);
+				return Math.sin(time*Constants.pi_times_2);
 			
 			case SAW_WAVE:
-				return position;
+				return time*2.0 - 1.0;
 				
 			case SQUARE_WAVE:
-				if (position < 0.5)
+				if (time < 0.5)
 				{
-					return 0.0;
+					return -1.0;
 				}
 				else
 				{
