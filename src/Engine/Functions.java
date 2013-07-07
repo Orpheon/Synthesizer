@@ -41,7 +41,7 @@ public class Functions
 	// Copy-pasted from StackOverflow as well, this is just a debugging tool
 	// It outputs a byte array written to it as a file
     static void array_write(byte[] aInput, String aOutputFileName){
-    	System.out.println("Writing binary file...");
+    	System.out.println("Writing binary file "+aOutputFileName);
         try {
           OutputStream output = null;
           try {

@@ -25,6 +25,9 @@ public class EngineMaster
 	
 	private long snapshot_counter = 0;
 	
+//	// DEBUGTOOL:
+//	private static int debug_counter = 1;
+	
 	// FIXME: Should be private but GUI windows need to access it
 	public Container main_container;
     
@@ -103,17 +106,17 @@ public class EngineMaster
 	    			
 //	    			// DEBUGTOOL
 //	    			int c=0;
-//	    			for (int i=0; i<3; i++)
-//	    			{
-//	    				byte[] b = new byte[2*Engine.Constants.SNAPSHOT_SIZE];
-//	    				for (int j=0; j<Engine.Constants.SNAPSHOT_SIZE; j++)
-//	    				{
-//		    				tmp = Functions.convert_to_16bit_bytearray(main_container.get_inner_output_pipe(0).get_pipe(i)[0][j]);
-//		    				System.arraycopy(tmp, 0, b, c, 2);
-//		    				counter += 2;
-//	    				}
-//	    				Functions.array_write(b, "Buffer output "+i);
-//	    			}
+//    				byte[] b = new byte[2*Engine.Constants.SNAPSHOT_SIZE];
+//    				for (int j=0; j<Engine.Constants.SNAPSHOT_SIZE; j++)
+//    				{
+//	    				tmp = Functions.convert_to_16bit_bytearray(main_container.get_inner_output_pipe(0).get_pipe(0)[0][j]);
+//	    				System.arraycopy(tmp, 0, b, c, 2);
+//	    				c += 2;
+//    				}
+//    				if (debug_counter <= 10)
+//    				{
+//    					Functions.array_write(b, "Buffer output "+debug_counter++);
+//    				}
 	    			
 	    			// Copy this chunk to the sound buffer
 	    			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
