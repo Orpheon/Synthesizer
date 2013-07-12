@@ -18,9 +18,6 @@ public class Copyer extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
-		input_pipe_types = new int[NUM_INPUT_PIPES];
-		output_pipe_types = new int[NUM_OUTPUT_PIPES];
-		
 		module_type = Engine.Constants.MODULE_COPYER;
 		
 		MODULE_NAME = "Copyer";
@@ -35,9 +32,6 @@ public class Copyer extends Module
 		
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
-		
-		input_pipe_types = new int[NUM_INPUT_PIPES];
-		output_pipe_types = new int[NUM_OUTPUT_PIPES];
 		
 		MODULE_NAME = "Copyer";
 	}
@@ -58,11 +52,16 @@ public class Copyer extends Module
 				if (output_pipes[i] != null)
 				{
 					// Copy the input directly in the output
-					System.arraycopy(input_pipes[INPUT_PIPE].get_pipe(channel)[0], 0, output_pipes[i].get_pipe(channel)[0], 0, Constants.SNAPSHOT_SIZE);
-					if (input_pipes[INPUT_PIPE].get_type() == Engine.Constants.STEREO)
+					if (input_pipes[INPUT_PIPE].get_type() == Engine.Constants.MONO)
 					{
+						System.arraycopy(input_pipes[INPUT_PIPE].get_pipe(channel)[0], 0, output_pipes[i].get_pipe(channel)[0], 0, Constants.SNAPSHOT_SIZE);
+					}
+					else if (input_pipes[INPUT_PIPE].get_type() == Engine.Constants.STEREO)
+					{
+						System.arraycopy(input_pipes[INPUT_PIPE].get_pipe(channel)[0], 0, output_pipes[i].get_pipe(channel)[0], 0, Constants.SNAPSHOT_SIZE);
 						System.arraycopy(input_pipes[INPUT_PIPE].get_pipe(channel)[1], 0, output_pipes[i].get_pipe(channel)[1], 0, Constants.SNAPSHOT_SIZE);
 					}
+					output_pipes[i].activation_times[channel] = input_pipes[INPUT_PIPE].activation_times[channel];
 				}
 			}
 		}
@@ -95,7 +94,6 @@ public class Copyer extends Module
 			Pipe[] tmp = new Pipe[NUM_OUTPUT_PIPES];
 			System.arraycopy(output_pipes, 0, tmp, 0, Math.min(output_pipes.length, NUM_OUTPUT_PIPES));
 			output_pipes = tmp;
-			output_pipe_types = new int[NUM_OUTPUT_PIPES];
 		}
 	}
 }

@@ -45,10 +45,6 @@ public class Container extends Module
 		// Inner pipes (going to modules inside the container)
 		inner_input_pipes = new Pipe[NUM_INPUT_PIPES];
 		inner_output_pipes = new Pipe[NUM_OUTPUT_PIPES];
-		// There is no reason to lock a pipe on MONO or STEREO, so these two arrays are only there for completeness.
-		// They are filled with 0s and thus ignored
-		input_pipe_types = new int[NUM_INPUT_PIPES];
-		output_pipe_types = new int[NUM_OUTPUT_PIPES];
 		
 		module_type = Constants.MODULE_CONTAINER;
 		

@@ -40,18 +40,6 @@ public class Oscillator extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
-		// Both inputs and outputs are all MONO
-		input_pipe_types = new int[NUM_INPUT_PIPES];
-		for (int i=0; i<NUM_INPUT_PIPES; i++)
-		{
-			input_pipe_types[i] = Constants.MONO;
-		}
-		output_pipe_types = new int[NUM_OUTPUT_PIPES];
-		for (int i=0; i<NUM_OUTPUT_PIPES; i++)
-		{
-			output_pipe_types[i] = Constants.MONO;
-		}
-		
 		module_type = Engine.Constants.MODULE_OSCILLATOR;
 		
 		MODULE_NAME = "Oscillator";
@@ -123,36 +111,78 @@ public class Oscillator extends Module
 				return;
 			}
 			
-			// Check whether we can actually output anything
-			if (input_pipes[FREQUENCY_PIPE].activation_times[channel] >= 0)
+			if (output_pipes[OUTPUT_PIPE].get_type() == Engine.Constants.MONO)
 			{
-				double time, value;
-				for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
+				// Check whether we can actually output anything
+				if (input_pipes[FREQUENCY_PIPE].activation_times[channel] >= 0)
 				{
-					// If we have freq input, then set out freq to that and add in detuning
-					if (input_pipes[FREQUENCY_PIPE] != null)
+					double time, value;
+					for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 					{
-						// TODO: Make detune work in half-tone percentage and so dependent on frequency (log etc...)
-						set_frequency(input_pipes[FREQUENCY_PIPE].get_pipe(channel)[0][i] + detune);
+						// If we have freq input, then set out freq to that and add in detuning
+						if (input_pipes[FREQUENCY_PIPE] != null)
+						{
+							// TODO: Make detune work in half-tone percentage and so dependent on frequency (log etc...)
+							set_frequency(input_pipes[FREQUENCY_PIPE].get_pipe(channel)[0][i] + detune);
+						}
+						
+						// Same for phase
+						if (input_pipes[PHASE_PIPE] != null)
+						{
+							set_phase(input_pipes[PHASE_PIPE].get_pipe(channel)[0][i]);
+						}
+						
+						// Calculate the precise time we wish to sample
+						time = (((double)engine.get_snapshot_counter() * Engine.Constants.SNAPSHOT_SIZE) + i) / (double)Engine.Constants.SAMPLING_RATE;
+						// %1 == get fractional part. This first multiplies time with frequency, cuts it to a period of 0-1 (assuming time >= 0, which it is).
+						// Then it queries the wave value at that time
+						value = get_value((time*frequency) % 1) * amplitude;
+						if (Math.abs(value) > 1)
+						{
+							System.out.println("ALERT! VALUE IS OVER 1 AT "+value+"; time="+time);
+						}
+
+						output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = value;
 					}
-					
-					// Same for phase
-					if (input_pipes[PHASE_PIPE] != null)
+				}
+			}
+			else if (output_pipes[OUTPUT_PIPE].get_type() == Engine.Constants.STEREO)
+			{
+				// Check whether we can actually output anything
+				if (input_pipes[FREQUENCY_PIPE].activation_times[channel] >= 0)
+				{
+					double time, value;
+					for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 					{
-						set_phase(input_pipes[PHASE_PIPE].get_pipe(channel)[0][i]);
+						// LEFT and RIGHT channel
+						for (int j=Engine.Constants.LEFT_CHANNEL; j<=Engine.Constants.RIGHT_CHANNEL; j++)
+						{
+							// If we have freq input, then set out freq to that and add in detuning
+							if (input_pipes[FREQUENCY_PIPE] != null)
+							{
+								// TODO: Make detune work in half-tone percentage and so dependent on frequency (log etc...)
+								set_frequency(input_pipes[FREQUENCY_PIPE].get_pipe(channel)[j][i] + detune);
+							}
+							
+							// Same for phase
+							if (input_pipes[PHASE_PIPE] != null)
+							{
+								set_phase(input_pipes[PHASE_PIPE].get_pipe(channel)[j][i]);
+							}
+							
+							// Calculate the precise time we wish to sample
+							time = (((double)engine.get_snapshot_counter() * Engine.Constants.SNAPSHOT_SIZE) + i) / (double)Engine.Constants.SAMPLING_RATE;
+							// %1 == get fractional part. This first multiplies time with frequency, cuts it to a period of 0-1 (assuming time >= 0, which it is).
+							// Then it queries the wave value at that time
+							value = get_value((time*frequency) % 1) * amplitude;
+							if (Math.abs(value) > 1)
+							{
+								System.out.println("ALERT! VALUE IS OVER 1 AT "+value+"; time="+time);
+							}
+
+							output_pipes[OUTPUT_PIPE].get_pipe(channel)[j][i] = value;
+						}
 					}
-					
-					// Calculate the precise time we wish to sample
-					time = (((double)engine.get_snapshot_counter() * Engine.Constants.SNAPSHOT_SIZE) + i) / (double)Engine.Constants.SAMPLING_RATE;
-					// %1 == get fractional part. This first multiplies time with frequency, cuts it to a period of 0-1 (assuming time >= 0, which it is).
-					// Then it queries the wave value at that time
-					value = get_value((time*frequency) % 1) * amplitude;
-					if (Math.abs(value) > 1)
-					{
-						System.out.println("ALERT! VALUE IS OVER 1 AT "+value+"; time="+time);
-					}
-					// Output is mono. Basta.
-					output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = value;
 				}
 			}
 		}

@@ -17,9 +17,6 @@ public abstract class Module
 	// The actual pipe arrays that hold those pipes
 	protected Pipe[] input_pipes;
 	protected Pipe[] output_pipes;
-	// Arrays determining what pipe types are even allowed (1 for MONO, 2 for STEREO, 0 for both)
-	protected int[] input_pipe_types;
-	protected int[] output_pipe_types;
 	// ID system to provide each module with an identifier
 	protected static int counter;
 	protected int index;
@@ -77,13 +74,6 @@ public abstract class Module
 			// Just return false
 			return false;
 		}
-
-		if (input_pipe_types[position] != 0 && input_pipe_types[position] != pipe.type)
-		{
-			// This type of pipe cannot be connected to this input
-			System.out.println("ERROR: Tried to connect pipe "+pipe.get_index()+" to an input port "+position+" of "+MODULE_NAME+" of different type (pipe:"+pipe.type+", port:"+input_pipe_types[position]+").");
-			return false;
-		}
 		
 		if (input_pipes[position] != null)
 		{
@@ -109,13 +99,6 @@ public abstract class Module
 			// Don't allow this
 			System.out.println("ERROR: Tried to connect pipe "+pipe.get_index()+" to an invalid output port "+position+" to Module number "+index+" of type "+module_type+".");
 			// Just return false
-			return false;
-		}
-		
-		if (output_pipe_types[position] != 0 && output_pipe_types[position] != pipe.type)
-		{
-			// This type of pipe cannot be connected to this output
-			System.out.println("ERROR: Tried to connect pipe "+pipe.get_index()+" to an output port "+position+" of "+MODULE_NAME+" of different type (pipe:"+pipe.type+", port:"+output_pipe_types[position]+").");
 			return false;
 		}
 		

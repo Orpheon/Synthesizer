@@ -24,16 +24,6 @@ public class StereoMerger extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
-		// Inputs can only be MONO
-		input_pipe_types = new int[NUM_INPUT_PIPES];
-		for (int i=0; i<NUM_INPUT_PIPES; i++)
-		{
-			input_pipe_types[i] = Constants.MONO;
-		}
-		// And the one output can only be STEREO
-		output_pipe_types = new int[NUM_OUTPUT_PIPES];
-		output_pipe_types[OUTPUT_PIPE] = Constants.STEREO;
-		
 		module_type = Engine.Constants.MODULE_STEREOMERGER;
 		
 		MODULE_NAME = "Merger";

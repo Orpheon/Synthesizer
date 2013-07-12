@@ -30,9 +30,6 @@ public class Merger extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
-		input_pipe_types = new int[NUM_INPUT_PIPES];
-		output_pipe_types = new int[NUM_OUTPUT_PIPES];
-		
 		module_type = Engine.Constants.MODULE_MERGER;
 		
 		MODULE_NAME = "Merger";
@@ -48,14 +45,6 @@ public class Merger extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
-		// All channels must be MONO
-		input_pipe_types = new int[NUM_INPUT_PIPES];
-		for (int i=0; i<NUM_INPUT_PIPES; i++)
-		{
-			input_pipe_types[i] = Constants.MONO;
-		}
-		output_pipe_types = new int[NUM_OUTPUT_PIPES];
-		
 		module_type = Engine.Constants.MODULE_MERGER;
 		
 		MODULE_NAME = "Merger";
@@ -70,50 +59,68 @@ public class Merger extends Module
 			switch (operation)
 			{
 				case ADDITION:
-					double sum;
+					double[] sum;
 					for (i=0; i<Constants.SNAPSHOT_SIZE; i++)
 					{
-						sum = 0;
+						sum = new double[2];
 						for (j=0; j<NUM_INPUT_PIPES; j++)
 						{
 							if (input_pipes[j] != null)
 							{
-								sum += input_pipes[j].get_pipe(channel)[0][i];
-								if (input_pipes[j].get_type() == Constants.STEREO)
+								if (input_pipes[j].get_type() == Constants.MONO)
 								{
-									sum += input_pipes[j].get_pipe(channel)[1][i];
+									sum[0] += input_pipes[j].get_pipe(channel)[0][i];
+								}
+								else if (input_pipes[j].get_type() == Constants.STEREO)
+								{
+									sum[0] += input_pipes[j].get_pipe(channel)[0][i];
+									sum[1] += input_pipes[j].get_pipe(channel)[1][i];
 								}
 							}
 						}
 						// Don't forget to normalize from -1 to 1 again
-						output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = sum / NUM_INPUT_PIPES;
-						if (output_pipes[OUTPUT_PIPE].get_type() == Constants.STEREO)
+						if (output_pipes[OUTPUT_PIPE].get_type() == Constants.MONO)
 						{
-							output_pipes[OUTPUT_PIPE].get_pipe(channel)[1][i] = sum / NUM_INPUT_PIPES;
+							output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = sum[0] / NUM_INPUT_PIPES;
+						}
+						else if (output_pipes[OUTPUT_PIPE].get_type() == Constants.STEREO)
+						{
+							output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = sum[0] / NUM_INPUT_PIPES;
+							output_pipes[OUTPUT_PIPE].get_pipe(channel)[1][i] = sum[1] / NUM_INPUT_PIPES;
 						}
 					}
 					break;
 					
 				case MULTIPLICATION:
-					double product;
+					double[] product;
 					for (i=0; i<Constants.SNAPSHOT_SIZE; i++)
 					{
-						product = 1;
+						product = new double[2];
+						product[0] = 1.0;
+						product[1] = 1.0;
 						for (j=0; j<NUM_INPUT_PIPES; j++)
 						{
 							if (input_pipes[j] != null)
 							{
-								product *= input_pipes[j].get_pipe(channel)[0][i];
-								if (input_pipes[j].get_type() == Constants.STEREO)
+								if (input_pipes[j].get_type() == Constants.MONO)
 								{
-									product *= input_pipes[j].get_pipe(channel)[1][i];
+									product[0] *= input_pipes[j].get_pipe(channel)[0][i];
+								}
+								else if (input_pipes[j].get_type() == Constants.STEREO)
+								{
+									product[0] *= input_pipes[j].get_pipe(channel)[0][i];
+									product[1] *= input_pipes[j].get_pipe(channel)[1][i];
 								}
 							}
 						}
-						output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = product;
-						if (output_pipes[OUTPUT_PIPE].get_type() == Constants.STEREO)
+						if (output_pipes[OUTPUT_PIPE].get_type() == Constants.MONO)
 						{
-							output_pipes[OUTPUT_PIPE].get_pipe(channel)[1][i] = product;
+							output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = product[0];
+						}
+						else if (output_pipes[OUTPUT_PIPE].get_type() == Constants.STEREO)
+						{
+							output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = product[0];
+							output_pipes[OUTPUT_PIPE].get_pipe(channel)[1][i] = product[1];
 						}
 					}
 					break;
