@@ -40,7 +40,7 @@ public class StereoMerger extends Module
 	}
 
 	@Override
-	public void run(int channel)
+	public void run(Engine.EngineMaster engine, int channel)
 	{
 		// Check whether we even have something to output to, if not we don't have anything to do
 		if (output_pipes[OUTPUT_PIPE] != null)

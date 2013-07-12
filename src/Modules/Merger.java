@@ -62,7 +62,7 @@ public class Merger extends Module
 	}
 
 	@Override
-	public void run(int channel)
+	public void run(Engine.EngineMaster engine, int channel)
 	{
 		if (output_pipes[OUTPUT_PIPE] != null)
 		{

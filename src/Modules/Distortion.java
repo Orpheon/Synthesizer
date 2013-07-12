@@ -22,7 +22,7 @@ public abstract class Distortion extends Module
 	}
 
 	@Override
-	public void run(int channel)
+	public void run(Engine.EngineMaster engine, int channel)
 	{
 		if (input_pipes[INPUT_PIPE].get_type() != output_pipes[OUTPUT_PIPE].get_type())
 		{

@@ -43,7 +43,7 @@ public class Copyer extends Module
 	}
 
 	@Override
-	public void run(int channel)
+	public void run(Engine.EngineMaster engine, int channel)
 	{
 		if (input_pipes[INPUT_PIPE] != null)
 		{

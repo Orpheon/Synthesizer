@@ -37,7 +37,7 @@ public class RangeModifier extends Module
 	}
 
 	@Override
-	public void run(int channel)
+	public void run(Engine.EngineMaster engine, int channel)
 	{
 		if (input_pipes[INPUT_PIPE] != null && output_pipes[OUTPUT_PIPE] != null)
 		{
@@ -66,7 +66,6 @@ public class RangeModifier extends Module
 					output_pipes[OUTPUT_PIPE].get_pipe(channel)[1][i] = ratio * input_pipes[INPUT_PIPE].get_pipe(channel)[1][i] + offset;
 				}
 			}
-
 		}
 	}
 
