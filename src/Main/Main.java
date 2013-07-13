@@ -47,7 +47,8 @@ public class Main
 		engine.connect_modules(osc, Modules.Oscillator.OUTPUT_PIPE, engine.main_container, 0, false);
 
 		// Attempt to play 3 notes (3 channels)
-		engine.set_frequency(440, 523.25, 659.26); // A C E (Am chord)
+		//engine.set_frequency(440, 523.25, 659.26); // A C E (Am chord)
+		engine.set_frequency(440, 554.365, 659.26); // A C# E (A chord)
 //		engine.set_frequency(440);
 		engine.start_playing();
 		while (true)
