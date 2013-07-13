@@ -24,7 +24,8 @@ public abstract class Module
 	protected int module_type;
 	// A string doing the same as the above constant, but in a human-readable form
 	public String MODULE_NAME;
-
+	// A variable that tracks whether this module is in stereo or in mono mode
+	protected int audio_mode;
 	// This makes a module actually do whatever it's supposed to do on it's inputs and write to it's outputs
 	public abstract void run(Engine.EngineMaster engine, int channel);
 	
@@ -32,11 +33,13 @@ public abstract class Module
 	{
 		index = counter++;
 		MODULE_NAME = "Default Module";
+		audio_mode = Engine.Constants.DEFAULT_AUDIO_MODE;
 	}
 	
 	public Module()
 	{
 		index = counter++;
+		audio_mode = Engine.Constants.DEFAULT_AUDIO_MODE;
 	}
 	
 	public void run(Engine.EngineMaster engine)
@@ -75,11 +78,16 @@ public abstract class Module
 			return false;
 		}
 		
-		if (input_pipes[position] != null)
+		if (pipe.get_type() != audio_mode)
 		{
-			// There's already a pipe there, we need to disconnect it first
-			disconnect_input(position);
+			// Trying to connect a cable to a module of a different audio mode
+			// Bad idea, refuse connection and let the gui deal with the problem (ask whether to change mode, etc...)
+			// FIXME: Find better way to do this
+			System.out.println("ERROR: Tried to connect pipe "+pipe.get_index()+" to an invalid input port "+position+" to Module number "+index+" of type "+module_type+"; incompatible audio modes.");
+			// Uhm...return false...I guess? Probably do some callback or so first, then handle, but ugh... | FIXME
+			return false;
 		}
+
 		pipe.set_output(this);
 		input_pipes[position] = pipe;
 		return true;
@@ -136,6 +144,16 @@ public abstract class Module
 	public Pipe get_output_pipe(int i)
 	{
 		return output_pipes[i];
+	}
+	
+	public int get_audio_mode()
+	{
+		return audio_mode;
+	}
+	
+	public void set_audio_mode(int new_mode)
+	{
+		audio_mode = new_mode;
 	}
 	
 	public void close(Container container)

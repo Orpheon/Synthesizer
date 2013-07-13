@@ -32,4 +32,6 @@ public class Constants
 	
 	public static final int LEFT_CHANNEL = 1;
 	public static final int RIGHT_CHANNEL = 2;
+	
+	public static final int DEFAULT_AUDIO_MODE = MONO;
 }

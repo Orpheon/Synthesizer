@@ -60,19 +60,7 @@ public class Oscillator extends Module
 		
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
-		
-		// Both inputs and outputs are all MONO
-		input_pipe_types = new int[NUM_INPUT_PIPES];
-		for (int i=0; i<NUM_INPUT_PIPES; i++)
-		{
-			input_pipe_types[i] = Constants.MONO;
-		}
-		output_pipe_types = new int[NUM_OUTPUT_PIPES];
-		for (int i=0; i<NUM_OUTPUT_PIPES; i++)
-		{
-			output_pipe_types[i] = Constants.MONO;
-		}
-		
+
 		current_position = 0.0;
 		
 		module_type = Engine.Constants.MODULE_OSCILLATOR;
