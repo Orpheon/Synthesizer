@@ -48,6 +48,7 @@ public class Main
 
 		// Attempt to play 3 notes (3 channels)
 		engine.set_frequency(440, 523.25, 659.26); // A C E (Am chord)
+//		engine.set_frequency(440);
 		engine.start_playing();
 		while (true)
 		{

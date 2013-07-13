@@ -105,7 +105,7 @@ public abstract class Module
 		{
 			// Trying to connect a cable to an invalid port.
 			// Don't allow this
-			System.out.println("ERROR: Tried to connect pipe "+pipe.get_index()+" to an invalid output port "+position+" to Module number "+index+" of type "+module_type+".");
+			System.out.println("ERROR: Tried to connect pipe "+pipe.get_index()+" to an invalid output port "+position+" to Module number "+index+" of type "+MODULE_NAME+".");
 			// Just return false
 			return false;
 		}
