@@ -25,41 +25,40 @@ public class Main
 	 * @throws LineUnavailableException 
 	 * @throws IOException 
 	 */
-	
-	public static void main(String[] args) throws LineUnavailableException, InterruptedException
-	{
-		Engine.EngineMaster engine = new Engine.EngineMaster();
-		
-		/* NOTE:
-		 * If you cannot hear anything, try setting global_volume to 1 in line 22 of EngineMaster.
-		 */
-		
-		// Hardcoded situation
-		Modules.Oscillator osc;
-		// Create an oscillator
-		osc = (Modules.Oscillator) engine.add_module(Engine.Constants.MODULE_OSCILLATOR);
-		
-		// Set to sine wave
-		osc.set_osctype(Modules.Oscillator.SINE_WAVE);
-		
-		// Connect it with the container inner input ports and the container inner output ports
-		engine.connect_modules(engine.main_container, 0, osc, Modules.Oscillator.FREQUENCY_PIPE, false);
-		engine.connect_modules(osc, Modules.Oscillator.OUTPUT_PIPE, engine.main_container, 0, false);
-
-		// Attempt to play 3 notes (3 channels)
-		//engine.set_frequency(440, 523.25, 659.26); // A C E (Am chord)
-		engine.set_frequency(440, 554.365, 659.26); // A C# E (A chord)
-//		engine.set_frequency(440);
-		engine.start_playing();
-		while (true)
-		{
-			// Actually calculate the sound frame and send to audio buffer
-			engine.update();
-		}
-	}
+//	public static void main(String[] args) throws LineUnavailableException, InterruptedException
+//	{
+//		Engine.EngineMaster engine = new Engine.EngineMaster();
+//		
+//		/* NOTE:
+//		 * If you cannot hear anything, try setting global_volume to 1 in line 22 of EngineMaster.
+//		 */
+//		
+//		// Hardcoded situation
+//		Modules.Oscillator osc;
+//		// Create an oscillator
+//		osc = (Modules.Oscillator) engine.add_module(Engine.Constants.MODULE_OSCILLATOR);
+//		
+//		// Set to sine wave
+//		osc.set_osctype(Modules.Oscillator.SINE_WAVE);
+//		
+//		// Connect it with the container inner input ports and the container inner output ports
+//		engine.connect_modules(engine.main_container, 0, osc, Modules.Oscillator.FREQUENCY_PIPE, false);
+//		engine.connect_modules(osc, Modules.Oscillator.OUTPUT_PIPE, engine.main_container, 0, false);
+//
+//		// Attempt to play 3 notes (3 channels)
+//		//engine.set_frequency(440, 523.25, 659.26); // A C E (Am chord)
+//		engine.set_frequency(440, 554.365, 659.26); // A C# E (A chord)
+////		engine.set_frequency(440);
+//		engine.start_playing();
+//		while (true)
+//		{
+//			// Actually calculate the sound frame and send to audio buffer
+//			engine.update();
+//		}
+//	}
 	
 	// Test to debug the GUI things
-/*	public static void main(String[] args) throws LineUnavailableException, InterruptedException, IOException
+	public static void main(String[] args) throws LineUnavailableException, InterruptedException, IOException
 	{
 		Engine.EngineMaster engine = new Engine.EngineMaster();
 		GUI.ContainerWindow main_window = new GUI.ContainerWindow(engine.main_container);
@@ -68,5 +67,5 @@ public class Main
 		{
 			engine.update();
 		}
-	}*/
+	}
 }
