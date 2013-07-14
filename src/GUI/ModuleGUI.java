@@ -13,7 +13,6 @@ public class ModuleGUI extends JPanel
 	private static final long serialVersionUID = 4170785623135839381L;
 
 	// FIXME: There has to be an inbuilt-constant for this
-	private int x, y;
 	private int portbox_width, portbox_height;
 	private int text_width, text_height;
 	private Engine.Module module;
@@ -30,15 +29,12 @@ public class ModuleGUI extends JPanel
 		portbox_width = Math.max(16 + 20*Math.max(module.NUM_INPUT_PIPES, module.NUM_OUTPUT_PIPES) - 10, text_width);
 		portbox_height = 2*10 + 10;
 		
-		x = 300;
-		y = 300;
-		
 		Dimension d = new Dimension(portbox_width, portbox_height);
 		setMinimumSize(d);
 		setPreferredSize(d);
 		setSize(d);
 		
-		this.setLocation(x, y);
+		this.setLocation(300, 300);
 		
 		this.module = module;
 		

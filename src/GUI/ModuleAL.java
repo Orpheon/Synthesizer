@@ -27,7 +27,7 @@ public class ModuleAL implements MouseMotionListener
 			dragging = true;
 			x_offset = e.getX();
 			y_offset = e.getY();
-			System.out.println(x_offset+" "+y_offset);
+//			System.out.println(owner.getX()+" "+owner.getWidth());
 		}
 		else
 		{
