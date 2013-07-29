@@ -34,4 +34,8 @@ public class Constants
 	public static final int RIGHT_CHANNEL = 2;
 	
 	public static final int DEFAULT_AUDIO_MODE = MONO;
+	
+	// GUI constants
+	public static final int INPUT_PORT = 1;
+	public static final int OUTPUT_PORT = 2;
 }

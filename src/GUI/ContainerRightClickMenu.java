@@ -10,14 +10,14 @@ import javax.swing.*;
 
 public class ContainerRightClickMenu extends JPopupMenu
 {
-	private ContainerWindow owner;
+	private ContainerWindow main_window;
 	private Point pos;
 	
-	public ContainerRightClickMenu(ContainerWindow owner)
+	public ContainerRightClickMenu(ContainerWindow main_window)
 	{
 		super();
 		
-		this.owner = owner;
+		this.main_window = main_window;
 		
 		JMenuItem item = new JMenuItem(new AbstractAction()
 		{
@@ -60,7 +60,7 @@ public class ContainerRightClickMenu extends JPopupMenu
 	{
 		try
 		{
-			owner.add_module(type, pos.x - owner.getLocation().x, pos.y - owner.getLocation().y - this.getHeight());
+			main_window.add_module(type, pos.x - main_window.getLocation().x, pos.y - main_window.getLocation().y - this.getHeight());
 		}
 		catch (IOException e)
 		{

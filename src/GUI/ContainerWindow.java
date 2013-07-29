@@ -27,12 +27,20 @@ public class ContainerWindow extends JFrame
 	
 	private JMenu menu;
 	
+	public boolean is_connecting;
+	public PortGUI first_port;
+	
 	// Rightclick menu listener
 	class PopupListener extends MouseAdapter
 	{
 		public void mousePressed(MouseEvent e)
 		{
-			if (e.isPopupTrigger())
+			if (ContainerWindow.this.is_connecting)
+			{
+				ContainerWindow.this.is_connecting = false;
+				ContainerWindow.this.first_port = null;
+			}
+			else if (e.isPopupTrigger())
 			{
 				popup_menu.open(e.getLocationOnScreen());
 			}
@@ -44,7 +52,12 @@ public class ContainerWindow extends JFrame
 		
 		public void mouseReleased(MouseEvent e)
 		{
-			if (e.isPopupTrigger())
+			if (ContainerWindow.this.is_connecting)
+			{
+				ContainerWindow.this.is_connecting = false;
+				ContainerWindow.this.first_port = null;
+			}
+			else if (e.isPopupTrigger())
 			{
 				popup_menu.open(e.getLocationOnScreen());
 			}
