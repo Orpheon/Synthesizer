@@ -31,17 +31,17 @@ public class ContainerRightClickMenu extends JPopupMenu
 		item.setText("Create Oscillator");
 		add(item);
 		
-		item = new JMenuItem(new AbstractAction()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_CONTAINER);
-				ContainerRightClickMenu.this.hide();
-			}
-		}
-		);
-		item.setText("Create Container");
-		add(item);
+//		item = new JMenuItem(new AbstractAction()
+//		{
+//			public void actionPerformed(ActionEvent e)
+//			{
+//				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_CONTAINER);
+//				ContainerRightClickMenu.this.hide();
+//			}
+//		}
+//		);
+//		item.setText("Create Container");
+//		add(item);
 		
 		item = new JMenuItem(new AbstractAction()
 		{
