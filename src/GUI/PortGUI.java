@@ -30,6 +30,16 @@ public class PortGUI extends JButton
 		this.port_type = port_type;
 		this.port_number = port_number;
 		connection = null;
+
+		if (port_type == Engine.Constants.INPUT_PORT)
+		{
+			setToolTipText(module.input_pipe_names[port_number]);
+		}
+		else
+		{
+			setToolTipText(module.output_pipe_names[port_number]);
+		}
+		
 		
 		setVisible(true);
 		setSize(new Dimension(port_image.getIconWidth(), port_image.getIconHeight()));
