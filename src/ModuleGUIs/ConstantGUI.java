@@ -15,7 +15,7 @@ public class ConstantGUI extends ModuleGUI
 	protected int width;
 	protected int height;
 	public Modules.Constant module;
-	protected JFormattedTextField input;
+	public JFormattedTextField input;
 	
 	class textFieldListener implements ActionListener
 	{

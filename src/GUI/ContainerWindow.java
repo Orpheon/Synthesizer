@@ -3,6 +3,7 @@ package GUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.swing.*;
@@ -54,6 +55,19 @@ public class ContainerWindow extends JFrame
 			{
 				popup_menu.hide();
 			}
+			
+			ModuleGUI m;
+			Iterator<ModuleGUI> i = module_list.listIterator();
+			while (i.hasNext())
+			{
+				m = i.next();
+				if (m instanceof ModuleGUIs.ConstantGUI)
+				{
+					// Yay hacks to prevent focus
+					requestFocusInWindow();
+				}
+			}
+			
 		}
 		
 		public void mouseReleased(MouseEvent e)

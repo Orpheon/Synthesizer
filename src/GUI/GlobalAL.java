@@ -22,10 +22,12 @@ public class GlobalAL implements AWTEventListener
 	{
 		if (e.getID() == MouseEvent.MOUSE_RELEASED)
 		{
+			ModuleGUI m;
 			Iterator<ModuleGUI> i = main_window.module_list.listIterator();
 			while (i.hasNext())
 			{
-				i.next().getAL().stopDragging();
+				m = i.next();
+				m.getAL().stopDragging();
 			}
 		}
 		else if (e.getID() == MouseEvent.MOUSE_MOVED || e.getID() == MouseEvent.MOUSE_DRAGGED)
