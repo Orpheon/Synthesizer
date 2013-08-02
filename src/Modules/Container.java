@@ -189,9 +189,9 @@ public class Container extends Module
 		module_list.remove(m);
 	}
 	
-	public Pipe create_pipe(boolean stereo)
+	public Pipe create_pipe(int audio_type)
 	{
-		if (stereo)
+		if (audio_type == Engine.Constants.STEREO)
 		{
 			return new StereoPipe();
 		}
@@ -201,9 +201,9 @@ public class Container extends Module
 		}
 	}
 	
-	public void connect_modules(Module module_1, int out_port, Module module_2, int in_port, boolean stereo)
+	public void connect_modules(Module module_1, int out_port, Module module_2, int in_port, int audio_mode)
     {
-		Pipe pipe = create_pipe(stereo);
+		Pipe pipe = create_pipe(audio_mode);
 
 		if (module_1 == this)
     	{

@@ -42,8 +42,8 @@ public class Main
 //		osc.set_osctype(Modules.Oscillator.SINE_WAVE);
 //		
 //		// Connect it with the container inner input ports and the container inner output ports
-//		engine.connect_modules(engine.main_container, 0, osc, Modules.Oscillator.FREQUENCY_PIPE, false);
-//		engine.connect_modules(osc, Modules.Oscillator.OUTPUT_PIPE, engine.main_container, 0, false);
+//		engine.connect_modules(engine.main_container, 0, osc, Modules.Oscillator.FREQUENCY_PIPE, Engine.Constants.MONO);
+//		engine.connect_modules(osc, Modules.Oscillator.OUTPUT_PIPE, engine.main_container, 0, Engine.Constants.MONO);
 //
 //		// Attempt to play 3 notes (3 channels)
 //		//engine.set_frequency(440, 523.25, 659.26); // A C E (Am chord)

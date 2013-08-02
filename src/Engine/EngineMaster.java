@@ -169,10 +169,10 @@ public class EngineMaster
     	return main_container.add_module(type, subtype);
     }
     
-    public void connect_modules(Module module_1, int out_port, Module module_2, int in_port, boolean stereo)
+    public void connect_modules(Module module_1, int out_port, Module module_2, int in_port, int audio_mode)
     {
     	// TODO: Another thing that's going to have to disappear when GUI is here.
-    	main_container.connect_modules(module_1, out_port, module_2, in_port, stereo);
+    	main_container.connect_modules(module_1, out_port, module_2, in_port, audio_mode);
     }
     
     public void set_frequency(double f1, double f2, double f3)
