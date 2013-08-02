@@ -18,8 +18,8 @@ public class ModuleGUI extends JPanel
 	private Engine.Module module;
 	private ModuleAL AL;
 	private String name;
-	private PortGUI[] input_ports;
-	private PortGUI[] output_ports;
+	public PortGUI[] input_ports;
+	public PortGUI[] output_ports;
 	
 	public ModuleGUI(ContainerWindow main_window, Engine.Module module) throws IOException
 	{

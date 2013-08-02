@@ -17,30 +17,19 @@ public class PortAL implements MouseListener
 	@Override
 	public void mouseClicked(MouseEvent e)
 	{
-		if (owner.connection != null)
+		if (main_window.is_connecting)
 		{
-			// We are already connected with another port
-			if (main_window.is_connecting)
-			{
-				// We are already connected, but the user wants to connect us to something else
-				owner.attempt_connection(main_window.first_port);
-				main_window.first_port = null;
-			}
-			else
-			{
-				// We are already connected, but the user wants to take out the pipe
-				main_window.first_port = owner.connection;
-			}
-			owner.disconnect();
+			// Connect to something else
+			owner.attempt_connection(main_window.first_port);
+			main_window.first_port = null;
 		}
 		else
 		{
-			// We are not connected with anything
-			if (main_window.is_connecting)
+			if (owner.connection != null)
 			{
-				// Connect with other pipe
-				owner.attempt_connection(main_window.first_port);
-				main_window.first_port = null;
+				// We are already connected, but the user wants to take out the pipe
+				main_window.first_port = owner.connection;
+				owner.disconnect();
 			}
 			else
 			{
@@ -48,7 +37,8 @@ public class PortAL implements MouseListener
 				main_window.first_port = owner;
 			}
 		}
-		// All 4 cases require an inversion of main_window.is_connecting
+
+		// All cases require an inversion of main_window.is_connecting
 		main_window.is_connecting = !main_window.is_connecting;
 	}
 

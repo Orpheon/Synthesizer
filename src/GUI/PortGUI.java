@@ -3,6 +3,8 @@ package GUI;
 import java.awt.*;
 import javax.swing.*;
 
+import Engine.Module;
+
 public class PortGUI extends JButton
 {
 	/**
@@ -11,12 +13,14 @@ public class PortGUI extends JButton
 	private static final long serialVersionUID = 6594761194013281486L;
 	
 	private final static ImageIcon port_image = new ImageIcon("Sprites/Port.png");
-	private Engine.Module module;
+	public Engine.Module module;
 	private int port_number;
 	
 	public int port_type;
 	public PortGUI connection;
 	private PortAL AL;
+	
+	private ContainerWindow main_window;
 	
 	public PortGUI(ContainerWindow main_window, Engine.Module module, int port_type, int port_number)
 	{
@@ -32,6 +36,8 @@ public class PortGUI extends JButton
 		
 		AL = new PortAL(main_window, this);
 		addMouseListener(AL);
+		
+		this.main_window = main_window;
 	}
 	
 	public void disconnect()
@@ -52,6 +58,31 @@ public class PortGUI extends JButton
 	
 	public void attempt_connection(PortGUI other)
 	{
-		
+		if (this.port_type != other.port_type)
+		{
+			PortGUI input;
+			PortGUI output;
+			if (this.port_type == Engine.Constants.INPUT_PORT)
+			{
+				input = this;
+				output = other;
+			}
+			else
+			{
+				input = other;
+				output = this;
+			}
+			
+			if (input.module != output.module)
+			{
+				if (input.module.get_audio_mode() == output.module.get_audio_mode())
+				{
+					System.out.println("Connection established");
+					main_window.container.connect_modules(output.module, output.port_number, input.module, input.port_number, input.module.get_audio_mode());
+					input.connection = output;
+					output.connection = input;
+				}
+			}
+		}
 	}
 }

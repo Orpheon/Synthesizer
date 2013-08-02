@@ -28,7 +28,7 @@ public class GlobalAL implements AWTEventListener
 				i.next().getAL().stopDragging();
 			}
 		}
-		else if (e.getID() == MouseEvent.MOUSE_MOVED)
+		else if (e.getID() == MouseEvent.MOUSE_MOVED || e.getID() == MouseEvent.MOUSE_DRAGGED)
 		{
 			MouseEvent ev = (MouseEvent) e;
 			Point p = ev.getLocationOnScreen();
