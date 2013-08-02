@@ -34,7 +34,6 @@ public class ContainerOverlay extends JComponent
 		PortGUI p;
 		Point a, b;
 		Iterator<ModuleGUI> i = main_window.module_list.iterator();
-		System.out.println("Draw event called");
 		while (i.hasNext())
 		{
 			m = i.next();
@@ -43,7 +42,6 @@ public class ContainerOverlay extends JComponent
 				p = m.input_ports[j];
 				if (p.connection != null)
 				{
-					System.out.println("Connection needs to be drawn");
 					// Port p is connected to some other port, we need to draw that
 					a = p.getLocationOnScreen();
 					b = p.connection.getLocationOnScreen();
