@@ -33,20 +33,8 @@ public class Oscillator extends Module
 	public Oscillator(Container container, double frequency, double phase_offset, double detune, int osc_type)
 	{		
 		super(container);
-		
-		NUM_INPUT_PIPES = 2;
-		NUM_OUTPUT_PIPES = 1;
-		
-		input_pipes = new Pipe[NUM_INPUT_PIPES];
-		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
-		
-		input_pipe_names[FREQUENCY_PIPE] = "Frequency input";
-		input_pipe_names[PHASE_PIPE] = "Phase input";
-		output_pipe_names[OUTPUT_PIPE] = "Sound output";
-		
-		module_type = Engine.Constants.MODULE_OSCILLATOR;
-		
-		MODULE_NAME = "Oscillator";
+
+		initialize(container);
 		
 		current_position = 0.0;
 		set_frequency(frequency);
@@ -59,8 +47,19 @@ public class Oscillator extends Module
 	{		
 		super(container);
 		
+		initialize(container);
+	}
+	
+	public void initialize(Container container)
+	{
 		NUM_INPUT_PIPES = 2;
 		NUM_OUTPUT_PIPES = 1;
+		
+		input_pipe_names = new String[NUM_INPUT_PIPES];
+		output_pipe_names = new String[NUM_OUTPUT_PIPES];
+		input_pipe_names[FREQUENCY_PIPE] = "Frequency input";
+		input_pipe_names[PHASE_PIPE] = "Phase input";
+		output_pipe_names[OUTPUT_PIPE] = "Sound output";
 		
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
