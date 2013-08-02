@@ -46,6 +46,8 @@ public class Container extends Module
 		inner_input_pipes = new Pipe[NUM_INPUT_PIPES];
 		inner_output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		// Pipe naming
+		input_pipe_names = new String[NUM_INPUT_PIPES];
+		output_pipe_names = new String[NUM_OUTPUT_PIPES];
 		input_pipe_names[0] = "Input";
 		output_pipe_names[0] = "Output";
 		

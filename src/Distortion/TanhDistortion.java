@@ -20,6 +20,8 @@ public class TanhDistortion extends Distortion
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
+		input_pipe_names = new String[NUM_INPUT_PIPES];
+		output_pipe_names = new String[NUM_OUTPUT_PIPES];
 		input_pipe_names[0] = "Sound input";
 		input_pipe_names[LEVEL_PIPE] = "Distortion level";
 		output_pipe_names[0] = "Sound output";

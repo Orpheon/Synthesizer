@@ -24,6 +24,8 @@ public class StereoMerger extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
+		input_pipe_names = new String[NUM_INPUT_PIPES];
+		output_pipe_names = new String[NUM_OUTPUT_PIPES];
 		input_pipe_names[INPUT_PIPE_LEFT] = "Left mono input";
 		input_pipe_names[INPUT_PIPE_RIGHT] = "Right mono input";
 		output_pipe_names[OUTPUT_PIPE] = "Stereo output";

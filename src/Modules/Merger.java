@@ -30,6 +30,8 @@ public class Merger extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
+		input_pipe_names = new String[NUM_INPUT_PIPES];
+		output_pipe_names = new String[NUM_OUTPUT_PIPES];
 		input_pipe_names[0] = "Input 1";
 		input_pipe_names[1] = "Input 2";
 		output_pipe_names[0] = "Merged output";
