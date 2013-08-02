@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import javax.swing.*;
 
 import ModuleGUIs.ConstantGUI;
+import ModuleGUIs.Output;
 
 public class ContainerWindow extends JFrame
 {
@@ -131,6 +132,12 @@ public class ContainerWindow extends JFrame
 		globalAL = new GlobalAL(this);
 		getToolkit().addAWTEventListener(globalAL, AWTEvent.MOUSE_EVENT_MASK);
 		getToolkit().addAWTEventListener(globalAL, AWTEvent.MOUSE_MOTION_EVENT_MASK);
+
+		ModuleGUIs.Output m_gui;
+		m_gui = new ModuleGUIs.Output(this, this.container);
+		module_list.add(m_gui);
+		central_container.add(m_gui);
+		m_gui.setLocation(300, 300);
 	}
 	
 	public void add_module(int type, int x, int y) throws IOException

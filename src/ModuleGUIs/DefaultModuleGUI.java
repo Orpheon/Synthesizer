@@ -15,7 +15,7 @@ import GUI.PortGUI;
 
 public class DefaultModuleGUI extends ModuleGUI
 {
-	protected int portbox_width, portbox_height;
+	protected int width, height;
 	protected int text_width, text_height;
 	
 	public DefaultModuleGUI(ContainerWindow main_window, Module module) throws IOException
@@ -27,10 +27,10 @@ public class DefaultModuleGUI extends ModuleGUI
 		text_height = 10+2;
 		
 		// FIXME: Make all these magic numbers constants or lookups
-		portbox_width = Math.max(16 + 20*Math.max(module.NUM_INPUT_PIPES, module.NUM_OUTPUT_PIPES) - 10, text_width);
-		portbox_height = 2*10 + 10;
+		width = Math.max(16 + 20*Math.max(module.NUM_INPUT_PIPES, module.NUM_OUTPUT_PIPES) - 10, text_width);
+		height = 2*10 + 10;
 		
-		Dimension d = new Dimension(portbox_width, portbox_height+text_height);
+		Dimension d = new Dimension(width, height+text_height);
 		setMinimumSize(d);
 		setPreferredSize(d);
 		setSize(d);
@@ -42,9 +42,9 @@ public class DefaultModuleGUI extends ModuleGUI
 		// First create the input ports
 		for (int i=0; i<module.NUM_INPUT_PIPES; i++)
 		{
-			double a = (portbox_width - 10.0*(module.NUM_INPUT_PIPES)) / (module.NUM_INPUT_PIPES + 1.0);
+			double a = (width - 10.0*(module.NUM_INPUT_PIPES)) / (module.NUM_INPUT_PIPES + 1.0);
 			tmpx = (int) Math.round(a+i*(10+a));
-			// Should be 2.5; FIXME: Replace with portbox_height
+			// Should be 2.5; FIXME: Replace with height
 			tmpy = 3;
 			
 			input_ports[i] = new PortGUI(main_window, module, Engine.Constants.INPUT_PORT, i);
@@ -55,9 +55,9 @@ public class DefaultModuleGUI extends ModuleGUI
 		// Then the output ports
 		for (int i=0; i<module.NUM_OUTPUT_PIPES; i++)
 		{
-			double a = (portbox_width - 10.0*(module.NUM_OUTPUT_PIPES)) / (module.NUM_OUTPUT_PIPES + 1.0);
+			double a = (width - 10.0*(module.NUM_OUTPUT_PIPES)) / (module.NUM_OUTPUT_PIPES + 1.0);
 			tmpx = (int) Math.round(a+i*(10+a));
-			// Should be 7.5; FIXME: Replace with portbox_height
+			// Should be 7.5; FIXME: Replace with height
 			tmpy = 18;
 			
 			output_ports[i] = new PortGUI(main_window, module, Engine.Constants.OUTPUT_PORT, i);
@@ -83,9 +83,9 @@ public class DefaultModuleGUI extends ModuleGUI
         g2d.drawString(name, 1, text_height-1);
         
 		g2d.setColor(Color.black);
-		g2d.drawRect(0, 0, portbox_width-1, text_height+portbox_height-1);// Implicit 2-point distance to text
-		g2d.drawRect(0, text_height, portbox_width, portbox_height);
-        g2d.drawLine(0, text_height+portbox_height/2, portbox_width, text_height+portbox_height/2);        
+		g2d.drawRect(0, 0, width-1, text_height+height-1);// Implicit 2-point distance to text
+		g2d.drawRect(0, text_height, width, height);
+        g2d.drawLine(0, text_height+height/2, width, text_height+height/2);        
 		// [/Copying]
 	}
 }
