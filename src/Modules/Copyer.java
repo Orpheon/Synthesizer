@@ -8,6 +8,8 @@ public class Copyer extends Module
 {
 	public static final int INPUT_PIPE = 0;
 	
+	// FIXME: Remove code duplication in constructor
+	
 	public Copyer(Container container)
 	{
 		super(container);
