@@ -13,8 +13,6 @@ public class ModuleGUI extends JPanel
 	private static final long serialVersionUID = 4170785623135839381L;
 
 	// FIXME: There has to be an inbuilt-constant for this
-	protected int portbox_width, portbox_height;
-	protected int text_width, text_height;
 	public Engine.Module module;
 	protected ModuleAL AL;
 	protected String name;

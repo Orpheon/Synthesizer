@@ -15,7 +15,9 @@ import GUI.PortGUI;
 
 public class DefaultModuleGUI extends ModuleGUI
 {
-
+	protected int portbox_width, portbox_height;
+	protected int text_width, text_height;
+	
 	public DefaultModuleGUI(ContainerWindow main_window, Module module) throws IOException
 	{
 		super(main_window, module);
