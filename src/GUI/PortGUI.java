@@ -10,21 +10,28 @@ public class PortGUI extends JButton
 	 */
 	private static final long serialVersionUID = 6594761194013281486L;
 	
-	private final static Image port_image = new ImageIcon("Sprites/Port.png").getImage();
+	private final static ImageIcon port_image = new ImageIcon("Sprites/Port.png");
 	private Engine.Module module;
 	private int port_number;
 	
 	public int port_type;
 	public PortGUI connection;
+	private PortAL AL;
 	
-	public PortGUI(Engine.Module module, int port_type, int port_number)
+	public PortGUI(ContainerWindow main_window, Engine.Module module, int port_type, int port_number)
 	{
-		super((Icon) port_image);
+		super(port_image);
 		
 		this.module = module;
 		this.port_type = port_type;
 		this.port_number = port_number;
 		connection = null;
+		
+		setVisible(true);
+		setSize(new Dimension(port_image.getIconWidth(), port_image.getIconHeight()));
+		
+		AL = new PortAL(main_window, this);
+		addMouseListener(AL);
 	}
 	
 	public void disconnect()

@@ -16,11 +16,12 @@ public class ModuleGUI extends JPanel
 	private int portbox_width, portbox_height;
 	private int text_width, text_height;
 	private Engine.Module module;
-	private Image port_icon;
 	private ModuleAL AL;
 	private String name;
+	private PortGUI[] input_ports;
+	private PortGUI[] output_ports;
 	
-	public ModuleGUI(Engine.Module module) throws IOException
+	public ModuleGUI(ContainerWindow main_window, Engine.Module module) throws IOException
 	{
 		name = module.MODULE_NAME + " " + module.get_index();
 		
@@ -44,7 +45,36 @@ public class ModuleGUI extends JPanel
 		AL = new ModuleAL(this);
 		addMouseMotionListener(AL);
 		
-		port_icon = new ImageIcon("Sprites/Port.png").getImage();
+		// Creating the ports
+		int tmpx, tmpy;
+		input_ports = new PortGUI[module.NUM_INPUT_PIPES];
+		output_ports = new PortGUI[module.NUM_OUTPUT_PIPES];
+		// First create the input ports
+		for (int i=0; i<module.NUM_INPUT_PIPES; i++)
+		{
+			double a = (portbox_width - 10.0*(module.NUM_INPUT_PIPES)) / (module.NUM_INPUT_PIPES + 1.0);
+			tmpx = (int) Math.round(a+i*(10+a));
+			// Should be 2.5; FIXME: Replace with portbox_height
+			tmpy = 3;
+			
+			input_ports[i] = new PortGUI(main_window, module, Engine.Constants.INPUT_PORT, i);
+			input_ports[i].setLocation(tmpx, tmpy + text_height);
+			System.out.println("Input port position: "+input_ports[i].getX()+"|"+input_ports[i].getY());
+			this.add(input_ports[i]);
+		}
+		
+		// Then the output ports
+		for (int i=0; i<module.NUM_OUTPUT_PIPES; i++)
+		{
+			double a = (portbox_width - 10.0*(module.NUM_OUTPUT_PIPES)) / (module.NUM_OUTPUT_PIPES + 1.0);
+			tmpx = (int) Math.round(a+i*(10+a));
+			// Should be 7.5; FIXME: Replace with portbox_height
+			tmpy = 18;
+			
+			output_ports[i] = new PortGUI(main_window, module, Engine.Constants.OUTPUT_PORT, i);
+			output_ports[i].setLocation(tmpx, tmpy + text_height);
+			this.add(output_ports[i]);
+		}
 	}
 	
 	public void paintComponent(Graphics g)
@@ -69,31 +99,6 @@ public class ModuleGUI extends JPanel
 		g2d.drawRect(0, text_height, portbox_width, portbox_height);
         g2d.drawLine(0, text_height+portbox_height/2, portbox_width, text_height+portbox_height/2);        
 		// [/Copying]
-		
-		
-		// Drawing sprites
-		int tmpx, tmpy;
-		// First draw the input ports
-		for (int i=0; i<module.NUM_INPUT_PIPES; i++)
-		{
-			double d = (portbox_width - 10.0*(module.NUM_INPUT_PIPES)) / (module.NUM_INPUT_PIPES + 1.0);
-			tmpx = (int) Math.round(d+i*(10+d));
-			// Should be 2.5; FIXME: Replace with portbox_height
-			tmpy = 3;
-			
-			g2d.drawImage(port_icon, tmpx, tmpy + text_height, null);
-		}
-		
-		// Then the output ports
-		for (int i=0; i<module.NUM_OUTPUT_PIPES; i++)
-		{
-			double d = (portbox_width - 10.0*(module.NUM_OUTPUT_PIPES)) / (module.NUM_OUTPUT_PIPES + 1.0);
-			tmpx = (int) Math.round(d+i*(10+d));
-			// Should be 7.5; FIXME: Replace with portbox_height
-			tmpy = 18;
-			
-			g2d.drawImage(port_icon, tmpx, tmpy + text_height, null);
-		}
 	}
 	
 //	public void paintComponent(Graphics g)
@@ -145,4 +150,9 @@ public class ModuleGUI extends JPanel
 //			g2d.drawImage(port_icon, x+tmpx, y+tmpy, null);
 //		}
 //	}
+	
+	public ModuleAL getAL()
+	{
+		return AL;
+	}
 }

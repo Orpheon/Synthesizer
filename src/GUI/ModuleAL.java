@@ -40,8 +40,11 @@ public class ModuleAL implements MouseMotionListener
 	
 	public void mouseMoved(MouseEvent e)
 	{
-		// FIXME:
-		// Possibly largest hack in the entire project
+		// Pass
+	}
+	
+	public void stopDragging()
+	{
 		dragging = false;
 	}
 }

@@ -14,11 +14,11 @@ public class ContainerWindow extends JFrame
 	 */
 	private static final long serialVersionUID = 2466772835685193131L;
 	
-	private Modules.Container container;
+	public Modules.Container container;
 	
 	// FIXME: Remove this
-	private LinkedList<ModuleGUI> module_list;
-	private JPanel central_container;
+	public LinkedList<ModuleGUI> module_list;
+	public JPanel central_container;
 	
 	private static final int DEFAULT_WINDOW_WIDTH = 900;
 	private static final int DEFAULT_WINDOW_HEIGHT = 600;
@@ -26,6 +26,10 @@ public class ContainerWindow extends JFrame
 	private ContainerRightClickMenu popup_menu;
 	
 	private JMenu menu;
+	
+	public ContainerOverlay overlay;
+	
+	private GlobalAL globalAL;
 	
 	public boolean is_connecting;
 	public PortGUI first_port;
@@ -99,12 +103,24 @@ public class ContainerWindow extends JFrame
         // Rightclick menu event catcher
         central_container.addMouseListener(new PopupListener());
         popup_menu = new ContainerRightClickMenu(this);
+        
+        // Glass pane for drawing pipes
+        overlay = new ContainerOverlay(this);
+        setGlassPane(overlay);
+		overlay.setSize(this.getSize());
+		overlay.setLocation(new Point(0, 0));
+		overlay.setOpaque(false);
+		overlay.setVisible(true);
+		
+		globalAL = new GlobalAL(this);
+		getToolkit().addAWTEventListener(globalAL, AWTEvent.MOUSE_EVENT_MASK);
+		getToolkit().addAWTEventListener(globalAL, AWTEvent.MOUSE_MOTION_EVENT_MASK);
 	}
 	
 	public void add_module(int type, int x, int y) throws IOException
 	{
 		Engine.Module m = container.add_module(type);
-		ModuleGUI m_gui = new ModuleGUI(m);
+		ModuleGUI m_gui = new ModuleGUI(this, m);
 		module_list.add(m_gui);
 		central_container.add(m_gui);
 		m_gui.setLocation(x, y);
