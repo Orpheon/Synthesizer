@@ -45,6 +45,9 @@ public class Container extends Module
 		// Inner pipes (going to modules inside the container)
 		inner_input_pipes = new Pipe[NUM_INPUT_PIPES];
 		inner_output_pipes = new Pipe[NUM_OUTPUT_PIPES];
+		// Pipe naming
+		input_pipe_names[0] = "Input";
+		output_pipe_names[0] = "Output";
 		
 		module_type = Constants.MODULE_CONTAINER;
 		

@@ -18,6 +18,10 @@ public class Copyer extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
+		input_pipe_names[0] = "Input to be duplicated";
+		output_pipe_names[0] = "Output copy 1";
+		output_pipe_names[1] = "Output copy 2";
+		
 		module_type = Engine.Constants.MODULE_COPYER;
 		
 		MODULE_NAME = "Copyer";

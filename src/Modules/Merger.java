@@ -30,6 +30,10 @@ public class Merger extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
+		input_pipe_names[0] = "Input 1";
+		input_pipe_names[1] = "Input 2";
+		output_pipe_names[0] = "Merged output";
+		
 		module_type = Engine.Constants.MODULE_MERGER;
 		
 		MODULE_NAME = "Merger";

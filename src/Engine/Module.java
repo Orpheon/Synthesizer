@@ -17,6 +17,9 @@ public abstract class Module
 	// The actual pipe arrays that hold those pipes
 	protected Pipe[] input_pipes;
 	protected Pipe[] output_pipes;
+	// Arrays that contain the names of each pipe
+	public String[] input_pipe_names;
+	public String[] output_pipe_names;
 	// ID system to provide each module with an identifier
 	protected static int counter;
 	protected int index;

@@ -40,6 +40,10 @@ public class Oscillator extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
+		input_pipe_names[FREQUENCY_PIPE] = "Frequency input";
+		input_pipe_names[PHASE_PIPE] = "Phase input";
+		output_pipe_names[OUTPUT_PIPE] = "Sound output";
+		
 		module_type = Engine.Constants.MODULE_OSCILLATOR;
 		
 		MODULE_NAME = "Oscillator";
