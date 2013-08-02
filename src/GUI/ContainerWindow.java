@@ -18,6 +18,7 @@ public class ContainerWindow extends JFrame
 	 */
 	private static final long serialVersionUID = 2466772835685193131L;
 	
+	public Engine.EngineMaster engine;
 	public Modules.Container container;
 	
 	// FIXME: Remove this
@@ -85,15 +86,16 @@ public class ContainerWindow extends JFrame
 		}
 	}
 	
-	public ContainerWindow(Modules.Container container) throws IOException
+	public ContainerWindow(Engine.EngineMaster engine) throws IOException
 	{
-		this(container, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
+		this(engine, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 	}
 	
-	public ContainerWindow(Modules.Container container, int window_width, int window_height) throws IOException
+	public ContainerWindow(Engine.EngineMaster engine, int window_width, int window_height) throws IOException
 	{
 		// We keep a pointer to the our container
-		this.container = container;
+		container = engine.main_container;
+		this.engine = engine;
 		
 		module_list = new LinkedList<ModuleGUI>();
 
@@ -133,6 +135,14 @@ public class ContainerWindow extends JFrame
 		getToolkit().addAWTEventListener(globalAL, AWTEvent.MOUSE_EVENT_MASK);
 		getToolkit().addAWTEventListener(globalAL, AWTEvent.MOUSE_MOTION_EVENT_MASK);
 
+		// FIXME
+		// This will eventually disappear
+		ModuleGUIs.Input m;
+		m = new ModuleGUIs.Input(this, this.container);
+		module_list.add(m);
+		central_container.add(m);
+		m.setLocation(300, 200);
+		
 		ModuleGUIs.Output m_gui;
 		m_gui = new ModuleGUIs.Output(this, this.container);
 		module_list.add(m_gui);

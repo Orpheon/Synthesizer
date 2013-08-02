@@ -61,7 +61,7 @@ public class Main
 	public static void main(String[] args) throws LineUnavailableException, InterruptedException, IOException
 	{
 		Engine.EngineMaster engine = new Engine.EngineMaster();
-		GUI.ContainerWindow main_window = new GUI.ContainerWindow(engine.main_container);
+		GUI.ContainerWindow main_window = new GUI.ContainerWindow(engine);
 		main_window.setVisible(true);
 		while (true)
 		{

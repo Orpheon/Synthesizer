@@ -39,7 +39,14 @@ public class ContainerOverlay extends JComponent
 			m = i.next();
 			for (int j=0; j<m.module.NUM_INPUT_PIPES; j++)
 			{
-				p = m.input_ports[j];
+				if (m instanceof ModuleGUIs.Input)
+				{
+					p = m.output_ports[j];
+				}
+				else
+				{
+					p = m.input_ports[j];
+				}
 				if (p.connection != null)
 				{
 					// Port p is connected to some other port, we need to draw that

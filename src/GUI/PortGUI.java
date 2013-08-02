@@ -1,6 +1,7 @@
 package GUI;
 
 import java.awt.*;
+
 import javax.swing.*;
 
 import Engine.Module;
@@ -52,6 +53,8 @@ public class PortGUI extends JButton
 	
 	public void disconnect()
 	{
+		main_window.engine.stop_playing();
+		
 		if (port_type == Engine.Constants.INPUT_PORT)
 		{
 			module.disconnect_input(port_number);

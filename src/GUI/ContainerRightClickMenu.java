@@ -54,6 +54,19 @@ public class ContainerRightClickMenu extends JPopupMenu
 		);
 		item.setText("Create Constant");
 		add(item);
+		
+		item = new JMenuItem(new AbstractAction()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				ContainerRightClickMenu.this.main_window.engine.set_frequency(440, 554.365, 659.26); // A C# E (A chord)
+				ContainerRightClickMenu.this.main_window.engine.start_playing();
+				ContainerRightClickMenu.this.hide();
+			}
+		}
+		);
+		item.setText("Start Playing");
+		add(item);
 	}
 	
 	public void open(Point pos)
