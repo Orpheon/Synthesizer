@@ -22,7 +22,7 @@ public class Copyer extends Module
 		
 		input_pipe_names = new String[NUM_INPUT_PIPES];
 		output_pipe_names = new String[NUM_OUTPUT_PIPES];
-		input_pipe_names[0] = "Input to be duplicated";
+		input_pipe_names[INPUT_PIPE] = "Input to be duplicated";
 		output_pipe_names[0] = "Output copy 1";
 		output_pipe_names[1] = "Output copy 2";
 		
