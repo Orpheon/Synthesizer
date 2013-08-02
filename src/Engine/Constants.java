@@ -21,6 +21,7 @@ public class Constants
 	public static final int MODULE_RANGEMODIFIER = 5;
 	public static final int MODULE_DISTORTION = 6;
 	public static final int MODULE_STEREOMERGER = 7;
+	public static final int MODULE_CONSTANT = 8;
 	
 	// Module subtype constants
 	public static final int DISTORTION_TANH = 0;

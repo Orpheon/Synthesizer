@@ -7,6 +7,8 @@ import java.util.LinkedList;
 
 import javax.swing.*;
 
+import ModuleGUIs.ConstantGUI;
+
 public class ContainerWindow extends JFrame
 {
 	/**
@@ -120,7 +122,15 @@ public class ContainerWindow extends JFrame
 	public void add_module(int type, int x, int y) throws IOException
 	{
 		Engine.Module m = container.add_module(type);
-		ModuleGUI m_gui = new ModuleGUI(this, m);
+		ModuleGUI m_gui;
+		if (type == Engine.Constants.MODULE_CONSTANT)
+		{
+			m_gui = new ModuleGUIs.ConstantGUI(this, m);
+		}
+		else
+		{
+			m_gui = new ModuleGUIs.DefaultModuleGUI(this, m);
+		}
 		module_list.add(m_gui);
 		central_container.add(m_gui);
 		m_gui.setLocation(x, y);

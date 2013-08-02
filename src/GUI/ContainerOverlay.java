@@ -37,7 +37,7 @@ public class ContainerOverlay extends JComponent
 		while (i.hasNext())
 		{
 			m = i.next();
-			for (int j=0; j<m.input_ports.length; j++)
+			for (int j=0; j<m.module.NUM_INPUT_PIPES; j++)
 			{
 				p = m.input_ports[j];
 				if (p.connection != null)

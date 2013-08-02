@@ -146,6 +146,10 @@ public class Container extends Module
     		case Constants.MODULE_CONTAINER:
     			m = new Modules.Container(this);
     			break;
+    		
+    		case Constants.MODULE_CONSTANT:
+    			m = new Modules.Constant(this);
+    			break;
     			
     		default:
     			System.out.println("ERROR: Invalid module type requested: "+type);

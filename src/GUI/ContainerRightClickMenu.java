@@ -42,6 +42,18 @@ public class ContainerRightClickMenu extends JPopupMenu
 		);
 		item.setText("Create Container");
 		add(item);
+		
+		item = new JMenuItem(new AbstractAction()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_CONSTANT);
+				ContainerRightClickMenu.this.hide();
+			}
+		}
+		);
+		item.setText("Create Constant");
+		add(item);
 	}
 	
 	public void open(Point pos)
