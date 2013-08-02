@@ -87,7 +87,6 @@ public class PortGUI extends JButton
 			{
 				if (input.module.get_audio_mode() == output.module.get_audio_mode())
 				{
-					System.out.println("Connection established");
 					main_window.container.connect_modules(output.module, output.port_number, input.module, input.port_number, input.module.get_audio_mode());
 					input.connection = output;
 					output.connection = input;

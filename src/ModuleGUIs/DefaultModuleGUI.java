@@ -47,7 +47,6 @@ public class DefaultModuleGUI extends ModuleGUI
 			
 			input_ports[i] = new PortGUI(main_window, module, Engine.Constants.INPUT_PORT, i);
 			input_ports[i].setLocation(tmpx, tmpy + text_height);
-			System.out.println("Input port position: "+input_ports[i].getX()+"|"+input_ports[i].getY());
 			this.add(input_ports[i]);
 		}
 		

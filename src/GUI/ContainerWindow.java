@@ -148,6 +148,5 @@ public class ContainerWindow extends JFrame
 		module_list.add(m_gui);
 		central_container.add(m_gui);
 		m_gui.setLocation(x, y);
-		System.out.println(m_gui.getName());
 	}
 }
