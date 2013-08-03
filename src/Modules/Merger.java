@@ -18,7 +18,7 @@ public class Merger extends Module
 	
 	public static final int OUTPUT_PIPE = 0;
 	
-	private int operation = ADDITION;
+	private int operation = MULTIPLICATION;
 	
 	public Merger(Container container)
 	{

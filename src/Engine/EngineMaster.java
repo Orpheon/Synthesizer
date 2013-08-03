@@ -181,11 +181,11 @@ public class EngineMaster
     	// TODO: Another thing that's going to have to disappear when GUI is here.
     	for (int i=0; i<Constants.SNAPSHOT_SIZE; i++)
     	{
-    		main_container.get_inner_input_pipe(0).activation_times[0] = 0;
+    		main_container.get_inner_input_pipe(0).activation_times[0] = get_snapshot_counter();
     		main_container.get_inner_input_pipe(0).get_pipe(0)[0][i] = f1;
-    		main_container.get_inner_input_pipe(0).activation_times[1] = 0;
+    		main_container.get_inner_input_pipe(0).activation_times[1] = get_snapshot_counter();
     		main_container.get_inner_input_pipe(0).get_pipe(1)[0][i] = f2;
-    		main_container.get_inner_input_pipe(0).activation_times[2] = 0;
+    		main_container.get_inner_input_pipe(0).activation_times[2] = get_snapshot_counter();
     		main_container.get_inner_input_pipe(0).get_pipe(2)[0][i] = f3;
     	}
     }

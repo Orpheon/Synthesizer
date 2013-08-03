@@ -31,18 +31,39 @@ public class Constant extends Module
 	}
 	
 	@Override
+	public void run(EngineMaster engine)
+	{
+		// Big hack, but in the case of constants I think it's actually a good idea
+		if (engine.is_playing())
+		{
+			for (int channel=0; channel<Engine.Constants.NUM_CHANNELS; channel++)
+			{
+				run(engine, channel);
+				output_pipes[OUTPUT_PIPE].activation_times[channel] = 0;
+			}
+			
+		}
+	}
+	
+	@Override
 	public void run(EngineMaster engine, int channel)
 	{
-		for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
+		// Big hack, but in the case of constants I think it's actually a good idea
+		if (engine.is_playing())
 		{
-			if (audio_mode == Engine.Constants.MONO)
+			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 			{
-				output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = value;
-			}
-			else
-			{
-				output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = value;
-				output_pipes[OUTPUT_PIPE].get_pipe(channel)[1][i] = value;
+				System.out.println(value);
+				
+				if (audio_mode == Engine.Constants.MONO)
+				{
+					output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = value;
+				}
+				else
+				{
+					output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = value;
+					output_pipes[OUTPUT_PIPE].get_pipe(channel)[1][i] = value;
+				}
 			}
 		}
 	}
