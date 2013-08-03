@@ -2,6 +2,7 @@ package GUI;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
@@ -53,6 +54,30 @@ public class ContainerRightClickMenu extends JPopupMenu
 		}
 		);
 		item.setText("Create Constant");
+		add(item);
+		
+		item = new JMenuItem(new AbstractAction()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_COPYER);
+				ContainerRightClickMenu.this.hide();
+			}
+		}
+		);
+		item.setText("Create Copyer");
+		add(item);
+		
+		item = new JMenuItem(new AbstractAction()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_MERGER);
+				ContainerRightClickMenu.this.hide();
+			}
+		}
+		);
+		item.setText("Create Merger");
 		add(item);
 		
 		item = new JMenuItem(new AbstractAction()
