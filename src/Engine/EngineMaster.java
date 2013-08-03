@@ -82,6 +82,7 @@ public class EngineMaster
     			while (true)
     			{
 	    			// Run the entire chain of events and generate another chunk of audio
+    				line_available = line.available();
     				snapshot_counter++;
 	    			main_container.run(this);
 	    			byte[] tmp;
