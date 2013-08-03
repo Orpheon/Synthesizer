@@ -92,6 +92,18 @@ public class ContainerRightClickMenu extends JPopupMenu
 		);
 		item.setText("Start Playing");
 		add(item);
+		
+		item = new JMenuItem(new AbstractAction()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				ContainerRightClickMenu.this.main_window.engine.stop_playing();
+				ContainerRightClickMenu.this.hide();
+			}
+		}
+		);
+		item.setText("Stop Playing");
+		add(item);
 	}
 	
 	public void open(Point pos)
