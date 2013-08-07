@@ -122,7 +122,10 @@ public class ContainerRightClickMenu extends JPopupMenu
 	{
 		try
 		{
-			main_window.add_module(type, pos.x - main_window.getLocation().x, pos.y - main_window.getLocation().y - this.getHeight());
+			SwingUtilities.convertPointFromScreen(pos, main_window);
+//			pos.x -= main_window.getInsets().left;
+//			pos.y -= main_window.getInsets().top;
+			main_window.add_module(type, pos.x, pos.y);// - this.getHeight());
 		}
 		catch (IOException e)
 		{
