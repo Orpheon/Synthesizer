@@ -28,6 +28,7 @@ public class Input extends ModuleGUI
 		height = 50;
 		
 		name = "Frequency Input";
+		type = Engine.Constants.INPUT_MODULE_GUI;
 		
 		// FIXME: Find out how to guess the length of a string
 		text_width = name.length()*6+2;
@@ -52,7 +53,7 @@ public class Input extends ModuleGUI
 		// Should be 2.5; FIXME: Replace with height
 		tmpy = height/2 - 5;
 		
-		output_ports[0] = new PortGUI(main_window, module, Engine.Constants.OUTPUT_PORT, 0);
+		output_ports[0] = new PortGUI(main_window, this, Engine.Constants.OUTPUT_PORT, 0);
 		output_ports[0].setLocation(tmpx, tmpy + text_height);
 		add(output_ports[0]);
 	}

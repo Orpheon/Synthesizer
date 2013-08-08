@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import javax.swing.*;
 
-public class ModuleGUI extends JPanel
+public abstract class ModuleGUI extends JPanel
 {
 	/**
 	 * God knows what this is, but eclipse wants it
@@ -18,12 +18,15 @@ public class ModuleGUI extends JPanel
 	protected String name;
 	public PortGUI[] input_ports;
 	public PortGUI[] output_ports;
+	public int type;
 	
 	public ModuleGUI(ContainerWindow main_window, Engine.Module module) throws IOException
 	{
 		name = module.MODULE_NAME + " " + module.get_index();
 		
 		this.module = module;
+		
+		type = Engine.Constants.INVALID_MODULE_GUI;
 		
 		AL = new ModuleAL(this);
 		addMouseMotionListener(AL);

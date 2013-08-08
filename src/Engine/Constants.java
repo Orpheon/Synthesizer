@@ -39,4 +39,10 @@ public class Constants
 	// GUI constants
 	public static final int INPUT_PORT = 1;
 	public static final int OUTPUT_PORT = 2;
+	
+	public static final int INVALID_MODULE_GUI = 0;
+	public static final int DEFAULT_MODULE_GUI = 1;
+	public static final int INPUT_MODULE_GUI = 2;
+	public static final int OUTPUT_MODULE_GUI = 3;
+	public static final int CONSTANT_MODULE_GUI = 4;
 }

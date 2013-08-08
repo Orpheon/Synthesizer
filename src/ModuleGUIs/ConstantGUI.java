@@ -35,6 +35,8 @@ public class ConstantGUI extends ModuleGUI
 		
 		setSize(new Dimension(width, height));
 		
+		type = Engine.Constants.CONSTANT_MODULE_GUI;
+		
 		input = new JFormattedTextField();
 		Modules.Constant tmp = (Modules.Constant) module;
 		input.setValue(tmp.value);
@@ -45,7 +47,7 @@ public class ConstantGUI extends ModuleGUI
 		input_ports = new PortGUI[module.NUM_INPUT_PIPES];
 		output_ports = new PortGUI[module.NUM_OUTPUT_PIPES];
 		
-		output_ports[0] = new PortGUI(main_window, module, Engine.Constants.OUTPUT_PORT, 0);
+		output_ports[0] = new PortGUI(main_window, this, Engine.Constants.OUTPUT_PORT, 0);
 		output_ports[0].setLocation((width-10)/2, height/2 + (height/2-10)/2);
 		this.add(output_ports[0]);
 	}

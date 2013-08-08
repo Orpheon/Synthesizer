@@ -30,6 +30,7 @@ public class Output extends ModuleGUI
 		height = 50;
 		
 		name = "Sound output sink";
+		type = Engine.Constants.OUTPUT_MODULE_GUI;
 		
 		// FIXME: Find out how to guess the length of a string
 		text_width = name.length()*6+2;
@@ -54,7 +55,7 @@ public class Output extends ModuleGUI
 		// Should be 2.5; FIXME: Replace with height
 		tmpy = height/2 - 5;
 		
-		input_ports[0] = new PortGUI(main_window, module, Engine.Constants.INPUT_PORT, 0);
+		input_ports[0] = new PortGUI(main_window, this, Engine.Constants.INPUT_PORT, 0);
 		input_ports[0].setLocation(tmpx, tmpy + text_height);
 		add(input_ports[0]);
 	}

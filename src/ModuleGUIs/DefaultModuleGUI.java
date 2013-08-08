@@ -35,6 +35,8 @@ public class DefaultModuleGUI extends ModuleGUI
 		setPreferredSize(d);
 		setSize(d);
 		
+		type = Engine.Constants.DEFAULT_MODULE_GUI;
+		
 		// Creating the ports
 		int tmpx, tmpy;
 		input_ports = new PortGUI[module.NUM_INPUT_PIPES];
@@ -47,7 +49,7 @@ public class DefaultModuleGUI extends ModuleGUI
 			// Should be 2.5; FIXME: Replace with height
 			tmpy = 3;
 			
-			input_ports[i] = new PortGUI(main_window, module, Engine.Constants.INPUT_PORT, i);
+			input_ports[i] = new PortGUI(main_window, this, Engine.Constants.INPUT_PORT, i);
 			input_ports[i].setLocation(tmpx, tmpy + text_height);
 			this.add(input_ports[i]);
 		}
@@ -60,7 +62,7 @@ public class DefaultModuleGUI extends ModuleGUI
 			// Should be 7.5; FIXME: Replace with height
 			tmpy = 18;
 			
-			output_ports[i] = new PortGUI(main_window, module, Engine.Constants.OUTPUT_PORT, i);
+			output_ports[i] = new PortGUI(main_window, this, Engine.Constants.OUTPUT_PORT, i);
 			output_ports[i].setLocation(tmpx, tmpy + text_height);
 			this.add(output_ports[i]);
 		}

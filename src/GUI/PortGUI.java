@@ -14,6 +14,7 @@ public class PortGUI extends JButton
 	private static final long serialVersionUID = 6594761194013281486L;
 	
 	private final static ImageIcon port_image = new ImageIcon("Sprites/Port.png");
+	private ModuleGUI module_gui;
 	public Engine.Module module;
 	private int port_number;
 	
@@ -23,11 +24,12 @@ public class PortGUI extends JButton
 	
 	private ContainerWindow main_window;
 	
-	public PortGUI(ContainerWindow main_window, Engine.Module module, int port_type, int port_number)
+	public PortGUI(ContainerWindow main_window, ModuleGUI module_gui, int port_type, int port_number)
 	{
 		super(port_image);
 		
-		this.module = module;
+		this.module_gui = module_gui;
+		this.module = module_gui.module;
 		this.port_type = port_type;
 		this.port_number = port_number;
 		connection = null;
@@ -57,16 +59,43 @@ public class PortGUI extends JButton
 		
 		if (port_type == Engine.Constants.INPUT_PORT)
 		{
-			module.disconnect_input(port_number);
-			connection.module.disconnect_output(connection.port_number);
+			disconnect_input(module_gui);
+			disconnect_output(connection.module_gui);
 		}
 		else
 		{
-			module.disconnect_output(port_number);
-			connection.module.disconnect_input(connection.port_number);
+			disconnect_input(connection.module_gui);
+			disconnect_output(module_gui);
 		}
+		
 		connection.connection = null;
 		connection = null;
+	}
+	
+	private void disconnect_input(ModuleGUI gui)
+	{
+		if (gui.type == Engine.Constants.OUTPUT_MODULE_GUI)
+		{
+			Modules.Container m = (Modules.Container) gui.module;
+			m.disconnect_inner_input(port_number);
+		}
+		else
+		{
+			gui.module.disconnect_input(port_number);
+		}
+	}
+	
+	private void disconnect_output(ModuleGUI gui)
+	{
+		if (gui.type == Engine.Constants.INPUT_MODULE_GUI)
+		{
+			Modules.Container m = (Modules.Container) gui.module;
+			m.disconnect_inner_output(port_number);
+		}
+		else
+		{
+			gui.module.disconnect_output(port_number);
+		}
 	}
 	
 	public void attempt_connection(PortGUI other)
