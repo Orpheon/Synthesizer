@@ -30,7 +30,7 @@ public class ContainerWindow extends JFrame
 	
 	private ContainerRightClickMenu popup_menu;
 	
-	private JMenu menu;
+	public JMenu menu;
 	
 	public ContainerOverlay overlay;
 	
