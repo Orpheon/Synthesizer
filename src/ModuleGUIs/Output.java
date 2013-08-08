@@ -80,11 +80,6 @@ public class Output extends ModuleGUI
 		g2d.drawRect(0, text_height, width, height);  
 		// [/Copying]
 		
-		
-		// Hack because damn, this bug is making me mad
-		
-		// FIXME: Find and fix the bug
-		input_ports[0].fix_bug();
 		int tmpx, tmpy;
 
 		double a = (width - 10.0) / (2.0);

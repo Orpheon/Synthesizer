@@ -97,10 +97,4 @@ public class PortGUI extends JButton
 			}
 		}
 	}
-	
-	public void fix_bug()
-	{
-		// Hack because damn, this bug is making me mad
-		setSize(new Dimension(port_image.getIconWidth(), port_image.getIconHeight()));
-	}
 }

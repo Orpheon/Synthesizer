@@ -27,6 +27,8 @@ public class ModuleGUI extends JPanel
 		
 		AL = new ModuleAL(this);
 		addMouseMotionListener(AL);
+		
+		setLayout(new GroupLayout(this));
 	}
 	
 	public ModuleAL getAL()
