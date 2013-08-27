@@ -14,14 +14,16 @@ public class Constants
 	public static final double pi_times_2 = 6.28318530718;
 	
 	// Module type constants
-	public static final int MODULE_OSCILLATOR = 1;
-	public static final int MODULE_MERGER = 2;
-	public static final int MODULE_COPYER = 3;
-	public static final int MODULE_CONTAINER = 4;
-	public static final int MODULE_RANGEMODIFIER = 5;
-	public static final int MODULE_DISTORTION = 6;
-	public static final int MODULE_STEREOMERGER = 7;
-	public static final int MODULE_CONSTANT = 8;
+	public static final int MODULE_INPUT = 1;
+	public static final int MODULE_OUTPUT = 2;
+	public static final int MODULE_OSCILLATOR = 3;
+	public static final int MODULE_MERGER = 4;
+	public static final int MODULE_COPYER = 5;
+	public static final int MODULE_CONTAINER = 6;
+	public static final int MODULE_RANGEMODIFIER = 7;
+	public static final int MODULE_DISTORTION = 8;
+	public static final int MODULE_STEREOMERGER = 9;
+	public static final int MODULE_CONSTANT = 10;
 	
 	// Module subtype constants
 	public static final int DISTORTION_TANH = 0;
