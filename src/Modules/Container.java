@@ -22,6 +22,9 @@ public class Container extends Module
 	private Pipe[] inner_output_pipes;
 	// One needs to keep track of what modules are alive
 	private LinkedList<Engine.Module> module_list;
+	// Special modules
+	Engine.InputModule input_source;
+	Engine.OutputModule output_sink;
 	
 	public Container()
 	{
@@ -50,6 +53,9 @@ public class Container extends Module
 		output_pipe_names = new String[NUM_OUTPUT_PIPES];
 		input_pipe_names[0] = "Input";
 		output_pipe_names[0] = "Output";
+		// Special modules
+		input_source = new Engine.InputModule(this);
+		output_sink = new Engine.OutputModule(this);
 		
 		module_type = Constants.MODULE_CONTAINER;
 		
@@ -353,6 +359,16 @@ public class Container extends Module
 	public Pipe get_inner_output_pipe(int i)
 	{
 		return this.inner_output_pipes[i];
+	}
+	
+	public Engine.InputModule get_input()
+	{
+		return input_source;
+	}
+	
+	public Engine.OutputModule get_output()
+	{
+		return output_sink;
 	}
 	
 	public void close()

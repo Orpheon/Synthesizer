@@ -94,7 +94,7 @@ public class EngineMaster
 	    			// Check how many channels actually are outputting
 	    			for (int channel=0; channel<Engine.Constants.NUM_CHANNELS; channel++)
 	    			{
-	    				if (main_container.get_inner_output_pipe(0).activation_times[channel] >= 0)
+	    				if (main_container.get_output().get_sink().activation_times[channel] >= 0)
 	    				{
 	    					channel_active[channel] = true;
 	    					num_channels_active++;
@@ -127,7 +127,7 @@ public class EngineMaster
 	    				{
 	    					if (channel_active[channel])
 	    					{
-	    						sum += global_volume * main_container.get_inner_output_pipe(0).get_pipe(channel)[0][i];
+	    						sum += global_volume * main_container.get_output().get_sink().get_pipe(channel)[0][i];
 	    					}
 	    				}
 	    				tmp = Functions.convert_to_16bit_bytearray(sum/num_channels_active);
@@ -178,16 +178,9 @@ public class EngineMaster
     
     public void set_frequency(double f1, double f2, double f3)
     {
-    	// TODO: Another thing that's going to have to disappear when GUI is here.
-    	for (int i=0; i<Constants.SNAPSHOT_SIZE; i++)
-    	{
-    		main_container.get_inner_input_pipe(0).activation_times[0] = get_snapshot_counter();
-    		main_container.get_inner_input_pipe(0).get_pipe(0)[0][i] = f1;
-    		main_container.get_inner_input_pipe(0).activation_times[1] = get_snapshot_counter();
-    		main_container.get_inner_input_pipe(0).get_pipe(1)[0][i] = f2;
-    		main_container.get_inner_input_pipe(0).activation_times[2] = get_snapshot_counter();
-    		main_container.get_inner_input_pipe(0).get_pipe(2)[0][i] = f3;
-    	}
+    	main_container.get_input().add_frequency(this, f1);
+    	main_container.get_input().add_frequency(this, f2);
+    	main_container.get_input().add_frequency(this, f3);
     }
     
     public void start_playing()

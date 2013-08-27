@@ -5,7 +5,7 @@ import Modules.Container;
 public class InputModule extends Module
 {
 	private static final int FREQUENCY_SOURCE = 0;
-	private int[] frequencies;
+	private double[] frequencies;
 	
 	public InputModule(Container container)
 	{
@@ -25,7 +25,7 @@ public class InputModule extends Module
 		
 		MODULE_NAME = "Input";
 		
-		frequencies = new int[Constants.NUM_CHANNELS];
+		frequencies = new double[Constants.NUM_CHANNELS];
 	}
 	
 	@Override
@@ -61,7 +61,7 @@ public class InputModule extends Module
 		// Yet I must implement it because yay java
 	}
 	
-	public void add_frequency(EngineMaster engine, int freq)
+	public void add_frequency(EngineMaster engine, double freq)
 	{
 		for (int i=0; i<Constants.NUM_CHANNELS; i++)
 		{

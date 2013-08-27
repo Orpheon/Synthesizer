@@ -4,6 +4,8 @@ import Modules.Container;
 
 public class OutputModule extends Module
 {
+	private static int SOUND_SINK = 0;
+	
 	public OutputModule(Container container)
 	{
 		super(container);
@@ -21,6 +23,11 @@ public class OutputModule extends Module
 		module_type = Engine.Constants.MODULE_OUTPUT;
 		
 		MODULE_NAME = "Output";
+	}
+	
+	public Pipe get_sink()
+	{
+		return input_pipes[SOUND_SINK];
 	}
 
 	@Override
