@@ -18,9 +18,9 @@ public class OutputModule extends Module
 		output_pipe_names = new String[NUM_OUTPUT_PIPES];
 		input_pipe_names[0] = "Sound sink";
 		
-		module_type = Engine.Constants.MODULE_INPUT;
+		module_type = Engine.Constants.MODULE_OUTPUT;
 		
-		MODULE_NAME = "Input";
+		MODULE_NAME = "Output";
 	}
 
 	@Override
