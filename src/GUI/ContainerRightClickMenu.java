@@ -123,8 +123,9 @@ public class ContainerRightClickMenu extends JPopupMenu
 		try
 		{
 			SwingUtilities.convertPointFromScreen(pos, main_window);
+			// FIXME Magic number
 			pos.x -= main_window.getInsets().left;
-			pos.y -= main_window.getInsets().top + main_window.menu.getHeight();
+			pos.y -= main_window.getInsets().top + main_window.menu.getHeight() + 4;
 			main_window.add_module(type, pos.x, pos.y);
 		}
 		catch (IOException e)

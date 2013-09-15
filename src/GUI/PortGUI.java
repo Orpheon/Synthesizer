@@ -60,11 +60,11 @@ public class PortGUI extends JButton
 		if (port_type == Engine.Constants.INPUT_PORT)
 		{
 			disconnect_input(module_gui);
-			disconnect_output(connection.module_gui);
+			connection.disconnect_output(connection.module_gui);
 		}
 		else
 		{
-			disconnect_input(connection.module_gui);
+			connection.disconnect_input(connection.module_gui);
 			disconnect_output(module_gui);
 		}
 		
@@ -74,28 +74,12 @@ public class PortGUI extends JButton
 	
 	private void disconnect_input(ModuleGUI gui)
 	{
-		if (gui.type == Engine.Constants.OUTPUT_MODULE_GUI)
-		{
-			Modules.Container m = (Modules.Container) gui.module;
-			m.disconnect_inner_input(port_number);
-		}
-		else
-		{
-			gui.module.disconnect_input(port_number);
-		}
+		gui.module.disconnect_input(port_number);
 	}
 	
 	private void disconnect_output(ModuleGUI gui)
 	{
-		if (gui.type == Engine.Constants.INPUT_MODULE_GUI)
-		{
-			Modules.Container m = (Modules.Container) gui.module;
-			m.disconnect_inner_output(port_number);
-		}
-		else
-		{
-			gui.module.disconnect_output(port_number);
-		}
+		gui.module.disconnect_output(port_number);
 	}
 	
 	public void attempt_connection(PortGUI other)
@@ -119,6 +103,10 @@ public class PortGUI extends JButton
 			{
 				if (input.module.get_audio_mode() == output.module.get_audio_mode())
 				{
+					if (this.connection != null)
+					{
+						disconnect();
+					}
 					main_window.container.connect_modules(output.module, output.port_number, input.module, input.port_number, input.module.get_audio_mode());
 					input.connection = output;
 					output.connection = input;
