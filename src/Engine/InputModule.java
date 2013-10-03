@@ -6,6 +6,7 @@ public class InputModule extends Module
 {
 	private static final int FREQUENCY_SOURCE = 0;
 	private double[] frequencies;
+	private long[] activation_times;
 	
 	public InputModule(Container container)
 	{
@@ -26,6 +27,12 @@ public class InputModule extends Module
 		MODULE_NAME = "Input";
 		
 		frequencies = new double[Constants.NUM_CHANNELS];
+		activation_times = new long[Constants.NUM_CHANNELS];
+		// Deactivate the activation times, because 0 is a legal number (-1 isn't)
+		for (int i=0; i<activation_times.length; i++)
+		{
+			activation_times[i] = -1;
+		}
 	}
 	
 	@Override
@@ -35,8 +42,9 @@ public class InputModule extends Module
 		{
 			if (output_pipes[FREQUENCY_SOURCE] != null)
 			{
-				if (output_pipes[FREQUENCY_SOURCE].activation_times[i] >= 0)
+				if (activation_times[i] >= 0)
 				{
+					output_pipes[FREQUENCY_SOURCE].activation_times[i] = activation_times[i];
 					if (audio_mode == Constants.MONO)
 					{
 						for (int j=0; j<Constants.SNAPSHOT_SIZE; j++)
@@ -68,14 +76,11 @@ public class InputModule extends Module
 	{
 		for (int i=0; i<Constants.NUM_CHANNELS; i++)
 		{
-			frequencies[i] = freq;
-			if (output_pipes[FREQUENCY_SOURCE] != null)
+			if (activation_times[i] < 0)
 			{
-				if (output_pipes[FREQUENCY_SOURCE].activation_times[i] < 0)
-				{
-					output_pipes[FREQUENCY_SOURCE].activation_times[i] = engine.get_snapshot_counter();
-					break;
-				}
+				frequencies[i] = freq;
+				activation_times[i] = engine.get_snapshot_counter();
+				break;
 			}
 		}
 	}
