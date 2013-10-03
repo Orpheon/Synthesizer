@@ -53,8 +53,6 @@ public class Constant extends Module
 		{
 			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 			{
-				System.out.println(value);
-				
 				if (audio_mode == Engine.Constants.MONO)
 				{
 					output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = value;
