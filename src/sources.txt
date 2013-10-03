@@ -6,6 +6,9 @@ http://www.google.ch/url?sa=t&rct=j&q=&esrc=s&source=web&cd=6&ved=0CFIQFjAF&url=
 
 http://www.csounds.com/journal/issue11/distortionSynthesis.html
 
+beausievers.com/synth/synthbasics
+
+http://www.dspguide.com/ch1.htm
 
 * Now talking on ##java
 * Topic for ##java is: A channel for java development questions | Paste limit is 2 lines.  ~pastebin lists options | Read this first:  http://javachannel.net | Android in #android-dev | JavaScript is in ##javascript | No applets | This channel is logged
