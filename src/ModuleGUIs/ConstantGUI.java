@@ -14,15 +14,30 @@ public class ConstantGUI extends ModuleGUI
 {
 	protected int width;
 	protected int height;
-	public Modules.Constant module;
-	public JFormattedTextField input;
+	public JTextField input;
 	
-	class textFieldListener implements ActionListener
+	class TextFieldListener implements FocusListener
 	{
 		@Override
-		public void actionPerformed(ActionEvent e)
+		public void focusGained(FocusEvent e)
 		{
-			ConstantGUI.this.module.value = (Double) ConstantGUI.this.input.getValue();
+			// Select everything
+			ConstantGUI.this.input.selectAll();
+		}
+
+		@Override
+		public void focusLost(FocusEvent e)
+		{
+			if (ConstantGUI.this.input.getText().isEmpty())
+			{
+				// Don't allow empty string, put a 0 there
+				ConstantGUI.this.input.setText("0");
+			}
+			
+			// Update the value in the engine to the new value
+			double value = Double.parseDouble(ConstantGUI.this.input.getText());
+			Modules.Constant m = (Modules.Constant) ConstantGUI.this.module;
+			m.set_value(value);
 		}
 	}
 	
@@ -38,8 +53,7 @@ public class ConstantGUI extends ModuleGUI
 		type = Engine.Constants.CONSTANT_MODULE_GUI;
 		
 		input = new JFormattedTextField();
-		Modules.Constant tmp = (Modules.Constant) module;
-		input.setValue(tmp.value);
+		input.setText("0");
 		input.setVisible(true);
 		input.setSize(new Dimension(width, height/2));
 		add(input);
@@ -50,6 +64,8 @@ public class ConstantGUI extends ModuleGUI
 		output_ports[0] = new PortGUI(main_window, this, Engine.Constants.OUTPUT_PORT, 0);
 		output_ports[0].setLocation((width-10)/2, height/2 + (height/2-10)/2);
 		this.add(output_ports[0]);
+		
+		input.addFocusListener(new TextFieldListener());
 	}
 	
 	public void paintComponent(Graphics g)
