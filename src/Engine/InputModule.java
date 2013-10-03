@@ -33,23 +33,26 @@ public class InputModule extends Module
 	{
 		for (int i=0; i<Constants.NUM_CHANNELS; i++)
 		{
-			if (output_pipes[FREQUENCY_SOURCE].activation_times[i] >= 0)
+			if (output_pipes[FREQUENCY_SOURCE] != null)
 			{
-				if (audio_mode == Constants.MONO)
+				if (output_pipes[FREQUENCY_SOURCE].activation_times[i] >= 0)
 				{
-					for (int j=0; j<Constants.SNAPSHOT_SIZE; j++)
+					if (audio_mode == Constants.MONO)
 					{
-						output_pipes[FREQUENCY_SOURCE].inner_buffers[i][0][j] = frequencies[i];
+						for (int j=0; j<Constants.SNAPSHOT_SIZE; j++)
+						{
+							output_pipes[FREQUENCY_SOURCE].inner_buffers[i][0][j] = frequencies[i];
+						}
 					}
+					else
+					{
+						for (int j=0; j<Constants.SNAPSHOT_SIZE; j++)
+						{
+							output_pipes[FREQUENCY_SOURCE].inner_buffers[i][0][j] = frequencies[i];
+							output_pipes[FREQUENCY_SOURCE].inner_buffers[i][1][j] = frequencies[i];
+						}
+					}	
 				}
-				else
-				{
-					for (int j=0; j<Constants.SNAPSHOT_SIZE; j++)
-					{
-						output_pipes[FREQUENCY_SOURCE].inner_buffers[i][0][j] = frequencies[i];
-						output_pipes[FREQUENCY_SOURCE].inner_buffers[i][1][j] = frequencies[i];
-					}
-				}	
 			}
 		}
 	}
@@ -65,11 +68,14 @@ public class InputModule extends Module
 	{
 		for (int i=0; i<Constants.NUM_CHANNELS; i++)
 		{
-			if (output_pipes[FREQUENCY_SOURCE].activation_times[i] < 0)
+			frequencies[i] = freq;
+			if (output_pipes[FREQUENCY_SOURCE] != null)
 			{
-				frequencies[i] = freq;
-				output_pipes[FREQUENCY_SOURCE].activation_times[i] = engine.get_snapshot_counter();
-				break;
+				if (output_pipes[FREQUENCY_SOURCE].activation_times[i] < 0)
+				{
+					output_pipes[FREQUENCY_SOURCE].activation_times[i] = engine.get_snapshot_counter();
+					break;
+				}
 			}
 		}
 	}
