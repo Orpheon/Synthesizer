@@ -21,7 +21,7 @@ public class EngineMaster
 	private int sound_buffer_position = sound_buffer.length;
 	
 	private boolean is_playing;
-	private double global_volume = 0.2;
+	private double global_volume = 1;
 	
 	private long snapshot_counter = 0;
 	

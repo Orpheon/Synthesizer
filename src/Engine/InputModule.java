@@ -33,7 +33,7 @@ public class InputModule extends Module
 	{
 		for (int i=0; i<Constants.NUM_CHANNELS; i++)
 		{
-			if (output_pipes[FREQUENCY_SOURCE].activation_times[i] < 0)
+			if (output_pipes[FREQUENCY_SOURCE].activation_times[i] >= 0)
 			{
 				if (audio_mode == Constants.MONO)
 				{

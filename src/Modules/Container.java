@@ -57,12 +57,18 @@ public class Container extends Module
 	{
 		// Containers work slightly differently than all other modules, and hence need their own run() function
 		
+		// First run the input
+		input_source.run(engine);
+		
 		// Execute all modules inside the container
 		// TODO: Use iterators here
 		for (int i=0; i<module_list.size(); i++)
 		{
 			module_list.get(i).run(engine);
 		}
+		
+		// Finally, run the output
+		output_sink.run(engine);
 	}
 	
 	public Module add_module(int type)
