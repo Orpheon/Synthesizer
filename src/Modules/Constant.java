@@ -49,7 +49,7 @@ public class Constant extends Module
 	public void run(EngineMaster engine, int channel)
 	{
 		// Big hack, but in the case of constants I think it's actually a good idea
-		if (engine.is_playing())
+		if (engine.is_playing() && output_pipes[OUTPUT_PIPE] != null)
 		{
 			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 			{
@@ -64,6 +64,12 @@ public class Constant extends Module
 				}
 			}
 		}
+	}
+
+	public void set_value(Double value)
+	{
+		this.value = value.doubleValue();
+		System.out.println("Constant value set: "+value.doubleValue());
 	}
 
 }

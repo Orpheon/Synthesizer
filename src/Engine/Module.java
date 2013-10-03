@@ -62,7 +62,10 @@ public abstract class Module
 					this.run(engine, i);
 					for (int k=0; k<NUM_OUTPUT_PIPES; k++)
 					{
-						output_pipes[k].activation_times[i] = input_pipes[j].activation_times[i];
+						if (output_pipes[k] != null)
+						{
+							output_pipes[k].activation_times[i] = input_pipes[j].activation_times[i];
+						}
 					}
 					break;
 				}
