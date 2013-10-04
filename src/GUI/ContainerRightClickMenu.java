@@ -90,6 +90,18 @@ public class ContainerRightClickMenu extends JPopupMenu
 			}
 		}
 		);
+		item.setText("Create Range Modifier");
+		add(item);
+		
+		item = new JMenuItem(new AbstractAction()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_RANGEMODIFIER);
+				ContainerRightClickMenu.this.hide();
+			}
+		}
+		);
 		item.setText("Start Playing");
 		add(item);
 		
