@@ -130,7 +130,7 @@ public class Oscillator extends Module
 						value = get_value((time*frequency) % 1) * amplitude;
 						if (Math.abs(value) > 1)
 						{
-							System.out.println("ALERT! VALUE IS OVER 1 AT "+value+"; time="+time);
+							System.out.println("ALERT! VALUE IS OVER 1 AT "+value+"; time="+time+"; Oscillator object.");
 						}
 
 						output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = value;
