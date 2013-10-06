@@ -24,7 +24,9 @@ public class Constants
 	public static final int MODULE_DISTORTION = 8;
 	public static final int MODULE_STEREOMERGER = 9;
 	public static final int MODULE_CONSTANT = 10;
-	
+	public static final int MODULE_LOWPASS = 11;
+	public static final int MODULE_HIGHPASS = 11;
+
 	// Module subtype constants
 	public static final int DISTORTION_TANH = 0;
 	public static final int OSCILLATOR_SINE = 0;
