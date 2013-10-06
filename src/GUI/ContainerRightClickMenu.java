@@ -84,8 +84,7 @@ public class ContainerRightClickMenu extends JPopupMenu
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				ContainerRightClickMenu.this.main_window.engine.set_frequency(440, 554.365, 659.26); // A C# E (A chord)
-				ContainerRightClickMenu.this.main_window.engine.start_playing();
+				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_RANGEMODIFIER);
 				ContainerRightClickMenu.this.hide();
 			}
 		}
@@ -97,7 +96,8 @@ public class ContainerRightClickMenu extends JPopupMenu
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_RANGEMODIFIER);
+				ContainerRightClickMenu.this.main_window.engine.set_frequency(440, 554.365, 659.26); // A C# E (A chord)
+				ContainerRightClickMenu.this.main_window.engine.start_playing();
 				ContainerRightClickMenu.this.hide();
 			}
 		}

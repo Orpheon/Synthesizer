@@ -63,7 +63,7 @@ public class Functions
     // Created from the python line
     // return sum(1<<(numbits-1-i) for i in range(numbits) if x>>i&1)
     // Also from StackOverflow
-    static int bit_reverse(int x, int numbits)
+    public static int bit_reverse(int x, int numbits)
     {
     	int output = 0;
     	for (int i=0; i<numbits; i++)
@@ -78,7 +78,7 @@ public class Functions
 	
     // FFT Algorithm
     // Main resource: http://cnx.org/content/m12016/latest/
-    static double[] fft(double[] input)
+    public static double[] fft(double[] input)
     {
     	// Input arrays (algorithm is in-place)
     	double[] real = input;
@@ -141,7 +141,7 @@ public class Functions
     
     // IFFT Algorithm
     // Derived from above
-    static void ifft(double[] amplitude, double[] phase)
+    public static void ifft(double[] amplitude, double[] phase)
     {
     	// Input arrays (algorithm is in-place)
     	// Inverse real and imaginary --> FFT becomes IFFT

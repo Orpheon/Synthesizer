@@ -110,7 +110,7 @@ public class EngineMaster
 //    				byte[] b = new byte[2*Engine.Constants.SNAPSHOT_SIZE];
 //    				for (int j=0; j<Engine.Constants.SNAPSHOT_SIZE; j++)
 //    				{
-//	    				tmp = Functions.convert_to_16bit_bytearray(main_container.get_inner_output_pipe(0).get_pipe(0)[0][j]);
+//	    				tmp = Functions.convert_to_16bit_bytearray(main_container.get_output().get_sink().get_pipe(0)[0][j]);
 //	    				System.arraycopy(tmp, 0, b, c, 2);
 //	    				c += 2;
 //    				}
@@ -127,7 +127,7 @@ public class EngineMaster
 	    				{
 	    					if (channel_active[channel])
 	    					{
-	    						sum += global_volume * main_container.get_output().get_sink().get_pipe(channel)[0][i];
+	    						sum += global_volume * main_container.get_output().get_sink().get_pipe(0)[0][i];
 	    					}
 	    				}
 	    				tmp = Functions.convert_to_16bit_bytearray(sum/num_channels_active);
