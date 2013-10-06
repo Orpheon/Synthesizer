@@ -10,6 +10,8 @@ beausievers.com/synth/synthbasics
 
 http://www.dspguide.com/ch1.htm
 
+http://cnx.org/content/m12016/latest/
+
 * Now talking on ##java
 * Topic for ##java is: A channel for java development questions | Paste limit is 2 lines.  ~pastebin lists options | Read this first:  http://javachannel.net | Android in #android-dev | JavaScript is in ##javascript | No applets | This channel is logged
 * Topic for ##java set by tjsnell at Thu Sep  6 14:23:55 2012
