@@ -20,9 +20,9 @@ public class Merger extends Module
 	
 	private int operation = MULTIPLICATION;
 	
-	public Merger(Container container)
+	public Merger()
 	{
-		super(container);
+		super();
 		
 		NUM_INPUT_PIPES = 2;
 		NUM_OUTPUT_PIPES = 1;
@@ -30,9 +30,9 @@ public class Merger extends Module
 		initialize();
 	}
 	
-	public Merger(Container container, int num_inputs)
+	public Merger(int num_inputs)
 	{
-		super(container);
+		super();
 		
 		NUM_INPUT_PIPES = num_inputs;
 		NUM_OUTPUT_PIPES = 1;

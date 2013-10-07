@@ -16,9 +16,9 @@ public class RangeModifier extends Module
 	private static final int MAX_OUTPUT = 4;
 	private static final int SIGNAL_OUTPUT = 0;
 	
-	public RangeModifier(Container container)
+	public RangeModifier()
 	{
-		super(container);
+		super();
 		
 		NUM_INPUT_PIPES = 5;
 		NUM_OUTPUT_PIPES = 1;
@@ -35,8 +35,8 @@ public class RangeModifier extends Module
 		input_pipe_names[MAX_OUTPUT] = "Max output range";
 		output_pipe_names[SIGNAL_OUTPUT] = "Scaled output";
 		
+		activation_source = SIGNAL_INPUT;
 		module_type = Engine.Constants.MODULE_RANGEMODIFIER;
-		
 		MODULE_NAME = "Range Modifier";
 	}
 

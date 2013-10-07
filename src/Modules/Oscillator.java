@@ -10,8 +10,8 @@ import Engine.Pipe;
  */
 public class Oscillator extends Module
 {
-	public static final int FREQUENCY_PIPE = 0;
-	public static final int PHASE_PIPE = 1;
+	public static final int FREQUENCY_INPUT = 0;
+	public static final int PHASE_INPUT = 1;
 	
 	public static final int SIGNAL_OUTPUT = 0;
 	
@@ -19,26 +19,26 @@ public class Oscillator extends Module
 	public static final int SAW_WAVE = 1;
 	public static final int SQUARE_WAVE = 2;
 	
-	private int osc_type = SINE_WAVE;
+	private int osc_type = SAW_WAVE;
 
-	public Oscillator(Container container)
+	public Oscillator()
 	{		
-		super(container);
+		super();
 		
 		NUM_INPUT_PIPES = 2;
 		NUM_OUTPUT_PIPES = 1;
 		
 		input_pipe_names = new String[NUM_INPUT_PIPES];
 		output_pipe_names = new String[NUM_OUTPUT_PIPES];
-		input_pipe_names[FREQUENCY_PIPE] = "Frequency input";
-		input_pipe_names[PHASE_PIPE] = "Phase input";
+		input_pipe_names[FREQUENCY_INPUT] = "Frequency input";
+		input_pipe_names[PHASE_INPUT] = "Phase input";
 		output_pipe_names[SIGNAL_OUTPUT] = "Sound output";
 		
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
+		activation_source = FREQUENCY_INPUT;
 		module_type = Engine.Constants.MODULE_OSCILLATOR;
-		
 		MODULE_NAME = "Oscillator";
 	}
 
@@ -63,25 +63,25 @@ public class Oscillator extends Module
 		if (everything_connected)
 		{
 			// Activation times are taken from frequency pipe
-			if (input_pipes[FREQUENCY_PIPE].activation_times[channel] >= 0)
+			if (input_pipes[FREQUENCY_INPUT].activation_times[channel] >= 0)
 			{
 				for (int side=0; side<audio_mode; side++)
 				{
 					double time, value;
+					System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n");
 					for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 					{
 						// Calculate the precise time we wish to sample
-						time = (((double)(engine.get_snapshot_counter() - input_pipes[FREQUENCY_PIPE].activation_times[channel]) * Engine.Constants.SNAPSHOT_SIZE) + i) /
+						time = (((double)(engine.get_snapshot_counter() - input_pipes[FREQUENCY_INPUT].activation_times[channel]) * Engine.Constants.SNAPSHOT_SIZE) + i) /
 								(double)Engine.Constants.SAMPLING_RATE;
 						// %1 == get fractional part. This first multiplies time with frequency, cuts it to a period of 0-1 (assuming time >= 0, which it is).
 						// Then it queries the wave value at that time
-						value = get_value((time*input_pipes[FREQUENCY_PIPE].get_pipe(channel)[side][i]) % 1 + input_pipes[PHASE_PIPE].get_pipe(channel)[side][i]);
+						value = get_value((time*input_pipes[FREQUENCY_INPUT].get_pipe(channel)[side][i]) % 1 + input_pipes[PHASE_INPUT].get_pipe(channel)[side][i]);
 						if (Math.abs(value) > 1)
 						{
 							System.out.println("ALERT! VALUE IS OVER 1 AT "+value+"; time="+time+"; Oscillator object.");
 						}
-	
-						output_pipes[SIGNAL_OUTPUT].get_pipe(channel)[0][i] = value;
+						output_pipes[SIGNAL_OUTPUT].get_pipe(channel)[side][i] = value;
 					}
 				}
 			}

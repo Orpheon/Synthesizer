@@ -8,9 +8,9 @@ public class Copyer extends Module
 {
 	public static final int INPUT_PIPE = 0;
 	
-	public Copyer(Container container)
+	public Copyer()
 	{
-		super(container);
+		super();
 		
 		NUM_INPUT_PIPES = 1;
 		NUM_OUTPUT_PIPES = 2;
@@ -18,9 +18,9 @@ public class Copyer extends Module
 		initialize();
 	}
 	
-	public Copyer(Container container, int num_outputs)
+	public Copyer(int num_outputs)
 	{
-		super(container);
+		super();
 		
 		NUM_INPUT_PIPES = 1;
 		NUM_OUTPUT_PIPES = num_outputs;

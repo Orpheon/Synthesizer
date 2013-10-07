@@ -1,7 +1,6 @@
 package Modules;
 
 import Engine.Constants;
-import Engine.EngineMaster;
 import Engine.Module;
 import Engine.Pipe;
 
@@ -9,16 +8,16 @@ import Engine.Pipe;
 
 public class Lowpass extends Module
 {
-	public static final int SOUND_INPUT = 0;
+	public static final int SIGNAL_INPUT = 0;
 	public static final int FREQUENCY_INPUT = 1;
 	public static final int Q_INPUT = 2;
 	public static final int OUTPUT_PIPE = 0;
 	
 	// FIXME: Remove code duplication in constructor
 	
-	public Lowpass(Container container)
+	public Lowpass()
 	{
-		super(container);
+		super();
 		
 		NUM_INPUT_PIPES = 3;
 		NUM_OUTPUT_PIPES = 1;

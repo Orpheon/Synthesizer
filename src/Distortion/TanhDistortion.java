@@ -10,9 +10,9 @@ public class TanhDistortion extends Distortion
 	
 	private double level = 1;
 	
-	public TanhDistortion(Container container)
+	public TanhDistortion()
 	{
-		super(container);
+		super();
 		
 		NUM_INPUT_PIPES = 2;
 		NUM_OUTPUT_PIPES = 1;

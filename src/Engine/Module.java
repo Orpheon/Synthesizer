@@ -29,45 +29,59 @@ public abstract class Module
 	public String MODULE_NAME;
 	// A variable that tracks whether this module is in stereo or in mono mode
 	protected int audio_mode;
+	// Variable for denoting the preferred source of activation time if a module has one
+	protected int activation_source;
 	// This makes a module actually do whatever it's supposed to do on it's inputs and write to it's outputs
 	public abstract void run(Engine.EngineMaster engine, int channel);
-	
-	public Module(Container container)
-	{
-		index = counter++;
-		MODULE_NAME = "Default Module";
-		audio_mode = Engine.Constants.DEFAULT_AUDIO_MODE;
-	}
 	
 	public Module()
 	{
 		index = counter++;
+		MODULE_NAME = "Default Module";
 		audio_mode = Engine.Constants.DEFAULT_AUDIO_MODE;
+		activation_source = -1;
 	}
 	
 	public void run(Engine.EngineMaster engine)
 	{
 		// We check every channel, and if there's an input pipe that's active on that channel we execute the run(channel) method to calculate the output
-		// FIXME: Think of a good solution if the input pipes don't agree on the activation times
-		for (int i=0; i<Constants.NUM_CHANNELS; i++)
+		for (int channel=0; channel<Constants.NUM_CHANNELS; channel++)
 		{
-			for (int j=0; j<NUM_INPUT_PIPES; j++)
+			int source = -1;
+			if (activation_source >= 0)
 			{
-				if (input_pipes[j] == null)
+				// This module has specified an input source for the activation timers
+				// Indulge it
+				if (input_pipes[activation_source] != null)
 				{
-					continue;
+					source = activation_source;
 				}
-				if (input_pipes[j].activation_times[i] >= 0)
+			}
+			else
+			{
+				double activation_time = -1;
+				for (int j=0; j<NUM_INPUT_PIPES; j++)
 				{
-					this.run(engine, i);
-					for (int k=0; k<NUM_OUTPUT_PIPES; k++)
+					if (input_pipes[j] != null)
 					{
-						if (output_pipes[k] != null)
+						if (input_pipes[j].activation_times[channel] >= activation_time)
 						{
-							output_pipes[k].activation_times[i] = input_pipes[j].activation_times[i];
+							activation_time = input_pipes[j].activation_times[channel];
+							source = channel;
 						}
 					}
-					break;
+				}
+			}
+			
+			if (source >= 0)
+			{
+				this.run(engine, channel);
+				for (int k=0; k<NUM_OUTPUT_PIPES; k++)
+				{
+					if (output_pipes[k] != null)
+					{
+						output_pipes[k].activation_times[channel] = input_pipes[source].activation_times[channel];
+					}
 				}
 			}
 		}

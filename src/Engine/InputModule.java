@@ -10,7 +10,7 @@ public class InputModule extends Module
 	
 	public InputModule(Container container)
 	{
-		super(container);
+		super();
 		
 		NUM_INPUT_PIPES = 0;
 		NUM_OUTPUT_PIPES = 1;

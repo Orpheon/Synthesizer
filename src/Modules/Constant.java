@@ -9,9 +9,9 @@ public class Constant extends Module
 	public double value;
 	public static final int OUTPUT_PIPE = 0;
 	
-	public Constant(Container container)
+	public Constant()
 	{
-		super(container);
+		super();
 		
 		NUM_INPUT_PIPES = 0;
 		NUM_OUTPUT_PIPES = 1;

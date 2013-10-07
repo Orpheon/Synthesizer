@@ -14,9 +14,9 @@ public class StereoMerger extends Module
 	public static final int INPUT_PIPE_RIGHT = 1;
 	public static final int OUTPUT_PIPE = 0;
 	
-	public StereoMerger(Container container)
+	public StereoMerger()
 	{
-		super(container);
+		super();
 		
 		NUM_INPUT_PIPES = 2;
 		NUM_OUTPUT_PIPES = 1;

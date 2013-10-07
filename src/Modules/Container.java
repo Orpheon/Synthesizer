@@ -29,12 +29,6 @@ public class Container extends Module
 		initialize();
 	}
 	
-	public Container(Container container)
-	{
-		super(container);
-		initialize();
-	}
-	
 	private void initialize()
 	{
 		NUM_INPUT_PIPES = 0;
@@ -77,35 +71,35 @@ public class Container extends Module
     	switch (type)
     	{
     		case Constants.MODULE_OSCILLATOR:
-    			m = new Modules.Oscillator(this);
+    			m = new Modules.Oscillator();
     			break;
     			
     		case Constants.MODULE_MERGER:
-    			m = new Modules.Merger(this);
+    			m = new Modules.Merger();
     			break;
     			
     		case Constants.MODULE_COPYER:
-    			m = new Modules.Copyer(this);
+    			m = new Modules.Copyer();
     			break;
     			
     		case Constants.MODULE_CONTAINER:
-    			m = new Modules.Container(this);
+    			m = new Modules.Container();
     			break;
     		
     		case Constants.MODULE_CONSTANT:
-    			m = new Modules.Constant(this);
+    			m = new Modules.Constant();
     			break;
     		
     		case Constants.MODULE_RANGEMODIFIER:
-    			m = new Modules.RangeModifier(this);
+    			m = new Modules.RangeModifier();
     			break;
     		
     		case Constants.MODULE_LOWPASS:
-    			m = new Modules.Lowpass(this);
+    			m = new Modules.Lowpass();
     			break;
     		
     		case Constants.MODULE_HIGHPASS:
-    			m = new Modules.Highpass(this);
+    			m = new Modules.Highpass();
     			break;
     			
     		default:
@@ -129,7 +123,7 @@ public class Container extends Module
     			switch (subtype)
     			{
     				case Constants.DISTORTION_TANH:
-    					m = new TanhDistortion(this);
+    					m = new TanhDistortion();
     					break;
     					
     				default:

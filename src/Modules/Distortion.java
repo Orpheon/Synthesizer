@@ -9,10 +9,11 @@ public abstract class Distortion extends Module
 	
 	public abstract double distortion_function(double x);
 	
-	public Distortion(Container container)
+	public Distortion()
 	{
-		super(container);
+		super();
 
+		activation_source = SIGNAL_INPUT;
 		module_type = Engine.Constants.MODULE_DISTORTION;
 		MODULE_NAME = "Default Distortion";
 	}

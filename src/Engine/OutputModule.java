@@ -8,7 +8,7 @@ public class OutputModule extends Module
 	
 	public OutputModule(Container container)
 	{
-		super(container);
+		super();
 		
 		NUM_INPUT_PIPES = 1;
 		NUM_OUTPUT_PIPES = 0;
