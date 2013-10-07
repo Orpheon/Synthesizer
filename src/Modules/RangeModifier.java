@@ -9,9 +9,9 @@ import Engine.Pipe;
 
 public class RangeModifier extends Module
 {
-	private static final int SIGNAL_INPUT = 0;
-	private static final int MIN_INPUT = 1;
-	private static final int MAX_INPUT = 2;
+	private static final int MIN_INPUT = 0;
+	private static final int MAX_INPUT = 1;
+	private static final int SIGNAL_INPUT = 2;
 	private static final int MIN_OUTPUT = 3;
 	private static final int MAX_OUTPUT = 4;
 	private static final int SIGNAL_OUTPUT = 0;
@@ -28,9 +28,9 @@ public class RangeModifier extends Module
 		
 		input_pipe_names = new String[NUM_INPUT_PIPES];
 		output_pipe_names = new String[NUM_OUTPUT_PIPES];
-		input_pipe_names[SIGNAL_INPUT] = "Signal Input";
 		input_pipe_names[MIN_INPUT] = "Min input range";
 		input_pipe_names[MAX_INPUT] = "Max input range";
+		input_pipe_names[SIGNAL_INPUT] = "Signal Input";
 		input_pipe_names[MIN_OUTPUT] = "Min output range";
 		input_pipe_names[MAX_OUTPUT] = "Max output range";
 		output_pipe_names[SIGNAL_OUTPUT] = "Scaled output";
