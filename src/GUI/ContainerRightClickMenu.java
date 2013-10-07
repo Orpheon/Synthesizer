@@ -21,80 +21,87 @@ public class ContainerRightClickMenu extends JPopupMenu
 		
 		JMenu module_list = new JMenu("Add modules");
 		
-		JMenuItem item = new JMenuItem(new AbstractAction()
-		{
-			public void actionPerformed(ActionEvent e)
+		JMenuItem item = new JMenuItem(
+			new AbstractAction()
 			{
-				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_OSCILLATOR);
+				public void actionPerformed(ActionEvent e)
+				{
+					ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_OSCILLATOR);
+				}
 			}
-		}
 		);
 		item.setText("Create Oscillator");
 		module_list.add(item);
 		
-		item = new JMenuItem(new AbstractAction()
-		{
-			public void actionPerformed(ActionEvent e)
+		item = new JMenuItem(
+			new AbstractAction()
 			{
-				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_CONSTANT);
+				public void actionPerformed(ActionEvent e)
+				{
+					ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_CONSTANT);
+				}
 			}
-		}
 		);
 		item.setText("Create Constant");
 		module_list.add(item);
 		
-		item = new JMenuItem(new AbstractAction()
-		{
-			public void actionPerformed(ActionEvent e)
+		item = new JMenuItem(
+			new AbstractAction()
 			{
-				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_COPYER);
+				public void actionPerformed(ActionEvent e)
+				{
+					ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_COPYER);
+				}
 			}
-		}
 		);
 		item.setText("Create Copyer");
 		module_list.add(item);
 		
-		item = new JMenuItem(new AbstractAction()
-		{
-			public void actionPerformed(ActionEvent e)
+		item = new JMenuItem(
+			new AbstractAction()
 			{
-				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_MERGER);
+				public void actionPerformed(ActionEvent e)
+				{
+					ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_MERGER);
+				}
 			}
-		}
 		);
 		item.setText("Create Merger");
 		module_list.add(item);
 		
-		item = new JMenuItem(new AbstractAction()
-		{
-			public void actionPerformed(ActionEvent e)
+		item = new JMenuItem(
+			new AbstractAction()
 			{
-				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_RANGEMODIFIER);
+				public void actionPerformed(ActionEvent e)
+				{
+					ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_RANGEMODIFIER);
+				}
 			}
-		}
 		);
 		item.setText("Create Range Modifier");
 		module_list.add(item);
 		
 		// Add filters as submenu
 		JMenu filters = new JMenu("Filters");
-		item = new JMenuItem(new AbstractAction()
-		{
-			public void actionPerformed(ActionEvent e)
+		item = new JMenuItem(
+			new AbstractAction()
 			{
-				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_LOWPASS);
+				public void actionPerformed(ActionEvent e)
+				{
+					ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_LOWPASS);
+				}
 			}
-		}
 		);
 		item.setText("Create Lowpass filter");
 		filters.add(item);
-		item = new JMenuItem(new AbstractAction()
-		{
-			public void actionPerformed(ActionEvent e)
+		item = new JMenuItem(
+			new AbstractAction()
 			{
-				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_HIGHPASS);
+				public void actionPerformed(ActionEvent e)
+				{
+					ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_HIGHPASS);
+				}
 			}
-		}
 		);
 		item.setText("Create Highpass filter");
 		filters.add(item);
@@ -103,25 +110,27 @@ public class ContainerRightClickMenu extends JPopupMenu
 		add(module_list);
 		
 		
-		item = new JMenuItem(new AbstractAction()
-		{
-			public void actionPerformed(ActionEvent e)
+		item = new JMenuItem(
+			new AbstractAction()
 			{
-				ContainerRightClickMenu.this.main_window.engine.set_frequency(440, 554.365, 659.26); // A C# E (A chord)
-				ContainerRightClickMenu.this.main_window.engine.start_playing();
+				public void actionPerformed(ActionEvent e)
+				{
+					ContainerRightClickMenu.this.main_window.engine.set_frequency(440, 554.365, 659.26); // A C# E (A chord)
+					ContainerRightClickMenu.this.main_window.engine.start_playing();
+				}
 			}
-		}
 		);
 		item.setText("Start Playing");
 		add(item);
 		
-		item = new JMenuItem(new AbstractAction()
-		{
-			public void actionPerformed(ActionEvent e)
+		item = new JMenuItem(
+			new AbstractAction()
 			{
-				ContainerRightClickMenu.this.main_window.engine.stop_playing();
+				public void actionPerformed(ActionEvent e)
+				{
+					ContainerRightClickMenu.this.main_window.engine.stop_playing();
+				}
 			}
-		}
 		);
 		item.setText("Stop Playing");
 		add(item);

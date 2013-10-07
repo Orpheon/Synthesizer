@@ -57,19 +57,22 @@ public class PortGUI extends JButton
 	{
 		main_window.engine.stop_playing();
 		
-		if (port_type == Engine.Constants.INPUT_PORT)
+		if (connection != null)
 		{
-			disconnect_input(module_gui);
-			connection.disconnect_output(connection.module_gui);
-		}
-		else
-		{
-			connection.disconnect_input(connection.module_gui);
-			disconnect_output(module_gui);
-		}
+			if (port_type == Engine.Constants.INPUT_PORT)
+			{
+				disconnect_input(module_gui);
+				connection.disconnect_output(connection.module_gui);
+			}
+			else
+			{
+				connection.disconnect_input(connection.module_gui);
+				disconnect_output(module_gui);
+			}
 		
-		connection.connection = null;
-		connection = null;
+			connection.connection = null;
+			connection = null;
+		}
 	}
 	
 	private void disconnect_input(ModuleGUI gui)

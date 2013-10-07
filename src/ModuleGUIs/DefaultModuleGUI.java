@@ -6,9 +6,16 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 
+import javax.swing.AbstractAction;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+
 import Engine.Module;
+import GUI.ContainerRightClickMenu;
 import GUI.ContainerWindow;
 import GUI.ModuleGUI;
 import GUI.PortGUI;

@@ -150,4 +150,14 @@ public class ContainerWindow extends JFrame
 		central_container.add(m_gui);
 		m_gui.setLocation(x, y);
 	}
+	
+	public void remove_module(ModuleGUI m)
+	{
+		if (module_list.contains(m))
+		{
+			module_list.remove(m);
+			central_container.remove(m);
+			container.remove_module(m.module);
+		}
+	}
 }
