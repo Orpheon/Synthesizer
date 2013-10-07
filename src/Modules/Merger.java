@@ -16,7 +16,7 @@ public class Merger extends Module
 	public static final int ADDITION = 1;
 	public static final int MULTIPLICATION = 2;
 	
-	public static final int OUTPUT_PIPE = 0;
+	public static final int SIGNAL_OUTPUT = 0;
 	
 	private int operation = MULTIPLICATION;
 	
@@ -27,6 +27,21 @@ public class Merger extends Module
 		NUM_INPUT_PIPES = 2;
 		NUM_OUTPUT_PIPES = 1;
 		
+		initialize();
+	}
+	
+	public Merger(Container container, int num_inputs)
+	{
+		super(container);
+		
+		NUM_INPUT_PIPES = num_inputs;
+		NUM_OUTPUT_PIPES = 1;
+		
+		initialize();
+	}
+	
+	public void initialize()
+	{
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
@@ -40,26 +55,11 @@ public class Merger extends Module
 		
 		MODULE_NAME = "Merger";
 	}
-	
-	public Merger(Container container, int num_inputs)
-	{
-		super(container);
-		
-		NUM_INPUT_PIPES = num_inputs;
-		NUM_OUTPUT_PIPES = 1;
-		
-		input_pipes = new Pipe[NUM_INPUT_PIPES];
-		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
-		
-		module_type = Engine.Constants.MODULE_MERGER;
-		
-		MODULE_NAME = "Merger";
-	}
 
 	@Override
 	public void run(Engine.EngineMaster engine, int channel)
 	{
-		if (output_pipes[OUTPUT_PIPE] != null)
+		if (output_pipes[SIGNAL_OUTPUT] != null)
 		{
 			int i, j;
 			switch (operation)
@@ -69,64 +69,38 @@ public class Merger extends Module
 					for (i=0; i<Constants.SNAPSHOT_SIZE; i++)
 					{
 						sum = new double[2];
-						for (j=0; j<NUM_INPUT_PIPES; j++)
+						for (int side=0; side<audio_mode; side++)
 						{
-							if (input_pipes[j] != null)
+							for (j=0; j<NUM_INPUT_PIPES; j++)
 							{
-								if (input_pipes[j].get_type() == Constants.MONO)
+								if (input_pipes[j] != null)
 								{
-									sum[0] += input_pipes[j].get_pipe(channel)[0][i];
-								}
-								else if (input_pipes[j].get_type() == Constants.STEREO)
-								{
-									sum[0] += input_pipes[j].get_pipe(channel)[0][i];
-									sum[1] += input_pipes[j].get_pipe(channel)[1][i];
+									sum[side] += input_pipes[j].get_pipe(channel)[side][i];
 								}
 							}
-						}
-						// Don't forget to normalize from -1 to 1 again
-						if (output_pipes[OUTPUT_PIPE].get_type() == Constants.MONO)
-						{
-							output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = sum[0] / NUM_INPUT_PIPES;
-						}
-						else if (output_pipes[OUTPUT_PIPE].get_type() == Constants.STEREO)
-						{
-							output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = sum[0] / NUM_INPUT_PIPES;
-							output_pipes[OUTPUT_PIPE].get_pipe(channel)[1][i] = sum[1] / NUM_INPUT_PIPES;
+							// Don't forget to normalize from -1 to 1 again
+							output_pipes[SIGNAL_OUTPUT].get_pipe(channel)[0][i] = sum[0] / NUM_INPUT_PIPES;
 						}
 					}
 					break;
 					
 				case MULTIPLICATION:
 					double[] product;
+					product = new double[2];
 					for (i=0; i<Constants.SNAPSHOT_SIZE; i++)
 					{
-						product = new double[2];
 						product[0] = 1.0;
 						product[1] = 1.0;
-						for (j=0; j<NUM_INPUT_PIPES; j++)
+						for (int side=0; side<audio_mode; side++)
 						{
-							if (input_pipes[j] != null)
+							for (j=0; j<NUM_INPUT_PIPES; j++)
 							{
-								if (input_pipes[j].get_type() == Constants.MONO)
+								if (input_pipes[j] != null)
 								{
-									product[0] *= input_pipes[j].get_pipe(channel)[0][i];
-								}
-								else if (input_pipes[j].get_type() == Constants.STEREO)
-								{
-									product[0] *= input_pipes[j].get_pipe(channel)[0][i];
-									product[1] *= input_pipes[j].get_pipe(channel)[1][i];
+									product[side] *= input_pipes[j].get_pipe(channel)[side][i];
 								}
 							}
-						}
-						if (output_pipes[OUTPUT_PIPE].get_type() == Constants.MONO)
-						{
-							output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = product[0];
-						}
-						else if (output_pipes[OUTPUT_PIPE].get_type() == Constants.STEREO)
-						{
-							output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = product[0];
-							output_pipes[OUTPUT_PIPE].get_pipe(channel)[1][i] = product[1];
+							output_pipes[SIGNAL_OUTPUT].get_pipe(channel)[side][i] = product[side];
 						}
 					}
 					break;

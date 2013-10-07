@@ -8,8 +8,6 @@ public class Copyer extends Module
 {
 	public static final int INPUT_PIPE = 0;
 	
-	// FIXME: Remove code duplication in constructor
-	
 	public Copyer(Container container)
 	{
 		super(container);
@@ -17,18 +15,7 @@ public class Copyer extends Module
 		NUM_INPUT_PIPES = 1;
 		NUM_OUTPUT_PIPES = 2;
 		
-		input_pipes = new Pipe[NUM_INPUT_PIPES];
-		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
-		
-		input_pipe_names = new String[NUM_INPUT_PIPES];
-		output_pipe_names = new String[NUM_OUTPUT_PIPES];
-		input_pipe_names[INPUT_PIPE] = "Input to be duplicated";
-		output_pipe_names[0] = "Output copy 1";
-		output_pipe_names[1] = "Output copy 2";
-		
-		module_type = Engine.Constants.MODULE_COPYER;
-		
-		MODULE_NAME = "Copyer";
+		initialize();
 	}
 	
 	public Copyer(Container container, int num_outputs)
@@ -37,7 +24,12 @@ public class Copyer extends Module
 		
 		NUM_INPUT_PIPES = 1;
 		NUM_OUTPUT_PIPES = num_outputs;
-		
+
+		initialize();
+	}
+
+	public void initialize()
+	{
 		input_pipe_names = new String[NUM_INPUT_PIPES];
 		output_pipe_names = new String[NUM_OUTPUT_PIPES];
 		input_pipe_names[0] = "Input to be duplicated";
@@ -49,7 +41,7 @@ public class Copyer extends Module
 		
 		MODULE_NAME = "Copyer";
 	}
-
+	
 	@Override
 	public void run(Engine.EngineMaster engine, int channel)
 	{
@@ -57,23 +49,12 @@ public class Copyer extends Module
 		{
 			for (int i=0; i<NUM_OUTPUT_PIPES; i++)
 			{
-				if (input_pipes[INPUT_PIPE].get_type() != output_pipes[i].get_type())
-				{
-					System.out.println("Error in Copyer "+index+"; Input pipe and output pipe "+i+" have different types.");
-					continue;
-				}
-				
 				if (output_pipes[i] != null)
 				{
-					// Copy the input directly in the output
-					if (input_pipes[INPUT_PIPE].get_type() == Engine.Constants.MONO)
+					for (int side=0; side<audio_mode; side++)
 					{
-						System.arraycopy(input_pipes[INPUT_PIPE].get_pipe(channel)[0], 0, output_pipes[i].get_pipe(channel)[0], 0, Constants.SNAPSHOT_SIZE);
-					}
-					else if (input_pipes[INPUT_PIPE].get_type() == Engine.Constants.STEREO)
-					{
-						System.arraycopy(input_pipes[INPUT_PIPE].get_pipe(channel)[0], 0, output_pipes[i].get_pipe(channel)[0], 0, Constants.SNAPSHOT_SIZE);
-						System.arraycopy(input_pipes[INPUT_PIPE].get_pipe(channel)[1], 0, output_pipes[i].get_pipe(channel)[1], 0, Constants.SNAPSHOT_SIZE);
+						// Copy the input directly in the output
+						System.arraycopy(input_pipes[INPUT_PIPE].get_pipe(channel)[side], 0, output_pipes[i].get_pipe(channel)[side], 0, Constants.SNAPSHOT_SIZE);
 					}
 					output_pipes[i].activation_times[channel] = input_pipes[INPUT_PIPE].activation_times[channel];
 				}
