@@ -95,6 +95,18 @@ public class Container extends Module
     		case Constants.MODULE_CONSTANT:
     			m = new Modules.Constant(this);
     			break;
+    		
+    		case Constants.MODULE_RANGEMODIFIER:
+    			m = new Modules.RangeModifier(this);
+    			break;
+    		
+    		case Constants.MODULE_LOWPASS:
+    			m = new Modules.Lowpass(this);
+    			break;
+    		
+    		case Constants.MODULE_HIGHPASS:
+    			m = new Modules.Highpass(this);
+    			break;
     			
     		default:
     			System.out.println("ERROR: Invalid module type requested: "+type);

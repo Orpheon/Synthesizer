@@ -5,7 +5,7 @@ import Engine.EngineMaster;
 import Engine.Module;
 import Engine.Pipe;
 
-// NOTE: Cutoff and Q are assumed to be constant within a snapshot. If they aren't, only the first sample will be used.
+// FIXME: Cutoff and Q are assumed to be constant within a snapshot. If they aren't, only the first sample will be used.
 
 public class Lowpass extends Module
 {
@@ -49,21 +49,15 @@ public class Lowpass extends Module
 		{
 			// Transform (inplace) the input signal into frequency amplitudes (and store the phase for later use)
 			phase = Engine.Functions.fft(input_pipes[SOUND_INPUT].get_pipe(channel)[side]);
+			// As noted on top, only the first values of cutoff and Q get considered
+			cutoff = Constants.pi_times_2 * input_pipes[FREQUENCY_INPUT].get_pipe(channel)[side][0];
+			Q = input_pipes[Q_INPUT].get_pipe(channel)[side][0];
 			
 			for (int f=0; f<Constants.SNAPSHOT_SIZE; f++)
 			{
 				// Copy every frequency from the input to the output pipes while lowpassing it
-				// Source: http://www.musicdsp.org/files/Audio-EQ-Cookbook.txt
-				cutoff = input_pipes[FREQUENCY_INPUT].get_pipe(channel)[side][0];
-				if (f < cutoff)
-				{
-					factor = 1;
-				}
-				else
-				{
-					Q = input_pipes[Q_INPUT].get_pipe(channel)[side][0];
-					factor = 1/(Math.pow((f-cutoff), 2) + (f-cutoff)/Q + 1);
-				}
+				// Source: http://en.wikipedia.org/wiki/Q_factor
+				factor = Math.pow(cutoff, 2)/(Math.pow(f, 2) + f * cutoff/Q + Math.pow(cutoff, 2));
 				output_pipes[OUTPUT_PIPE].get_pipe(channel)[side][f] = factor * (input_pipes[SOUND_INPUT].get_pipe(channel)[side][f]);
 			}
 			

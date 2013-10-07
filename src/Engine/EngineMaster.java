@@ -142,6 +142,7 @@ public class EngineMaster
 	    				// If we can fill the entire line
 		    			line.write(sound_buffer, 0, counter);
 		    			sound_buffer_position = counter;
+
 		    			// Stop for now
 		    			break;
 	    			}
