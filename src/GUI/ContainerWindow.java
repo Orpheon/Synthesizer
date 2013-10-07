@@ -28,8 +28,6 @@ public class ContainerWindow extends JFrame
 	private static final int DEFAULT_WINDOW_WIDTH = 900;
 	private static final int DEFAULT_WINDOW_HEIGHT = 600;
 	
-	private ContainerRightClickMenu popup_menu;
-	
 	public JMenu menu;
 	
 	public ContainerOverlay overlay;
@@ -39,8 +37,7 @@ public class ContainerWindow extends JFrame
 	public boolean is_connecting;
 	public PortGUI first_port;
 	
-	// Rightclick menu listener
-	class PopupListener extends MouseAdapter
+	class CustomMouseListener extends MouseAdapter
 	{
 		public void mousePressed(MouseEvent e)
 		{
@@ -48,14 +45,6 @@ public class ContainerWindow extends JFrame
 			{
 				ContainerWindow.this.is_connecting = false;
 				ContainerWindow.this.first_port = null;
-			}
-			else if (e.isPopupTrigger())
-			{
-				popup_menu.open(e.getLocationOnScreen());
-			}
-			else
-			{
-				popup_menu.hide();
 			}
 			
 			ModuleGUI m;
@@ -78,10 +67,6 @@ public class ContainerWindow extends JFrame
 			{
 				ContainerWindow.this.is_connecting = false;
 				ContainerWindow.this.first_port = null;
-			}
-			else if (e.isPopupTrigger())
-			{
-				popup_menu.open(e.getLocationOnScreen());
 			}
 		}
 	}
@@ -111,7 +96,6 @@ public class ContainerWindow extends JFrame
         JMenuBar menu_bar;
         menu_bar = new JMenuBar();
         menu = new JMenu("Testing");
-        menu.add(new JMenuItem("Mc Chicken"));
         menu_bar.add(menu);
         add(menu_bar, BorderLayout.PAGE_START);
 
@@ -120,8 +104,8 @@ public class ContainerWindow extends JFrame
         central_container.setLayout(null);
         
         // Rightclick menu event catcher
-        central_container.addMouseListener(new PopupListener());
-        popup_menu = new ContainerRightClickMenu(this);
+        central_container.addMouseListener(new CustomMouseListener());
+        central_container.setComponentPopupMenu(new ContainerRightClickMenu(this));        
         
         // Glass pane for drawing pipes
         overlay = new ContainerOverlay(this);

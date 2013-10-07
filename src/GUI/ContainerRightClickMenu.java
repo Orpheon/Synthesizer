@@ -12,7 +12,6 @@ import javax.swing.*;
 public class ContainerRightClickMenu extends JPopupMenu
 {
 	private ContainerWindow main_window;
-	private Point pos;
 	
 	public ContainerRightClickMenu(ContainerWindow main_window)
 	{
@@ -20,77 +19,89 @@ public class ContainerRightClickMenu extends JPopupMenu
 		
 		this.main_window = main_window;
 		
+		JMenu module_list = new JMenu("Add modules");
+		
 		JMenuItem item = new JMenuItem(new AbstractAction()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_OSCILLATOR);
-				ContainerRightClickMenu.this.hide();
 			}
 		}
 		);
 		item.setText("Create Oscillator");
-		add(item);
-		
-//		item = new JMenuItem(new AbstractAction()
-//		{
-//			public void actionPerformed(ActionEvent e)
-//			{
-//				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_CONTAINER);
-//				ContainerRightClickMenu.this.hide();
-//			}
-//		}
-//		);
-//		item.setText("Create Container");
-//		add(item);
+		module_list.add(item);
 		
 		item = new JMenuItem(new AbstractAction()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_CONSTANT);
-				ContainerRightClickMenu.this.hide();
 			}
 		}
 		);
 		item.setText("Create Constant");
-		add(item);
+		module_list.add(item);
 		
 		item = new JMenuItem(new AbstractAction()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_COPYER);
-				ContainerRightClickMenu.this.hide();
 			}
 		}
 		);
 		item.setText("Create Copyer");
-		add(item);
+		module_list.add(item);
 		
 		item = new JMenuItem(new AbstractAction()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_MERGER);
-				ContainerRightClickMenu.this.hide();
 			}
 		}
 		);
 		item.setText("Create Merger");
-		add(item);
+		module_list.add(item);
 		
 		item = new JMenuItem(new AbstractAction()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_RANGEMODIFIER);
-				ContainerRightClickMenu.this.hide();
 			}
 		}
 		);
 		item.setText("Create Range Modifier");
-		add(item);
+		module_list.add(item);
+		
+		// Add filters as submenu
+		JMenu filters = new JMenu("Filters");
+		item = new JMenuItem(new AbstractAction()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_LOWPASS);
+			}
+		}
+		);
+		item.setText("Create Lowpass filter");
+		filters.add(item);
+		item = new JMenuItem(new AbstractAction()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_HIGHPASS);
+			}
+		}
+		);
+		item.setText("Create Highpass filter");
+		filters.add(item);
+		
+		module_list.add(filters);
+		add(module_list);
+		
 		
 		item = new JMenuItem(new AbstractAction()
 		{
@@ -98,7 +109,6 @@ public class ContainerRightClickMenu extends JPopupMenu
 			{
 				ContainerRightClickMenu.this.main_window.engine.set_frequency(440, 554.365, 659.26); // A C# E (A chord)
 				ContainerRightClickMenu.this.main_window.engine.start_playing();
-				ContainerRightClickMenu.this.hide();
 			}
 		}
 		);
@@ -110,7 +120,6 @@ public class ContainerRightClickMenu extends JPopupMenu
 			public void actionPerformed(ActionEvent e)
 			{
 				ContainerRightClickMenu.this.main_window.engine.stop_playing();
-				ContainerRightClickMenu.this.hide();
 			}
 		}
 		);
@@ -118,27 +127,21 @@ public class ContainerRightClickMenu extends JPopupMenu
 		add(item);
 	}
 	
-	public void open(Point pos)
-	{
-		this.pos = pos;
-		setLocation(pos);
-		setVisible(true);
-	}
-	
-	public void hide()
-	{
-		setVisible(false);
-	}
-	
 	public void create_module(int type)
 	{
 		try
 		{
-			SwingUtilities.convertPointFromScreen(pos, main_window);
-			// FIXME Magic number
-			pos.x -= main_window.getInsets().left;
-			pos.y -= main_window.getInsets().top + main_window.menu.getHeight() + 4;
-			main_window.add_module(type, pos.x, pos.y);
+			Point a;
+			a = main_window.getMousePosition();
+			// +10 so that the module is under the mouse, and not just the topleft corner
+			a.x -= main_window.getInsets().left + 10;
+			a.y -= main_window.getInsets().top + main_window.menu.getHeight() + 10;
+			main_window.add_module(type, a.x, a.y);
+//			SwingUtilities.convertPointFromScreen(pos, main_window);
+//			// FIXME Magic number
+//			pos.x -= main_window.getInsets().left;
+//			pos.y -= main_window.getInsets().top + main_window.menu.getHeight() + 4;
+//			main_window.add_module(type, pos.x, pos.y);
 		}
 		catch (IOException e)
 		{
