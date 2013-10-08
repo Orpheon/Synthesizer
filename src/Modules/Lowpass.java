@@ -62,7 +62,7 @@ public class Lowpass extends Module
 		if (everything_connected)
 		{
 			// Main resource: http://www.musicdsp.org/files/Audio-EQ-Cookbook.txt
-			// Fuck FFT, that was a mistake
+			// Damn FFT, that was a mistake
 			double cutoff, Q;
 			double w0, cos_w0, sin_w0, alpha;
 			double a0, a1, a2, b0, b1, b2;
