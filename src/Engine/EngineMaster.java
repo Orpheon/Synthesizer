@@ -128,7 +128,7 @@ public class EngineMaster
 	    				{
 	    					if (channel_active[channel])
 	    					{
-	    						sum += global_volume * main_container.get_output().get_sink().get_pipe(0)[0][i];
+	    						sum += global_volume * main_container.get_output().get_sink().get_pipe(channel)[0][i];
 	    					}
 	    				}
 	    				tmp = Functions.convert_to_16bit_bytearray(sum/num_channels_active);
@@ -181,8 +181,8 @@ public class EngineMaster
     public void set_frequency(double f1, double f2, double f3)
     {
     	main_container.get_input().add_frequency(this, f1);
-//    	main_container.get_input().add_frequency(this, f2);
-//    	main_container.get_input().add_frequency(this, f3);
+    	main_container.get_input().add_frequency(this, f2);
+    	main_container.get_input().add_frequency(this, f3);
     }
     
     public void start_playing()

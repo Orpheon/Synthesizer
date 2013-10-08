@@ -68,15 +68,13 @@ public class Oscillator extends Module
 				for (int side=0; side<audio_mode; side++)
 				{
 					double time, value;
-					System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n");
 					for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 					{
 						// Calculate the precise time we wish to sample
 						time = (((double)(engine.get_snapshot_counter() - input_pipes[FREQUENCY_INPUT].activation_times[channel]) * Engine.Constants.SNAPSHOT_SIZE) + i) /
 								(double)Engine.Constants.SAMPLING_RATE;
-						// %1 == get fractional part. This first multiplies time with frequency, cuts it to a period of 0-1 (assuming time >= 0, which it is).
-						// Then it queries the wave value at that time
-						value = get_value((time*input_pipes[FREQUENCY_INPUT].get_pipe(channel)[side][i]) % 1 + input_pipes[PHASE_INPUT].get_pipe(channel)[side][i]);
+						time %= input_pipes[FREQUENCY_INPUT].get_pipe(channel)[side][i];
+						value = get_value(time, input_pipes[FREQUENCY_INPUT].get_pipe(channel)[side][i], input_pipes[PHASE_INPUT].get_pipe(channel)[side][i]);
 						if (Math.abs(value) > 1)
 						{
 							System.out.println("ALERT! VALUE IS OVER 1 AT "+value+"; time="+time+"; Oscillator object.");
@@ -88,7 +86,7 @@ public class Oscillator extends Module
 		}
 	}
 	
-	protected double get_value(double time)
+	protected double get_value(double time, double freq, double phase)
 	{
 		// Sampling at a certain position
 		// 0 <= time <= 1
@@ -96,10 +94,19 @@ public class Oscillator extends Module
 		switch (osc_type)
 		{
 			case SINE_WAVE:
-				return Math.sin(time*Constants.pi_times_2);
+				return Math.sin(time*freq*Constants.pi_times_2 + phase);
 			
 			case SAW_WAVE:
-				return time*2.0 - 1.0;
+				double result = 0;
+				// Sawtooth = infinite sum of odd harmonics with A=1/n for nth harmonic
+				// Doing like this for bandlimiting
+				// Source: http://en.wikipedia.org/wiki/Sawtooth_wave
+				for (int k=1; k*freq<Constants.SAMPLING_RATE/2; k++)
+				{
+					result += Math.sin(time*freq*Constants.pi_times_2*k + phase)/k;
+				}
+				// This might destroy the nice bandlimiting, but I want my values -1 <= x <= 1, not -1.0903783642160645
+				return Math.min(1, Math.max(-1, 2*result/Math.PI));
 				
 			case SQUARE_WAVE:
 				if (time < 0.5)
