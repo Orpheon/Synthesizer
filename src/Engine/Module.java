@@ -54,7 +54,10 @@ public abstract class Module
 				// Indulge it
 				if (input_pipes[activation_source] != null)
 				{
-					source = activation_source;
+					if (input_pipes[activation_source].activation_times[channel] >= 0)
+					{
+						source = activation_source;
+					}
 				}
 			}
 			else
@@ -64,7 +67,7 @@ public abstract class Module
 				{
 					if (input_pipes[j] != null)
 					{
-						if (input_pipes[j].activation_times[channel] >= activation_time)
+						if (input_pipes[j].activation_times[channel] > activation_time)
 						{
 							activation_time = input_pipes[j].activation_times[channel];
 							source = channel;

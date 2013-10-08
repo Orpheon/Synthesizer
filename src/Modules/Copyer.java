@@ -56,7 +56,6 @@ public class Copyer extends Module
 						// Copy the input directly in the output
 						System.arraycopy(input_pipes[INPUT_PIPE].get_pipe(channel)[side], 0, output_pipes[i].get_pipe(channel)[side], 0, Constants.SNAPSHOT_SIZE);
 					}
-					output_pipes[i].activation_times[channel] = input_pipes[INPUT_PIPE].activation_times[channel];
 				}
 			}
 		}

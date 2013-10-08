@@ -53,14 +53,9 @@ public class Constant extends Module
 		{
 			for (int i=0; i<Engine.Constants.SNAPSHOT_SIZE; i++)
 			{
-				if (audio_mode == Engine.Constants.MONO)
+				for (int side=0; side<audio_mode; side++)
 				{
-					output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = value;
-				}
-				else
-				{
-					output_pipes[OUTPUT_PIPE].get_pipe(channel)[0][i] = value;
-					output_pipes[OUTPUT_PIPE].get_pipe(channel)[1][i] = value;
+					output_pipes[OUTPUT_PIPE].get_pipe(channel)[side][i] = value;
 				}
 			}
 		}
@@ -69,7 +64,6 @@ public class Constant extends Module
 	public void set_value(Double value)
 	{
 		this.value = value.doubleValue();
-		System.out.println("Constant value set: "+value.doubleValue());
 	}
 
 }
