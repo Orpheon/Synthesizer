@@ -11,9 +11,10 @@ public class Lowpass extends Module
 	public static final int SIGNAL_INPUT = 0;
 	public static final int FREQUENCY_INPUT = 1;
 	public static final int Q_INPUT = 2;
-	public static final int OUTPUT_PIPE = 0;
-	
-	// FIXME: Remove code duplication in constructor
+	public static final int SIGNAL_OUTPUT = 0;
+
+	public double[] filter_buffer_x;
+	public double[] filter_buffer_y;
 	
 	public Lowpass()
 	{
@@ -30,11 +31,14 @@ public class Lowpass extends Module
 		input_pipe_names[SIGNAL_INPUT] = "Sound signal to be lowpassed";
 		input_pipe_names[FREQUENCY_INPUT] = "Cutoff frequency";
 		input_pipe_names[Q_INPUT] = "Q/Resonance";
-		output_pipe_names[OUTPUT_PIPE] = "Lowpassed sound signal";
+		output_pipe_names[SIGNAL_OUTPUT] = "Lowpassed sound signal";
 		
 		activation_source = SIGNAL_INPUT;
 		module_type = Engine.Constants.MODULE_LOWPASS;
 		MODULE_NAME = "Lowpass";
+		
+		filter_buffer_x = new double[2];
+		filter_buffer_y = new double[2];
 	}
 
 	@Override
@@ -57,65 +61,55 @@ public class Lowpass extends Module
 		}
 		if (everything_connected)
 		{
-			double factor, cutoff, Q, w;
-			double[] phase = new double[Constants.SNAPSHOT_SIZE];
-			// Run once for mono, twice for stereo
+			// Main resource: http://www.musicdsp.org/files/Audio-EQ-Cookbook.txt
+			// Fuck FFT, that was a mistake
+			double cutoff, Q;
+			double w0, cos_w0, sin_w0, alpha;
+			double a0, a1, a2, b0, b1, b2;
+			double[] x, y;
+
 			for (int side=0; side<audio_mode; side++)
 			{
-//				System.out.println("Signal before:");
-//				System.out.print("[");
-//				for (int i=0; i<Constants.SNAPSHOT_SIZE; i++)
-//				{
-//					System.out.print(", "+input_pipes[SIGNAL_INPUT].get_pipe(channel)[side][i]);
-//				}
-//				System.out.print("\n");
-				// Transform (inplace) the input signal into frequency amplitudes (and store the phase for later use)
-				phase = Engine.Functions.fft(input_pipes[SIGNAL_INPUT].get_pipe(channel)[side]);
-				System.out.println("Frequency before:");
-				System.out.print("[");
+				x = input_pipes[SIGNAL_INPUT].get_pipe(channel)[side];
+				y = output_pipes[SIGNAL_OUTPUT].get_pipe(channel)[side];
 				for (int i=0; i<Constants.SNAPSHOT_SIZE; i++)
 				{
-					System.out.print(", "+input_pipes[SIGNAL_INPUT].get_pipe(channel)[side][i]);
+					// FIXME: Decide whether to do this in here for modulation, or whether to do it beforehand for speed.
+					cutoff = input_pipes[FREQUENCY_INPUT].get_pipe(channel)[side][i];
+					Q = input_pipes[Q_INPUT].get_pipe(channel)[side][i];
+					
+					w0 = Constants.pi_times_2 * cutoff/Constants.SAMPLING_RATE;
+					cos_w0 = Math.cos(w0);
+					sin_w0 = Math.sin(w0);
+					alpha = sin_w0/(2*Q);
+					
+                    a0 =   1 + alpha;
+                    a1 =  -2*cos_w0;
+                    a2 =   1 - alpha;
+		            b0 =  (1 - cos_w0)/2;
+                    b1 =   1 - cos_w0;
+                    b2 =  (1 - cos_w0)/2;
+                    
+                    // These two cases must be handled separately, or at least should
+                    if (i == 0)
+                    {
+                        y[i] = Math.min(1, Math.max(-1, 
+                        			(b0/a0)*x[i] + (b1/a0)*filter_buffer_x[1] + (b2/a0)*filter_buffer_x[0] - (a1/a0)*filter_buffer_y[1] - (a2/a0)*filter_buffer_y[0]
+                        		));
+                    }
+                    else if (i == 1)
+                    {
+                    	y[i] = Math.min(1, Math.max(-1, 
+                    				(b0/a0)*x[i] + (b1/a0)*x[0] + (b2/a0)*filter_buffer_x[1] - (a1/a0)*y[0] - (a2/a0)*filter_buffer_y[1]
+                    			));
+                    }
+                    else
+                    {
+                    	y[i] = Math.min(1, Math.max(-1, 
+                    				(b0/a0)*x[i] + (b1/a0)*x[i-1] + (b2/a0)*x[i-2] - (a1/a0)*y[i-1] - (a2/a0)*y[i-2]
+                    			));
+                    }
 				}
-				System.out.print("\n");
-				// As noted on top, only the first values of cutoff and Q get considered
-				cutoff = Constants.pi_times_2 * input_pipes[FREQUENCY_INPUT].get_pipe(channel)[side][0];
-				Q = input_pipes[Q_INPUT].get_pipe(channel)[side][0];
-				
-				for (int f=0; f<Constants.SNAPSHOT_SIZE/2; f++)
-				{
-					// Copy every frequency from the input to the output pipes while lowpassing it
-					// Source: http://en.wikipedia.org/wiki/Q_factor
-					w = Constants.pi_times_2 * (f - Constants.SNAPSHOT_SIZE/2);
-					factor = Math.pow(cutoff, 2)/(Math.pow(w, 2) + w * cutoff/Q + Math.pow(cutoff, 2));
-					output_pipes[OUTPUT_PIPE].get_pipe(channel)[side][f] = factor * (input_pipes[SIGNAL_INPUT].get_pipe(channel)[side][f]);
-				}
-				for (int f=Constants.SNAPSHOT_SIZE/2; f<Constants.SNAPSHOT_SIZE; f++)
-				{
-					// Copy every frequency from the input to the output pipes while lowpassing it
-					// Source: http://en.wikipedia.org/wiki/Q_factor
-					w = Constants.pi_times_2 * (f - Constants.SNAPSHOT_SIZE/2);
-					factor = Math.pow(cutoff, 2)/(Math.pow(w, 2) + w * cutoff/Q + Math.pow(cutoff, 2));
-					output_pipes[OUTPUT_PIPE].get_pipe(channel)[side][f] = factor * (input_pipes[SIGNAL_INPUT].get_pipe(channel)[side][f]);
-				}
-				System.out.println("Frequency after:");
-				System.out.print("[");
-				for (int i=0; i<Constants.SNAPSHOT_SIZE; i++)
-				{
-					System.out.print(", "+output_pipes[SIGNAL_INPUT].get_pipe(channel)[side][i]);
-				}
-				System.out.print("\n");
-				
-				// Transform the frequencies back into time-amplitude signal
-				Engine.Functions.ifft(output_pipes[OUTPUT_PIPE].get_pipe(channel)[side], phase);
-				
-//				System.out.println("Signal after:");
-//				System.out.print("[");
-//				for (int i=0; i<Constants.SNAPSHOT_SIZE; i++)
-//				{
-//					System.out.print(", "+output_pipes[SIGNAL_INPUT].get_pipe(channel)[side][i]);
-//				}
-//				System.out.print("\n");
 			}
 		}
 	}
