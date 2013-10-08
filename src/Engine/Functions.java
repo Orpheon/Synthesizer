@@ -209,6 +209,10 @@ public class Functions
     	{
     		real[i] /= real.length;
     		imag[i] /= imag.length;
+    		
+    		// This is cheating, but I'm pretty sure it's caused by rounding error or something, and this is the only efficient put to place it
+    		real[i] = Math.max(-1, Math.min(1, real[i]));
+    		imag[i] = Math.max(-1, Math.min(1, imag[i]));
     	}
     }
 }

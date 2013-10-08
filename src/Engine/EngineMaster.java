@@ -181,8 +181,8 @@ public class EngineMaster
     public void set_frequency(double f1, double f2, double f3)
     {
     	main_container.get_input().add_frequency(this, f1);
-    	main_container.get_input().add_frequency(this, f2);
-    	main_container.get_input().add_frequency(this, f3);
+//    	main_container.get_input().add_frequency(this, f2);
+//    	main_container.get_input().add_frequency(this, f3);
     }
     
     public void start_playing()
