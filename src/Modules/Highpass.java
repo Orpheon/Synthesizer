@@ -1,20 +1,18 @@
 package Modules;
 
 import Engine.Constants;
-import Engine.EngineMaster;
 import Engine.Module;
 import Engine.Pipe;
-
-// FIXME: Cutoff and Q are assumed to be constant within a snapshot. If they aren't, only the first sample will be used.
 
 public class Highpass extends Module
 {
 	public static final int SIGNAL_INPUT = 0;
 	public static final int FREQUENCY_INPUT = 1;
 	public static final int Q_INPUT = 2;
-	public static final int OUTPUT_PIPE = 0;
-	
-	// FIXME: Remove code duplication in constructor
+	public static final int SIGNAL_OUTPUT = 0;
+
+	public double[][] filter_buffer_x;
+	public double[][] filter_buffer_y;
 	
 	public Highpass()
 	{
@@ -31,38 +29,97 @@ public class Highpass extends Module
 		input_pipe_names[SIGNAL_INPUT] = "Sound signal to be highpassed";
 		input_pipe_names[FREQUENCY_INPUT] = "Cutoff frequency";
 		input_pipe_names[Q_INPUT] = "Q/Resonance";
-		output_pipe_names[OUTPUT_PIPE] = "Highpassed sound signal";
+		output_pipe_names[SIGNAL_OUTPUT] = "Highpassed sound signal";
 		
 		activation_source = SIGNAL_INPUT;
 		module_type = Engine.Constants.MODULE_HIGHPASS;
 		MODULE_NAME = "Highpass";
+		
+		filter_buffer_x = new double[audio_mode][2];
+		filter_buffer_y = new double[audio_mode][2];
 	}
 
 	@Override
 	public void run(Engine.EngineMaster engine, int channel)
 	{
-		
-		double factor, cutoff, Q;
-		double[] phase = new double[Constants.SNAPSHOT_SIZE];
-		// Run once for mono, twice for stereo
-		for (int side=0; side<audio_mode; side++)
+		boolean everything_connected = true;
+		for (int i=0; i<NUM_INPUT_PIPES; i++)
 		{
-			// Transform (inplace) the input signal into frequency amplitudes (and store the phase for later use)
-			phase = Engine.Functions.fft(input_pipes[SIGNAL_INPUT].get_pipe(channel)[side]);
-			// As noted on top, only the first values of cutoff and Q get considered
-			cutoff = Constants.pi_times_2 * input_pipes[FREQUENCY_INPUT].get_pipe(channel)[side][0];
-			Q = input_pipes[Q_INPUT].get_pipe(channel)[side][0];
-			
-			for (int f=0; f<Constants.SNAPSHOT_SIZE; f++)
+			if (input_pipes[i] == null)
 			{
-				// Copy every frequency from the input to the output pipes while highpassing it
-				// Source: http://en.wikipedia.org/wiki/Q_factor
-				factor = Math.pow(f, 2) * Math.pow(cutoff, 2)/(Math.pow(f, 2) + f * cutoff/Q + Math.pow(cutoff, 2));
-				output_pipes[OUTPUT_PIPE].get_pipe(channel)[side][f] = factor * (input_pipes[SIGNAL_INPUT].get_pipe(channel)[side][f]);
+				everything_connected = false;
 			}
-			
-			// Transform the frequencies back into time-amplitude signal
-			Engine.Functions.ifft(output_pipes[OUTPUT_PIPE].get_pipe(channel)[side], phase);
+		}
+		for (int i=0; i<NUM_OUTPUT_PIPES; i++)
+		{
+			if (output_pipes[i] == null)
+			{
+				everything_connected = false;
+			}
+		}
+		if (everything_connected)
+		{
+			// Main resource: http://www.musicdsp.org/files/Audio-EQ-Cookbook.txt
+			// Damn FFT, that was a mistake
+			double cutoff, Q;
+			double w0, cos_w0, sin_w0, alpha;
+			double a0, a1, a2, b0, b1, b2;
+			double[] x, y;
+
+			for (int side=0; side<audio_mode; side++)
+			{
+				x = input_pipes[SIGNAL_INPUT].get_pipe(channel)[side];
+				y = output_pipes[SIGNAL_OUTPUT].get_pipe(channel)[side];
+				for (int i=0; i<Constants.SNAPSHOT_SIZE; i++)
+				{
+					// FIXME: Decide whether to do this in here for modulation, or whether to do it beforehand for speed.
+					cutoff = input_pipes[FREQUENCY_INPUT].get_pipe(channel)[side][i];
+					Q = input_pipes[Q_INPUT].get_pipe(channel)[side][i];
+					
+					w0 = Constants.pi_times_2 * cutoff/Constants.SAMPLING_RATE;
+					cos_w0 = Math.cos(w0);
+					sin_w0 = Math.sin(w0);
+					alpha = sin_w0/(2*Q);
+					
+					a0 =   1 + alpha;
+					a1 =  -2*cos_w0;
+					a2 =   1 - alpha;
+					b0 =  (1 + cos_w0)/2;
+					b1 = -(1 + cos_w0);
+					b2 =  (1 + cos_w0)/2;
+
+                    // These two cases must be handled separately, or at least should
+                    if (i == 0)
+                    {
+                        y[i] = Math.min(1, Math.max(-1, 
+                        			(b0/a0)*x[i] + (b1/a0)*filter_buffer_x[side][0] + (b2/a0)*filter_buffer_x[side][1] - (a1/a0)*filter_buffer_y[side][0] - (a2/a0)*filter_buffer_y[side][1]
+                        		));
+                    }
+                    else if (i == 1)
+                    {
+                    	y[i] = Math.min(1, Math.max(-1, 
+                    				(b0/a0)*x[i] + (b1/a0)*x[0] + (b2/a0)*filter_buffer_x[side][0] - (a1/a0)*y[0] - (a2/a0)*filter_buffer_y[side][0]
+                    			));
+                    }
+                    else
+                    {
+                    	y[i] = Math.min(1, Math.max(-1, 
+                    				(b0/a0)*x[i] + (b1/a0)*x[i-1] + (b2/a0)*x[i-2] - (a1/a0)*y[i-1] - (a2/a0)*y[i-2]
+                    			));
+                    }
+				}
+				// Update the buffers for the next snapshot, for continuity
+				for (int i=0; i<2; i++)
+				{
+					filter_buffer_x[side][i] = x[Constants.SNAPSHOT_SIZE-i-1];
+					filter_buffer_y[side][i] = y[Constants.SNAPSHOT_SIZE-i-1];
+					// Care must be taken with feedback loops to not corrupt the entire future datastream if something goes wrong (ie. input doesn't arrive first frame)
+					if (Double.isInfinite(filter_buffer_y[side][i]) || Double.isNaN(filter_buffer_y[side][i]))
+					{
+						filter_buffer_y[side][i] = 0;
+					}
+				}
+			}
 		}
 	}
 }

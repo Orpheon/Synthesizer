@@ -4,8 +4,6 @@ import Engine.Constants;
 import Engine.Module;
 import Engine.Pipe;
 
-// FIXME: Cutoff and Q are assumed to be constant within a snapshot. If they aren't, only the first sample will be used.
-
 public class Lowpass extends Module
 {
 	public static final int SIGNAL_INPUT = 0;
