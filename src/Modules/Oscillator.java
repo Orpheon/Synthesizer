@@ -73,7 +73,7 @@ public class Oscillator extends Module
 						// Calculate the precise time we wish to sample
 						time = (((double)(engine.get_snapshot_counter() - input_pipes[FREQUENCY_INPUT].activation_times[channel]) * Engine.Constants.SNAPSHOT_SIZE) + i) /
 								(double)Engine.Constants.SAMPLING_RATE;
-						time %= input_pipes[FREQUENCY_INPUT].get_pipe(channel)[side][i];
+						time %= 1/input_pipes[FREQUENCY_INPUT].get_pipe(channel)[side][i];
 						value = get_value(time, input_pipes[FREQUENCY_INPUT].get_pipe(channel)[side][i], input_pipes[PHASE_INPUT].get_pipe(channel)[side][i]);
 						if (Math.abs(value) > 1)
 						{
