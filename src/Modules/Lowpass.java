@@ -13,8 +13,8 @@ public class Lowpass extends Module
 	public static final int Q_INPUT = 2;
 	public static final int SIGNAL_OUTPUT = 0;
 
-	public double[] filter_buffer_x;
-	public double[] filter_buffer_y;
+	public double[][] filter_buffer_x;
+	public double[][] filter_buffer_y;
 	
 	public Lowpass()
 	{
@@ -37,8 +37,8 @@ public class Lowpass extends Module
 		module_type = Engine.Constants.MODULE_LOWPASS;
 		MODULE_NAME = "Lowpass";
 		
-		filter_buffer_x = new double[2];
-		filter_buffer_y = new double[2];
+		filter_buffer_x = new double[audio_mode][2];
+		filter_buffer_y = new double[audio_mode][2];
 	}
 
 	@Override
@@ -94,13 +94,13 @@ public class Lowpass extends Module
                     if (i == 0)
                     {
                         y[i] = Math.min(1, Math.max(-1, 
-                        			(b0/a0)*x[i] + (b1/a0)*filter_buffer_x[1] + (b2/a0)*filter_buffer_x[0] - (a1/a0)*filter_buffer_y[1] - (a2/a0)*filter_buffer_y[0]
+                        			(b0/a0)*x[i] + (b1/a0)*filter_buffer_x[side][0] + (b2/a0)*filter_buffer_x[side][1] - (a1/a0)*filter_buffer_y[side][0] - (a2/a0)*filter_buffer_y[side][1]
                         		));
                     }
                     else if (i == 1)
                     {
                     	y[i] = Math.min(1, Math.max(-1, 
-                    				(b0/a0)*x[i] + (b1/a0)*x[0] + (b2/a0)*filter_buffer_x[1] - (a1/a0)*y[0] - (a2/a0)*filter_buffer_y[1]
+                    				(b0/a0)*x[i] + (b1/a0)*x[0] + (b2/a0)*filter_buffer_x[side][0] - (a1/a0)*y[0] - (a2/a0)*filter_buffer_y[side][0]
                     			));
                     }
                     else
@@ -109,6 +109,17 @@ public class Lowpass extends Module
                     				(b0/a0)*x[i] + (b1/a0)*x[i-1] + (b2/a0)*x[i-2] - (a1/a0)*y[i-1] - (a2/a0)*y[i-2]
                     			));
                     }
+				}
+				// Update the buffers for the next snapshot, for continuity
+				for (int i=0; i<2; i++)
+				{
+					filter_buffer_x[side][i] = x[Constants.SNAPSHOT_SIZE-i-1];
+					filter_buffer_y[side][i] = y[Constants.SNAPSHOT_SIZE-i-1];
+					// Care must be taken with feedback loops to not corrupt the entire future datastream if something goes wrong (ie. input doesn't arrive first frame)
+					if (Double.isInfinite(filter_buffer_y[side][i]) || Double.isNaN(filter_buffer_y[side][i]))
+					{
+						filter_buffer_y[side][i] = 0;
+					}
 				}
 			}
 		}
