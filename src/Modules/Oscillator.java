@@ -91,14 +91,15 @@ public class Oscillator extends Module
 		// Sampling at a certain position
 		// 0 <= time <= 1
 		// TODO: Make anti-aliased saws and squares
+		double result;
 		switch (osc_type)
 		{
 			case SINE_WAVE:
 				return Math.sin(time*freq*Constants.pi_times_2 + phase);
 			
 			case SAW_WAVE:
-				double result = 0;
-				// Sawtooth = infinite sum of odd harmonics with A=1/n for nth harmonic
+				result = 0;
+				// Sawtooth = infinite sum of all harmonics with A=1/n for nth harmonic
 				// Doing like this for bandlimiting
 				// Source: http://en.wikipedia.org/wiki/Sawtooth_wave
 				for (int k=1; k*freq<Constants.SAMPLING_RATE/2; k++)
@@ -109,14 +110,16 @@ public class Oscillator extends Module
 				return Math.min(1, Math.max(-1, 2*result/Math.PI));
 				
 			case SQUARE_WAVE:
-				if (time < 0.5)
+				result = 0;
+				// Square = infinite sum of odd harmonics with A=1/n for nth harmonic
+				// Doing like this for bandlimiting
+				// Source: http://en.wikipedia.org/wiki/Sawtooth_wave
+				for (int k=1; k*freq<Constants.SAMPLING_RATE/2; k+=2)
 				{
-					return -1.0;
+					result += Math.sin(time*freq*Constants.pi_times_2*k + phase)/k;
 				}
-				else
-				{
-					return 1.0;
-				}
+				// This might destroy the nice bandlimiting, but I want my values -1 <= x <= 1, not -1.0903783642160645
+				return Math.min(1, Math.max(-1, 2*result/Math.PI));
 				
 			default:
 				System.out.println("ERROR: Oscillator "+index+" has the invalid osc_type "+osc_type+"!");
