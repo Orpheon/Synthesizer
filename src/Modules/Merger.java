@@ -146,6 +146,12 @@ public class Merger extends Module
 			Pipe[] tmp = new Pipe[NUM_INPUT_PIPES];
 			System.arraycopy(input_pipes, 0, tmp, 0, Math.min(input_pipes.length, NUM_INPUT_PIPES));
 			input_pipes = tmp;
+			String[] new_names = new String[NUM_OUTPUT_PIPES];
+			for (int i=0; i<NUM_INPUT_PIPES; i++)
+			{
+				new_names[i] = "Input "+i;
+			}
+			input_pipe_names = new_names;
 		}
 	}
 }

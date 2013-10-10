@@ -88,6 +88,12 @@ public class Copyer extends Module
 			Pipe[] tmp = new Pipe[NUM_OUTPUT_PIPES];
 			System.arraycopy(output_pipes, 0, tmp, 0, Math.min(output_pipes.length, NUM_OUTPUT_PIPES));
 			output_pipes = tmp;
+			String[] new_names = new String[NUM_OUTPUT_PIPES];
+			for (int i=0; i<NUM_OUTPUT_PIPES; i++)
+			{
+				new_names[i] = "Output copy "+i;
+			}
+			output_pipe_names = new_names;
 		}
 	}
 }
