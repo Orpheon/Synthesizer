@@ -138,13 +138,18 @@ public class ContainerWindow extends JFrame
 	{
 		Engine.Module m = container.add_module(type);
 		ModuleGUI m_gui;
-		if (type == Engine.Constants.MODULE_CONSTANT)
+		switch (type)
 		{
-			m_gui = new ModuleGUIs.ConstantGUI(this, m);
-		}
-		else
-		{
-			m_gui = new ModuleGUIs.DefaultModuleGUI(this, m);
+			case Engine.Constants.MODULE_CONSTANT:
+				m_gui = new ModuleGUIs.ConstantGUI(this, m);
+				break;
+			
+			case Engine.Constants.MODULE_OSCILLATOR:
+				m_gui = new ModuleGUIs.OscillatorGUI(this, m);
+				break;
+			
+			default:
+				m_gui = new ModuleGUIs.DefaultModuleGUI(this, m);
 		}
 		module_list.add(m_gui);
 		central_container.add(m_gui);

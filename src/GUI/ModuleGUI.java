@@ -21,10 +21,10 @@ public abstract class ModuleGUI extends JPanel
 	public PortGUI[] output_ports;
 	public int type;
 	
-	class RightClickMenu extends JPopupMenu
+	public class RightClickMenu extends JPopupMenu
 	{
-		private ModuleGUI module_gui;
-		private ContainerWindow main_window;
+		protected ModuleGUI module_gui;
+		protected ContainerWindow main_window;
 		
 		public RightClickMenu(ModuleGUI module_gui, ContainerWindow main_window)
 		{
@@ -32,6 +32,10 @@ public abstract class ModuleGUI extends JPanel
 			
 			this.module_gui = module_gui;
 			this.main_window = main_window;
+			
+			// Let the children add in all their stuff
+			create_menu();
+			
 			JMenuItem item = new JMenuItem(new AbstractAction()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -59,6 +63,11 @@ public abstract class ModuleGUI extends JPanel
 			item.setText("Destroy module");
 			add(item);
 		}
+		
+		public void create_menu()
+		{
+			// A hook to let children define their own menu contents
+		}
 	}
 	
 	public ModuleGUI(ContainerWindow main_window, Engine.Module module) throws IOException
@@ -72,7 +81,8 @@ public abstract class ModuleGUI extends JPanel
 		AL = new ModuleAL(this);
 		addMouseMotionListener(AL);
 		
-		setComponentPopupMenu(new RightClickMenu(this, main_window));
+		// Hook for children
+		set_rightclickmenu(main_window);
 		
 		setLayout(new GroupLayout(this));
 	}
@@ -80,5 +90,10 @@ public abstract class ModuleGUI extends JPanel
 	public ModuleAL getAL()
 	{
 		return AL;
+	}
+	
+	public void set_rightclickmenu(ContainerWindow main_window)
+	{
+		setComponentPopupMenu(new RightClickMenu(this, main_window));
 	}
 }
