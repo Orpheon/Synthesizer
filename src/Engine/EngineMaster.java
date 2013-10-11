@@ -131,6 +131,7 @@ public class EngineMaster
 	    						sum += global_volume * main_container.get_output().get_sink().get_pipe(channel)[0][i];
 	    					}
 	    				}
+	    				//System.out.println(sum/num_channels_active);
 	    				tmp = Functions.convert_to_16bit_bytearray(sum/num_channels_active);
 	    				System.arraycopy(tmp, 0, sound_buffer, counter, 2);
 	    				counter += 2;

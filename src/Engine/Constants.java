@@ -7,7 +7,7 @@ public class Constants
 	// Audio sample size in bytes
 	public static final int SAMPLE_SIZE = 2;
 	// Size of a single snapshot buffer
-	public static final int SNAPSHOT_SIZE = 512;
+	public static final int SNAPSHOT_SIZE = 496;
 	// Degree of polyphony / Number of simultaneous independent notes
 	public static final int NUM_CHANNELS = 8;
 	// 2*pi

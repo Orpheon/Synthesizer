@@ -195,24 +195,36 @@ public class Functions
     			}
     		}
     	}
-    	
-    	// real is in the input, return the phase through the imag array
-    	return imag;
+
+    	double[][] return_value = {real, imag};
+    	return return_value;
     }
     
     // IFFT Algorithm
     // Derived from above
-    public static void ifft(double[] amplitude, double[] phase)
+    public static void ifft(double[] imag, double[] real, double[] result)
     {
-    	// Input arrays (algorithm is in-place)
+    	// Will write the results into the array result, ignoring phase
     	// Inverse real and imaginary --> FFT becomes IFFT
     	// Proof: http://www.embedded.com/design/embedded/4210789/DSP-Tricks--Computing-inverse-FFTs-using-the-forward-FFT (Method #2)
-    	double[] real = phase;
-    	double[] imag = amplitude;
     	
     	// First do order switching (bit reversal)
     	int j = 0, log2N;
     	double tmp;
+    	
+//    	for (int i=0; i<real.length; i++)
+//    	{
+//    		if (real[i] > 1)
+//    		{
+//    			System.out.println("("+imag[i]+"+"+real[i]+"j)");
+//    		}
+//    		else
+//    		{
+//    			System.out.println("("+imag[i]+"-"+Math.abs(real[i])+"j)");
+//    		}
+//    	}
+//    	System.out.println("\n\n\n\n\n\n");
+    	
     	// Assuming the input was a power of two, log2N should be a whole number
     	log2N = (int) (Math.log(real.length)/Math.log(2));
     	for (int i=0; i<real.length; i++)
