@@ -39,7 +39,7 @@ public class ContainerOverlay extends JComponent
 			m = i.next();
 			for (int j=0; j<m.module.NUM_INPUT_PIPES; j++)
 			{
-				if (m instanceof ModuleGUIs.Input)
+				if (m instanceof ModuleGUIs.InputGUI)
 				{
 					p = m.output_ports[j];
 				}

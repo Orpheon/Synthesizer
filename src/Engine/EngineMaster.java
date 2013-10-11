@@ -174,15 +174,25 @@ public class EngineMaster
     
     public void connect_modules(Module module_1, int out_port, Module module_2, int in_port, int audio_mode)
     {
-    	// TODO: Another thing that's going to have to disappear when GUI is here.
     	main_container.connect_modules(module_1, out_port, module_2, in_port, audio_mode);
     }
     
     public void set_frequency(double f1, double f2, double f3)
     {
+    	// FIXME: Remove
     	main_container.get_input().add_frequency(this, f1);
-    	main_container.get_input().add_frequency(this, f2);
-    	main_container.get_input().add_frequency(this, f3);
+//    	main_container.get_input().add_frequency(this, f2);
+//    	main_container.get_input().add_frequency(this, f3);
+    }
+    
+    public void add_frequency(double f)
+    {
+    	main_container.get_input().add_frequency(this, f);
+    }
+    
+    public void remove_frequency(int index)
+    {
+    	main_container.get_input().remove_frequency(this, index);
     }
     
     public void start_playing()

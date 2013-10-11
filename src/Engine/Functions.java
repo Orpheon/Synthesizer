@@ -60,6 +60,67 @@ public class Functions
         }
       }
     
+    // Main resource: http://www.phys.unsw.edu.au/jw/notes.html
+    // Interprets a string in format <letter><number> as a note and turns it into a frequency
+    public static double convert_note2frequency(String input)
+    {
+    	String[] notes_sharp = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+    	String[] notes_flat = {"C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"};
+    	
+    	int index, octave;
+    	
+    	if (input.length() == 2)
+    	{
+    		// Find the index of a note, it doesn't matter in what list since there's no #/b
+    		for (index=0; !notes_sharp[index].equals(input.substring(0, 1)); index++);
+    		octave = ((int) input.charAt(1)) - ((int) '0');
+    	}
+    	else if (input.length() == 3)
+    	{
+    		if (input.charAt(1) == '#')
+    		{
+    			for (index=0; !notes_sharp[index].equals(input.substring(0, 1)); index++);
+    		}
+    		else if (input.charAt(1) == 'b')
+    		{
+    			for (index=0; !notes_flat[index].equals(input.substring(0, 1)); index++);
+    		}
+    		else
+    		{
+    			throw new IllegalArgumentException();
+    		}
+    		octave = ((int) input.charAt(2)) - ((int) '0');
+    	}
+    	else
+    	{
+    		throw new IllegalArgumentException();
+    	}
+    	
+    	System.out.println(index+"; "+octave);
+    	
+    	double value;
+    	// Total note number
+    	value = index + 12*octave;
+    	// Normalize around A4 (number 57)
+    	value -= 57;
+    	// Get the frequency (2^(n/12) * A4 value)
+    	return Math.pow(2, value/12) * 440;
+    }
+    // Main resource: http://www.phys.unsw.edu.au/jw/notes.html
+    // Interprets a frequency and turns it into a string in format <letter><number>
+    public static String convert_frequency2note(double freq)
+    {
+    	String[] notes_sharp = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+    	String[] notes_flat = {"C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"};
+    	
+    	double value = freq/440;
+    	int note = (int) (12 * (Math.log(value) / Math.log(2)));
+    	// Normalize it to C0
+    	note += 57;
+    	return (notes_sharp[note % 12] + ((int)Math.floor(note/12)));
+    }
+    
+    
     // Created from the python line
     // return sum(1<<(numbits-1-i) for i in range(numbits) if x>>i&1)
     // Also from StackOverflow

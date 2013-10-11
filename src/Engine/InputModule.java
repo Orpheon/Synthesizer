@@ -84,4 +84,20 @@ public class InputModule extends Module
 			}
 		}
 	}
+	
+	public void remove_frequency(EngineMaster engine, int index)
+	{
+		frequencies[index] = 0;
+		activation_times[index] = -1;
+	}
+	
+	public long[] get_activation_times()
+	{
+		return activation_times;
+	}
+	
+	public double[] get_frequencies()
+	{
+		return frequencies;
+	}
 }
