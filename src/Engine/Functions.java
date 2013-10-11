@@ -139,9 +139,9 @@ public class Functions
 	
     // FFT Algorithm
     // Main resource: http://cnx.org/content/m12016/latest/
-    public static double[] fft(double[] input)
+    public static double[][] fft(double[] input)
     {
-    	// Input arrays (algorithm is in-place)
+    	// Input arrays
     	double[] real = input;
     	double[] imag = new double[input.length];
     	
@@ -268,12 +268,14 @@ public class Functions
     	// Inefficient, but easy way to scale back
     	for (int i=0; i<real.length; i++)
     	{
-    		real[i] /= real.length;
     		imag[i] /= imag.length;
     		
     		// This is cheating, but I'm pretty sure it's caused by rounding error or something, and this is the only efficient put to place it
-    		real[i] = Math.max(-1, Math.min(1, real[i]));
     		imag[i] = Math.max(-1, Math.min(1, imag[i]));
+    		
+    		// We switch again, these are the real values (I'm just assuming the imaginary ones are 0 here)
+    		result[i] = imag[i];
+//    		System.out.println(result[i]);
     	}
     }
 }
