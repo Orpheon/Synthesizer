@@ -38,7 +38,7 @@ public class EngineMaster
 
     public EngineMaster() throws LineUnavailableException, InterruptedException
     {
-		//Open up audio output, using 44100hz sampl2ing rate, 16 bit samples, mono, signed and little endian byte ordering
+		//Open up audio output, using 44100hz sampling rate, 16 bit samples, mono, signed and little endian byte ordering
 		AudioFormat format = new AudioFormat(Engine.Constants.SAMPLING_RATE, Engine.Constants.SAMPLE_SIZE*8, 1, true, false);
 		
 		// Start up the line

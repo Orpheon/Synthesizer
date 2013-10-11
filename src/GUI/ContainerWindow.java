@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import javax.swing.*;
 
 import ModuleGUIs.ConstantGUI;
-import ModuleGUIs.Output;
+import ModuleGUIs.OutputGUI;
 
 public class ContainerWindow extends JFrame
 {
@@ -121,14 +121,14 @@ public class ContainerWindow extends JFrame
 
 		// FIXME
 		// This will eventually disappear
-		ModuleGUIs.Input m;
-		m = new ModuleGUIs.Input(this, this.container.get_input());
+		ModuleGUIs.InputGUI m;
+		m = new ModuleGUIs.InputGUI(this, this.container.get_input());
 		module_list.add(m);
 		central_container.add(m);
 		m.setLocation(300, 200);
 		
-		ModuleGUIs.Output m_gui;
-		m_gui = new ModuleGUIs.Output(this, this.container.get_output());
+		ModuleGUIs.OutputGUI m_gui;
+		m_gui = new ModuleGUIs.OutputGUI(this, this.container.get_output());
 		module_list.add(m_gui);
 		central_container.add(m_gui);
 		m_gui.setLocation(300, 300);
