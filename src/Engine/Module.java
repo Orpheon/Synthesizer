@@ -79,12 +79,12 @@ public abstract class Module
 			if (source >= 0)
 			{
 				this.run(engine, channel);
-				for (int k=0; k<NUM_OUTPUT_PIPES; k++)
+			}
+			for (int k=0; k<NUM_OUTPUT_PIPES; k++)
+			{
+				if (output_pipes[k] != null)
 				{
-					if (output_pipes[k] != null)
-					{
-						output_pipes[k].activation_times[channel] = input_pipes[source].activation_times[channel];
-					}
+					output_pipes[k].activation_times[channel] = input_pipes[source].activation_times[channel];
 				}
 			}
 		}
