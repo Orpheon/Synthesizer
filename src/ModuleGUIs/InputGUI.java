@@ -13,6 +13,8 @@ import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import Engine.Constants;
 import Engine.Functions;
@@ -33,6 +35,35 @@ public class InputGUI extends ModuleGUI
 	
 	public class InputRightClickMenu extends RightClickMenu
 	{
+		class MenuCreater implements PopupMenuListener
+		{
+			private InputRightClickMenu rightclickmenu;
+			
+			public MenuCreater(InputRightClickMenu r)
+			{
+				rightclickmenu = r;
+			}
+			
+			@Override
+			public void popupMenuWillBecomeVisible(PopupMenuEvent e)
+			{
+				// Recreate the menu
+				rightclickmenu.create_menu();
+			}
+
+			@Override
+			public void popupMenuWillBecomeInvisible(PopupMenuEvent e)
+			{
+				// Do nothing
+			}
+
+			@Override
+			public void popupMenuCanceled(PopupMenuEvent e)
+			{
+				// Do nothing
+			}
+		}
+		
 		public InputRightClickMenu(ModuleGUI module_gui, ContainerWindow main_window)
 		{
 			super(module_gui, main_window);

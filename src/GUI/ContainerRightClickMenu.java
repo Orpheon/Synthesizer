@@ -2,24 +2,65 @@ package GUI;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
 import javax.print.attribute.standard.MediaSize.Other;
 import javax.swing.*;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 public class ContainerRightClickMenu extends JPopupMenu
 {
 	private ContainerWindow main_window;
+	private Point mouse_position;
+	
+	class PositionChecker implements PopupMenuListener
+	{
+		private ContainerRightClickMenu rightclickmenu;
+		
+		public PositionChecker(ContainerRightClickMenu r)
+		{
+			super();
+			rightclickmenu = r;
+		}
+
+		@Override
+		public void popupMenuWillBecomeVisible(PopupMenuEvent e)
+		{
+			// Store the mouse position in the popup menu so that created modules get put at the right place
+			rightclickmenu.mouse_position = rightclickmenu.main_window.getMousePosition();
+		}
+
+		@Override
+		public void popupMenuWillBecomeInvisible(PopupMenuEvent e)
+		{
+			// Do nothing
+		}
+
+		@Override
+		public void popupMenuCanceled(PopupMenuEvent e)
+		{
+			// Do nothing
+		}
+	}
 	
 	public ContainerRightClickMenu(ContainerWindow main_window)
 	{
 		super();
 		
 		this.main_window = main_window;
+		this.mouse_position = new Point(0, 0);
+		
+		this.addPopupMenuListener(new PositionChecker(this));
 		
 		JMenu module_list = new JMenu("Add modules");
+
 		
 		JMenuItem item = new JMenuItem(
 			new AbstractAction()
@@ -141,10 +182,10 @@ public class ContainerRightClickMenu extends JPopupMenu
 		try
 		{
 			Point a;
-			a = main_window.getMousePosition();
+			a = mouse_position;
 			// +10 so that the module is under the mouse, and not just the topleft corner
-			a.x -= main_window.getInsets().left + 10;
-			a.y -= main_window.getInsets().top + main_window.menu.getHeight() + 10;
+//			a.x -= main_window.getInsets().left + 10;
+			a.y -= main_window.getInsets().top + main_window.menu.getHeight();
 			main_window.add_module(type, a.x, a.y);
 //			SwingUtilities.convertPointFromScreen(pos, main_window);
 //			// FIXME Magic number
