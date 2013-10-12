@@ -79,11 +79,11 @@ public class Functions
     	{
     		if (input.charAt(1) == '#')
     		{
-    			for (index=0; !notes_sharp[index].equals(input.substring(0, 1)); index++);
+    			for (index=0; !notes_sharp[index].equals(input.substring(0, 2)); index++);
     		}
     		else if (input.charAt(1) == 'b')
     		{
-    			for (index=0; !notes_flat[index].equals(input.substring(0, 1)); index++);
+    			for (index=0; !notes_flat[index].equals(input.substring(0, 2)); index++);
     		}
     		else
     		{
