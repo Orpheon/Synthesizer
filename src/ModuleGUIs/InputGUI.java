@@ -67,13 +67,20 @@ public class InputGUI extends ModuleGUI
 		public InputRightClickMenu(ModuleGUI module_gui, ContainerWindow main_window)
 		{
 			super(module_gui, main_window);
+			
+			addPopupMenuListener(new MenuCreater(this));
 		}
 		
 		public void create_menu()
 		{
-			// Add in the option to change the oscillator type
+			// First remove everything
+			int count = getComponentCount();
+			for (int i=0; i<count; i++)
+			{
+				remove(getComponent(0));
+			}
+
 			JMenuItem item;
-			
 			item = new JMenuItem(new AbstractAction()
 			{
 				public void actionPerformed(ActionEvent e)
@@ -85,11 +92,10 @@ public class InputGUI extends ModuleGUI
 			);
 			item.setText("Add new note");
 			add(item);
-			
-			JMenu remove_menu = new JMenu();
-			remove_menu.setText("Remove existing note");
-			
-			// FIXME: This whole mess is only done at init, find a way to get it to change the menu afterwards
+
+			JMenu menu = new JMenu();
+			menu.setText("Remove existing note");
+
 			Engine.InputModule m = (InputModule) module_gui.module;
 			for (int i=0; i<Constants.NUM_CHANNELS; i++)
 			{
@@ -105,11 +111,38 @@ public class InputGUI extends ModuleGUI
 					a.putValue("frequency_index", i);
 					item = new JMenuItem(a);
 					item.setText(Functions.convert_frequency2note(m.get_frequencies()[i]));
-					remove_menu.add(item);
+					menu.add(item);
 				}
 			}
 			
-			add(remove_menu);
+			add(menu);
+			
+			item = new JMenuItem(new AbstractAction()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					// Disconnect all the ports (will also stop the engine)
+					for (int i=0; i<InputRightClickMenu.this.module_gui.input_ports.length; i++)
+					{
+						if (InputRightClickMenu.this.module_gui.input_ports[i] != null)
+						{
+							InputRightClickMenu.this.module_gui.input_ports[i].disconnect();
+						}
+					}
+					for (int i=0; i<InputRightClickMenu.this.module_gui.output_ports.length; i++)
+					{
+						if (InputRightClickMenu.this.module_gui.output_ports[i] != null)
+						{
+							InputRightClickMenu.this.module_gui.output_ports[i].disconnect();
+						}
+					}
+					// Destroy the module
+					InputRightClickMenu.this.main_window.remove_module(InputRightClickMenu.this.module_gui);
+				}
+			}
+			);
+			item.setText("Destroy module");
+			add(item);
 		}
 	}
 	
