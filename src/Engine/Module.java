@@ -78,13 +78,25 @@ public abstract class Module
 			
 			if (source >= 0)
 			{
+				// Run the module, and then update the activation times
 				this.run(engine, channel);
-			}
-			for (int k=0; k<NUM_OUTPUT_PIPES; k++)
-			{
-				if (output_pipes[k] != null)
+				for (int k=0; k<NUM_OUTPUT_PIPES; k++)
 				{
-					output_pipes[k].activation_times[channel] = input_pipes[source].activation_times[channel];
+					if (output_pipes[k] != null)
+					{
+						output_pipes[k].activation_times[channel] = input_pipes[source].activation_times[channel];
+					}
+				}
+			}
+			else
+			{
+				// Make sure the "off" gets propagated
+				for (int k=0; k<NUM_OUTPUT_PIPES; k++)
+				{
+					if (output_pipes[k] != null)
+					{
+						output_pipes[k].activation_times[channel] = -1;
+					}
 				}
 			}
 		}
