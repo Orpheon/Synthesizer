@@ -64,11 +64,13 @@ public class Lowpass extends Module
 			double w0, cos_w0, sin_w0, alpha;
 			double a0, a1, a2, b0, b1, b2;
 			double[] x, y;
+			double max;
 
 			for (int side=0; side<audio_mode; side++)
 			{
 				x = input_pipes[SIGNAL_INPUT].get_pipe(channel)[side];
 				y = output_pipes[SIGNAL_OUTPUT].get_pipe(channel)[side];
+				max = 1;
 				for (int i=0; i<Constants.SNAPSHOT_SIZE; i++)
 				{
 					// FIXME: Decide whether to do this in here for modulation, or whether to do it beforehand for speed.
@@ -90,28 +92,33 @@ public class Lowpass extends Module
                     // These two cases must be handled separately, or at least should
                     if (i == 0)
                     {
-                        y[i] = Math.min(1, Math.max(-1, 
-                        			(b0/a0)*x[i] + (b1/a0)*filter_buffer_x[side][0] + (b2/a0)*filter_buffer_x[side][1] - (a1/a0)*filter_buffer_y[side][0] - (a2/a0)*filter_buffer_y[side][1]
-                        		));
+                        y[i] = (b0/a0)*x[i] + (b1/a0)*filter_buffer_x[side][0] + (b2/a0)*filter_buffer_x[side][1] - (a1/a0)*filter_buffer_y[side][0] - (a2/a0)*filter_buffer_y[side][1];
                     }
                     else if (i == 1)
                     {
-                    	y[i] = Math.min(1, Math.max(-1, 
-                    				(b0/a0)*x[i] + (b1/a0)*x[0] + (b2/a0)*filter_buffer_x[side][0] - (a1/a0)*y[0] - (a2/a0)*filter_buffer_y[side][0]
-                    			));
+                    	y[i] = (b0/a0)*x[i] + (b1/a0)*x[0] + (b2/a0)*filter_buffer_x[side][0] - (a1/a0)*y[0] - (a2/a0)*filter_buffer_y[side][0];
                     }
                     else
                     {
-                    	y[i] = Math.min(1, Math.max(-1, 
-                    				(b0/a0)*x[i] + (b1/a0)*x[i-1] + (b2/a0)*x[i-2] - (a1/a0)*y[i-1] - (a2/a0)*y[i-2]
-                    			));
+                    	y[i] = (b0/a0)*x[i] + (b1/a0)*x[i-1] + (b2/a0)*x[i-2] - (a1/a0)*y[i-1] - (a2/a0)*y[i-2];
+                    }
+                    // Calculate the max value of this frame, for scaling later
+                    if (Math.abs(y[i]) > max)
+                    {
+                    	max = Math.abs(y[i]);
                     }
 				}
+				// Normalize the values of y
+				for (int i=0; i<Constants.SNAPSHOT_SIZE; i++)
+				{
+					y[i] /= max;
+				}
+				
 				// Update the buffers for the next snapshot, for continuity
 				for (int i=0; i<2; i++)
 				{
 					filter_buffer_x[side][i] = x[Constants.SNAPSHOT_SIZE-i-1];
-					filter_buffer_y[side][i] = y[Constants.SNAPSHOT_SIZE-i-1];
+					filter_buffer_y[side][i] = y[Constants.SNAPSHOT_SIZE-i-1]*max;
 					// Care must be taken with feedback loops to not corrupt the entire future datastream if something goes wrong (ie. input doesn't arrive first frame)
 					if (Double.isInfinite(filter_buffer_y[side][i]) || Double.isNaN(filter_buffer_y[side][i]))
 					{
