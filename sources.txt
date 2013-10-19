@@ -14,7 +14,15 @@ http://cnx.org/content/m12016/latest/
 
 http://www.musicdsp.org/files/Audio-EQ-Cookbook.txt
 
+http://en.wikipedia.org/wiki/Q_factor
+
+http://en.wikipedia.org/wiki/Overlap%E2%80%93add_method
+
+http://stackoverflow.com/questions/4364823/how-to-get-frequency-from-fft-result?lq=1
+
 http://www.phys.unsw.edu.au/jw/notes.html
+
+http://www.codecogs.com/latex/eqneditor.php
 
 * Now talking on ##java
 * Topic for ##java is: A channel for java development questions | Paste limit is 2 lines.  ~pastebin lists options | Read this first:  http://javachannel.net | Android in #android-dev | JavaScript is in ##javascript | No applets | This channel is logged
