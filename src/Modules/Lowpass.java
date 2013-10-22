@@ -108,10 +108,13 @@ public class Lowpass extends Module
                     	max = Math.abs(y[i]);
                     }
 				}
-				// Normalize the values of y
-				for (int i=0; i<Constants.SNAPSHOT_SIZE; i++)
+				// Normalize the values of y if the go outside the range
+				if (max > 1)
 				{
-					y[i] /= max;
+					for (int i=0; i<Constants.SNAPSHOT_SIZE; i++)
+					{
+						y[i] /= max;
+					}
 				}
 				
 				// Update the buffers for the next snapshot, for continuity
