@@ -95,7 +95,7 @@ public class Oscillator extends Module
 		switch (osc_type)
 		{
 			case SINE_WAVE:
-				return Math.sin(time*freq*Constants.pi_times_2 + phase);
+				return Math.sin((time*freq + phase)*Constants.pi_times_2);
 			
 			case SAW_WAVE:
 				result = 0;
@@ -104,7 +104,7 @@ public class Oscillator extends Module
 				// Source: http://en.wikipedia.org/wiki/Sawtooth_wave
 				for (int k=1; k*freq<Constants.SAMPLING_RATE/2; k++)
 				{
-					result += Math.sin(time*freq*Constants.pi_times_2*k + phase)/k;
+					result += Math.sin((time*freq + phase)*Constants.pi_times_2*k)/k;
 				}
 				// This might destroy the nice bandlimiting, but I want my values -1 <= x <= 1, not -1.0903783642160645
 				return Math.min(1, Math.max(-1, 2*result/Math.PI));
@@ -116,7 +116,7 @@ public class Oscillator extends Module
 				// Source: http://en.wikipedia.org/wiki/Sawtooth_wave
 				for (int k=1; k*freq<Constants.SAMPLING_RATE/2; k+=2)
 				{
-					result += Math.sin(time*freq*Constants.pi_times_2*k + phase)/k;
+					result += Math.sin((time*freq + phase)*Constants.pi_times_2*k)/k;
 				}
 				// This might destroy the nice bandlimiting, but I want my values -1 <= x <= 1, not -1.0903783642160645
 				return Math.min(1, Math.max(-1, 2*result/Math.PI));
