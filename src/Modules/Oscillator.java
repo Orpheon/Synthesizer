@@ -100,26 +100,24 @@ public class Oscillator extends Module
 			case SAW_WAVE:
 				result = 0;
 				// Sawtooth = infinite sum of all harmonics with A=1/n for nth harmonic
-				// Doing like this for bandlimiting
 				// Source: http://en.wikipedia.org/wiki/Sawtooth_wave
 				for (int k=1; k*freq<Constants.SAMPLING_RATE/2; k++)
 				{
 					result += Math.sin((time*freq + phase)*Constants.pi_times_2*k)/k;
 				}
-				// This might destroy the nice bandlimiting, but I want my values -1 <= x <= 1, not -1.0903783642160645
+				// Keep result -1 <= x <= 1, not -1.0903783642160645 because of imprecision
 				return Math.min(1, Math.max(-1, 2*result/Math.PI));
 				
 			case SQUARE_WAVE:
 				result = 0;
 				// Square = infinite sum of odd harmonics with A=1/n for nth harmonic
-				// Doing like this for bandlimiting
-				// Source: http://en.wikipedia.org/wiki/Sawtooth_wave
+				// Source: http://en.wikipedia.org/wiki/Square_wave#Examining_the_square_wave
 				for (int k=1; k*freq<Constants.SAMPLING_RATE/2; k+=2)
 				{
 					result += Math.sin((time*freq + phase)*Constants.pi_times_2*k)/k;
 				}
-				// This might destroy the nice bandlimiting, but I want my values -1 <= x <= 1, not -1.0903783642160645
-				return Math.min(1, Math.max(-1, 2*result/Math.PI));
+				// Keep result -1 <= x <= 1, not -1.0903783642160645 because of imprecision
+				return Math.min(1, Math.max(-1, 4*result/Math.PI));
 				
 			default:
 				System.out.println("ERROR: Oscillator "+index+" has the invalid osc_type "+osc_type+"!");
