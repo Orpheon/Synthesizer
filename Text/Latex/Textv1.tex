@@ -1,0 +1,285 @@
+\documentclass[11pt,a4paper]{article}
+
+% Arial
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% 1.5 distance between lines
+\linespread{1.5}
+
+% reduce those generous margins a bit
+\usepackage[hmargin=3.5cm,vmargin=3cm]{geometry}
+
+% keep the text clean
+\usepackage[fleqn]{nccmath}
+\usepackage{enumitem}
+\setlist[itemize]{noitemsep}
+\setdescription{leftmargin=\parindent,labelindent=1cm}
+\usepackage[parfill]{parskip}
+
+% tikz package
+\usepackage{pgf,tikz}
+\usetikzlibrary{arrows}
+\pagestyle{empty}
+
+% Wrapping for figures
+\usepackage{wrapfig}
+
+% Java source code support
+\usepackage{listings}
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\linespread{0.8}\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true
+  tabsize=4
+}
+
+% Define floor
+\providecommand{\floor}[1]{\left \lfloor #1 \right \rfloor }
+
+% Math stuff
+\usepackage{amsmath}
+
+% Title
+\title{\LARGE \textbf {TITLE} \vspace{1em}}
+\author{Alexander Liebend\"{o}rfer}
+
+% Document
+\begin{document}
+\maketitle
+\clearpage
+\tableofcontents
+
+\clearpage
+
+\section{Introduction}
+
+\subsection{Description}
+
+\subsubsection{Synthesizers}
+
+\subsection{Motivation}
+
+\subsection{Tools}
+
+\subsubsection{Java and the Java Sound API}
+
+\subsubsection{Swing}
+
+\clearpage
+
+\section{Implementation}
+
+\subsection{Pipes and Modules}
+
+To achieve a completely modular synthesizer, we already need to give up a fixed circuit and have to use the module concept. On top of that, because of recursive loops, we need to actually let the data flow between the different modules, and not just sum the effects of the modules when needed. This means we need at least 1 buffer between every module. We also need a clear way to connect those modules, so a pipe system for connecting inputs and outputs of different modules will be necessary. And finally, some way to inject the current MIDI data and duration of every note as well as a way to capture the processed sound for output is needed.
+
+\subsubsection{Basic system}
+
+In this specific implementation, modules are pure functions, or atleast behave like such towards the outside. A module is always connected to other modules via so-called pipes, which contain the actual data. Modules can then load the data from their input pipes, process it, and dump the result into their output pipes. The main advantage of this system is that it's stable and will work with any wiring setup, even recursive loops. In such closed feed-back systems, there will be a propagation delay depending on the amount of pipes the data has to travel, and so no infinite recursion appears. Splitting data and doing parallel processing before merging it again is also implicitely supported, as every module and pipe only acts locally.
+One major issue is execution choice. A recursive "pull" query where every module calls the modules it depends on for their output cannot work, infinite recursion is a possibility. Even without recursion, there is always the risk that some part of the circuit did not get updated, which might affect the rest. I haven't found a clean solution to this without drawbacks, the one I chose just makes every module execute once in more or less random order (it is not truely random, in fact it is in order of creation), which in worse case makes a signal wait an extra frame between two modules but guarantees that every module is executed once and only once per frame, and done so in a consistent way.
+
+Injection of user input and retrieval of the sound output is best done with modules dedicated to that. These modules possess only 1 input or output port respectively, and do not by themselves do anything. They just serve as convienient place to connect pipes to, and the main overarching engine can just read and write the contents of their pipes.
+
+\subsubsection{Dealing with Time}
+
+A tricky problem is dealing with time-sensitive modules, like envelopes or oscillators. The input does not implicitely declare it's source, so there needs to be a way for the pipes to also carry starting time of a signal. For this, I implemented a separate counter in every pipe, which showed the time at which that signal started. When a module is done with processing and copies the signal data into its output, it also copies in the counter. A negative time can be used as a marker that the pipe is inactive and that module doesn't even need to process anything. Every module can define a special pipe which is taken as reference for the source time, which is especially important when conflicts are possible. If a module does not define such a pipe, the highest starting time (the most recent signal) of all is assumed to be the reference.
+
+\subsubsection{Stereo/Mono and Polyphony support}
+
+
+
+\subsection{Oscillators}
+
+Oscillators are generators that can create a periodic waveform. They are the basis of additive and subtractive synthesis by creating a basic wave to be shaped and modified by every other module. Usually osillators create a few types of mathematically well-defined primitive waveforms, like sine or square waves. Apart from the wave function, they also possess two parameters, frequency and phase. Frequency describes the amount of oscillations per second, and a difference in frequency is percieved as a difference in pitch. Phase is very difficult to percieve audibly in most cases, it is the initial offset the oscillation started with. Contrarily to frequency, phase has a bounded range, usually from 0 to 2$\pi$ or from 0 to 1, depending on the implementation.
+
+In this synthesizer, the 3 most fundamental waveforms are supported. These are the sine wave, the "square wave" or pulse wave, and the popular sawtooth-wave, also called saw-wave.
+\begin{figure}[h]
+\caption{Sine wave, Square/Pulse wave and Sawtooth wave}
+\centering
+\resizebox{\textwidth}{!}{
+    % Sine wave
+    \begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm]
+    \draw[->,color=black] (-1,0) -- (18,0);
+    \foreach \x in {-1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17}
+    \draw[shift={(\x,0)},color=black] (0pt,-2pt);
+    \draw[->,color=black] (0,-2) -- (0,2);
+    \foreach \y in {-2,-1,1}
+    \draw[shift={(0,\y)},color=black] (2pt,0pt) -- (-2pt,0pt);
+    \clip(-1,-2) rectangle (18,2);
+    \draw[smooth,samples=100,domain=-1.0:18.0] plot(\x,{sin(((\x))*180/pi)});
+    \end{tikzpicture}
+}
+\resizebox{\textwidth}{!}{
+    % Square wave
+    \begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm]
+    \draw[->,color=black] (-1,0) -- (18,0);
+    \foreach \x in {-1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18}
+    \draw[shift={(\x,0)},color=black] (0pt,-2pt);
+    \draw[->,color=black] (0,-2) -- (0,2);
+    \foreach \y in {-2,-1,1,2}
+    \draw[shift={(0,\y)},color=black] (2pt,0pt) -- (-2pt,0pt);
+    \clip(-1,-2) rectangle (18,2);
+    \foreach \k in {-1,1,...,17} {
+        \def\u{\k*3.141592653589793 - 0.5};
+        \draw (\u,-1) -- (\u+3.141592653589793,-1);
+        \draw (\u,1) -- (\u,-1);
+    }
+    \foreach \k in {0,2,...,18} {
+        \def\u{\k*3.141592653589793 - 0.5};
+        \draw (\u,1) -- (\u+3.141592653589793,1);
+        \draw (\u,1) -- (\u,-1);
+    }
+    \end{tikzpicture}
+}
+\resizebox{\textwidth}{!}{
+    % Saw wave
+    \begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm]
+    \draw[->,color=black] (-1,0) -- (18,0);
+    \foreach \x in {-1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18}
+    \draw[shift={(\x,0)},color=black] (0pt,-2pt);
+    \draw[->,color=black] (0,-2) -- (0,2);
+    \foreach \y in {-2,-1,1,2}
+    \draw[shift={(0,\y)},color=black] (2pt,0pt) -- (-2pt,0pt);
+    \clip(-1,-2) rectangle (18,2);
+    \foreach \k in {-1,...,18} {
+        \def\u{\k*3.141592653589793 - 0.5};
+        \draw (\u,-1) -- (\u+3.141592653589793,1);
+        \draw (\u,1) -- (\u,-1);
+    }
+    \end{tikzpicture}
+}
+\end{figure}
+
+\subsubsection{Basic implementation}
+
+As already noted, oscillators only require two parameters, phase and frequency. It is quite easy to deal with stereo behavior, as the channels are independent, one can simply first calculate the left side and then the right side. Oscillators also depend heavily on the global time and on the pipe starting time. Through this the current time since starting to oscillate can be calculated trivially, and it is generally a good idea to do modulo the period of the wave as well. Afterwards, the resulting signal is calculated differently depending on the type.
+\begin{figure}[h]
+\caption{Basic oscillator function implementations}
+\begin{lstlisting}
+double x = time * frequency + phase;
+switch (osc_type)
+{
+	case SINE_WAVE:
+		return Math.sin(x*2*Math.PI);
+
+	case SQUARE_WAVE:
+		if (x <= 0.5)
+		{
+		    return 1;
+		}
+		else
+		{
+		    return -1;
+		}
+
+	case SAW_WAVE:
+		return x - Math.floor(x);
+}
+\end{lstlisting}
+\end{figure}
+
+\subsubsection{Anti-Aliased implementation}
+
+The previous approach worked fine for sine waves, but in both other waveforms there is a discontinuity somewhere. In the frequency range, this translates to an infinite frequency, inducing aliasing, as the Nyquist frequency cannot be infinite.
+There are many, many approaches to fixing this problem in general, it is a recurring obstacle in everything from 3D-graphics to font rendering, and it affects synthesis as well. Luckily, the two waveforms we need are special; their frequencies are easily represented as infinite sums. On top of that, we do not need a particularly fast solution, so we can settle for a mathematically simple and complete one.
+
+The saw wave, in the frequency domain, is nothing but the sum of every harmonic with a 1/x decaying amplitude.
+(\(f = \) the base frequency, \(F_N = \) the Nyquist frequency)
+\begin{equation}
+H(f) = \frac{2}{\pi}\sum\limits_{k=1}^\infty{\frac{\sin(k*f)}{k}}
+\end{equation}
+Of course, instead of summing to infinity, we could stop summing as soon as \(k*f > F_N\), therefore only including overtones under the Nyquist frequency.
+\begin{equation}
+H(f) = \frac{2}{\pi}\sum\limits_{k=1}^\frac{F_N}{f}{\frac{\sin(k*f)}{k}}
+\end{equation}
+Note: The \(\frac{2}{\pi}\) normalises the result between -1 and 1.
+
+The same can be done for square waves. Square waves have nearly an identical frequency sum, except only odd harmonics have a non-zero amplitude (this also doubles the normalizing factor, since the range is still -1 to 1 but only half the elements are summed).
+
+\begin{equation}
+H(f) = \frac{4}{\pi}\sum\limits_{k=1}^\infty{\frac{\sin((2*k-1)*f)}{2*k-1}}
+\end{equation}
+becomes
+\begin{equation}
+H(f) = \frac{4}{\pi}\sum\limits_{k=1}^\frac{F_N}{f}{\frac{\sin((2*k-1)*f)}{2*k-1}}
+\end{equation}
+which again, only includes all parts of the square wave which are under the Nyquist frequency; a perfect solution, if we have the luxury of enough computing time to calculate this sum (which, for this synthesizer, we do).
+
+In code, the final result looks like this:
+\begin{figure}[h]
+\caption{Anti-Aliased oscillator function implementations}
+\begin{lstlisting}
+double x = time * frequency + phase;
+switch (osc_type)
+{
+	case SINE_WAVE:
+		return Math.sin(x*2*Math.PI);
+	
+	case SAW_WAVE:
+		result = 0;
+		// Sawtooth = infinite sum of all harmonics with A=1/n for nth harmonic
+		// Source: http://en.wikipedia.org/wiki/Sawtooth_wave
+		for (int k=1; k*freq<Constants.SAMPLING_RATE/2; k++)
+		{
+			result += Math.sin(x*2*Math.PI*k)/k;
+		}
+		// Keep result -1 <= x <= 1, not -1.0903783642160645 because of imprecision
+		return Math.min(1, Math.max(-1, 2*result/Math.PI));
+		
+	case SQUARE_WAVE:
+		result = 0;
+		// Square = infinite sum of odd harmonics with A=1/n for nth harmonic
+		// Source: http://en.wikipedia.org/wiki/Square_wave#Examining_the_square_wave
+		for (int k=1; k*freq<Constants.SAMPLING_RATE/2; k+=2)
+		{
+			result += Math.sin(x*2*Math.PI*k)/k;
+		}
+		// Keep result -1 <= x <= 1, not -1.0903783642160645 because of imprecision
+		return Math.min(1, Math.max(-1, 4*result/Math.PI));
+}
+\end{lstlisting}
+\end{figure}
+
+This code gives off perfect anti-aliasing and is fast enough for use in our synthesizer.
+
+\subsection{Filters}
+
+\subsubsection{Implementation with FFT}
+
+\subsubsection{Implementation using (2-pole) recursive filters}
+
+\subsection{Other Primitives}
+
+\subsubsection{Constants}
+
+\subsubsection{Merger and Splitter}
+
+\subsubsection{Adder and Multiplier}
+
+\subsubsection{Range Modifier}
+
+\subsection{GUI}
+
+\clearpage
+
+\section{Results}
+
+\subsection{Capabilities and Limitations of this program}
+
+\subsection{Lessons learned}
+\end{document}
