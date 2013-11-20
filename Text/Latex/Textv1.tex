@@ -68,11 +68,11 @@
 
 \section{Introduction}
 
+\subsection{Motivation}
+
 \subsection{Description}
 
 \subsubsection{Synthesizers}
-
-\subsection{Motivation}
 
 \subsection{Tools}
 
@@ -97,11 +97,12 @@ Injection of user input and retrieval of the sound output is best done with modu
 
 \subsubsection{Dealing with Time}
 
-A tricky problem is dealing with time-sensitive modules, like envelopes or oscillators. The input does not implicitely declare it's source, so there needs to be a way for the pipes to also carry starting time of a signal. For this, I implemented a separate counter in every pipe, which showed the time at which that signal started. When a module is done with processing and copies the signal data into its output, it also copies in the counter. A negative time can be used as a marker that the pipe is inactive and that module doesn't even need to process anything. Every module can define a special pipe which is taken as reference for the source time, which is especially important when conflicts are possible. If a module does not define such a pipe, the highest starting time (the most recent signal) of all is assumed to be the reference.
+A tricky problem is dealing with time-sensitive modules, like envelopes or oscillators. The input does not implicitely declare it's source, so there needs to be a way for the pipes to also carry starting time of a signal. For this, I implemented a separate counter in every pipe, which showed the time at which that signal started. When a module is done with processing and copies the signal data into its output, it also copies in the counter. A negative time can be used as a marker that the pipe is inactive and that module doesn't even need to process anything. Every module can define a special pipe which is taken as reference for the source time, which is especially important when conflicts are possible. If a module does not define such a pipe, the highest starting time (the most recent signal) of all input pipes is assumed to be the reference.
 
 \subsubsection{Stereo/Mono and Polyphony support}
 
-
+Making one sound is nice, but for making anything remotely musical one must be able to play several sounds at once. Infinite simultaneous sounds would be ideal, but is technically impossible. A number of different channels though, usually around 8 or 16, is simple to implement. Every sound buffer in the pipe is transformed into an array of buffers, and the starting time is transformed into an array. Modules then just iterate between all channels and behave normally for each pipe.
+Additionally, a nice feature would be stereo support. My implementation lacks stereo support in the java api calls and the gui, but the engine itself and all the modules and pipes can use stereo. For that, all buffers across all channels are duplicated, to be calculated separately. In fact, there is little difference between stereo and a second layer of channels for polyphony, and so it is treated much the same way.
 
 \subsection{Oscillators}
 
@@ -109,7 +110,7 @@ Oscillators are generators that can create a periodic waveform. They are the bas
 
 In this synthesizer, the 3 most fundamental waveforms are supported. These are the sine wave, the "square wave" or pulse wave, and the popular sawtooth-wave, also called saw-wave.
 \begin{figure}[h]
-\caption{Sine wave, Square/Pulse wave and Sawtooth wave}
+\caption{Common basic waveforms}
 \centering
 \resizebox{\textwidth}{!}{
     % Sine wave
@@ -121,7 +122,8 @@ In this synthesizer, the 3 most fundamental waveforms are supported. These are t
     \foreach \y in {-2,-1,1}
     \draw[shift={(0,\y)},color=black] (2pt,0pt) -- (-2pt,0pt);
     \clip(-1,-2) rectangle (18,2);
-    \draw[smooth,samples=100,domain=-1.0:18.0] plot(\x,{sin(((\x))*180/pi)});
+    \draw[smooth,color=blue,samples=100,domain=-1.0:18.0] plot(\x,{sin(((\x))*180/pi)});
+    \node [above] at (2,1) {\large Sine wave};
     \end{tikzpicture}
 }
 \resizebox{\textwidth}{!}{
@@ -136,14 +138,15 @@ In this synthesizer, the 3 most fundamental waveforms are supported. These are t
     \clip(-1,-2) rectangle (18,2);
     \foreach \k in {-1,1,...,17} {
         \def\u{\k*3.141592653589793 - 0.5};
-        \draw (\u,-1) -- (\u+3.141592653589793,-1);
-        \draw (\u,1) -- (\u,-1);
+        \draw [color=blue] (\u,-1) -- (\u+3.141592653589793,-1);
+        \draw [color=blue] (\u,1) -- (\u,-1);
     }
     \foreach \k in {0,2,...,18} {
         \def\u{\k*3.141592653589793 - 0.5};
-        \draw (\u,1) -- (\u+3.141592653589793,1);
-        \draw (\u,1) -- (\u,-1);
+        \draw [color=blue] (\u,1) -- (\u+3.141592653589793,1);
+        \draw [color=blue] (\u,1) -- (\u,-1);
     }
+    \node [above] at (2,1) {\large Square wave};
     \end{tikzpicture}
 }
 \resizebox{\textwidth}{!}{
@@ -158,9 +161,10 @@ In this synthesizer, the 3 most fundamental waveforms are supported. These are t
     \clip(-1,-2) rectangle (18,2);
     \foreach \k in {-1,...,18} {
         \def\u{\k*3.141592653589793 - 0.5};
-        \draw (\u,-1) -- (\u+3.141592653589793,1);
-        \draw (\u,1) -- (\u,-1);
+        \draw [color=blue] (\u,-1) -- (\u+3.141592653589793,1);
+        \draw [color=blue] (\u,1) -- (\u,-1);
     }
+    \node [above] at (2,1) {\large Saw wave};
     \end{tikzpicture}
 }
 \end{figure}
@@ -168,8 +172,7 @@ In this synthesizer, the 3 most fundamental waveforms are supported. These are t
 \subsubsection{Basic implementation}
 
 As already noted, oscillators only require two parameters, phase and frequency. It is quite easy to deal with stereo behavior, as the channels are independent, one can simply first calculate the left side and then the right side. Oscillators also depend heavily on the global time and on the pipe starting time. Through this the current time since starting to oscillate can be calculated trivially, and it is generally a good idea to do modulo the period of the wave as well. Afterwards, the resulting signal is calculated differently depending on the type.
-\begin{figure}[h]
-\caption{Basic oscillator function implementations}
+\\\begin{minipage}{\linewidth}
 \begin{lstlisting}
 double x = time * frequency + phase;
 switch (osc_type)
@@ -188,26 +191,27 @@ switch (osc_type)
 		}
 
 	case SAW_WAVE:
-		return x - Math.floor(x);
+		return 2*(x - Math.floor(x)) - 1;
 }
 \end{lstlisting}
-\end{figure}
+\end{minipage}
 
 \subsubsection{Anti-Aliased implementation}
 
 The previous approach worked fine for sine waves, but in both other waveforms there is a discontinuity somewhere. In the frequency range, this translates to an infinite frequency, inducing aliasing, as the Nyquist frequency cannot be infinite.
 There are many, many approaches to fixing this problem in general, it is a recurring obstacle in everything from 3D-graphics to font rendering, and it affects synthesis as well. Luckily, the two waveforms we need are special; their frequencies are easily represented as infinite sums. On top of that, we do not need a particularly fast solution, so we can settle for a mathematically simple and complete one.
 
-The saw wave, in the frequency domain, is nothing but the sum of every harmonic with a 1/x decaying amplitude.
+The saw wave, in the frequency domain, is nothing but the sum of every harmonic (whole-number multiples of the base frequency) with a 1/k decaying amplitude.
 (\(f = \) the base frequency, \(F_N = \) the Nyquist frequency)
 \begin{equation}
 H(f) = \frac{2}{\pi}\sum\limits_{k=1}^\infty{\frac{\sin(k*f)}{k}}
 \end{equation}
+{\small \it Note: The \(\frac{2}{\pi}\) normalises the result between -1 and 1.}
+
 Of course, instead of summing to infinity, we could stop summing as soon as \(k*f > F_N\), therefore only including overtones under the Nyquist frequency.
 \begin{equation}
 H(f) = \frac{2}{\pi}\sum\limits_{k=1}^\frac{F_N}{f}{\frac{\sin(k*f)}{k}}
 \end{equation}
-Note: The \(\frac{2}{\pi}\) normalises the result between -1 and 1.
 
 The same can be done for square waves. Square waves have nearly an identical frequency sum, except only odd harmonics have a non-zero amplitude (this also doubles the normalizing factor, since the range is still -1 to 1 but only half the elements are summed).
 
@@ -221,8 +225,7 @@ H(f) = \frac{4}{\pi}\sum\limits_{k=1}^\frac{F_N}{f}{\frac{\sin((2*k-1)*f)}{2*k-1
 which again, only includes all parts of the square wave which are under the Nyquist frequency; a perfect solution, if we have the luxury of enough computing time to calculate this sum (which, for this synthesizer, we do).
 
 In code, the final result looks like this:
-\begin{figure}[h]
-\caption{Anti-Aliased oscillator function implementations}
+\\\begin{minipage}{\linewidth}
 \begin{lstlisting}
 double x = time * frequency + phase;
 switch (osc_type)
@@ -253,13 +256,85 @@ switch (osc_type)
 		return Math.min(1, Math.max(-1, 4*result/Math.PI));
 }
 \end{lstlisting}
-\end{figure}
-
+\end{minipage}
 This code gives off perfect anti-aliasing and is fast enough for use in our synthesizer.
 
 \subsection{Filters}
 
-\subsubsection{Implementation with FFT}
+Filters are an enormously complex subject and a field for themselves, having a wide range of applications beyond music especially in communications and data analysis. The general definition of a filter is very broad, I am going to refer specifically to filters that modify the gain as a function of frequency.
+Even of these, innumerable examples exist, so I will concentrate on the commonly used musical filters. By far the most famous of those are the lowpass and highpass filters.
+A lowpass filter, as the name would suggest, lets low frequencies pass while blocking high frequencies. A highpass filter does just the opposite.
+There are more types of filters common in synthesizers, most notably bandpass and bandreject (also called notch) filters, but I have not implemented them, so I won't do more than mention them here.
+\begin{figure}
+\centering
+\caption{Ideal filter frequency responses}
+\resizebox{\textwidth}{!}{
+    % Saw wave
+    \begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm]
+    \draw[->,color=black] (0,0) -- (18,0) node [below] {Frequency};;
+    \foreach \x in {1,2,...,18}
+    \draw[shift={(\x,0)},color=black] (0pt,-2pt);
+    \draw[->,color=black] (0,0) -- (0,1) node [below left] {Gain};
+    \foreach \y in {1}
+    \draw[shift={(0,\y)},color=black] (2pt,0pt) -- (-2pt,0pt);
+    \clip(-1,-2) rectangle (18,2);
+    \draw[color=blue] (0,1) -- (7,1);
+    \draw[color=blue] (7,1) -- (7,0);
+    \node [above] at (1,1) {\large Lowpass filter };
+    \end{tikzpicture}
+}
+\resizebox{\textwidth}{!}{
+    % Saw wave
+    \begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm]
+    \draw[->,color=black] (0,0) -- (18,0) node [below] {Frequency};
+    \foreach \x in {1,2,...,18}
+    \draw[shift={(\x,0)},color=black] (0pt,-2pt);
+    \draw[->,color=black] (0,0) -- (0,1) node [below left] {Gain};
+    \foreach \y in {1}
+    \draw[shift={(0,\y)},color=black] (2pt,0pt) -- (-2pt,0pt);
+    \clip(-1,-2) rectangle (18,2);
+    \draw[color=blue] (18,1) -- (11,1);
+    \draw[color=blue] (11,1) -- (11,0);
+    \node [above] at (1,1) {\large Highpass filter};
+    \end{tikzpicture}
+}
+\resizebox{\textwidth}{!}{
+    % Saw wave
+    \begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm]
+    \draw[->,color=black] (0,0) -- (18,0) node [below] {Frequency};;
+    \foreach \x in {1,2,...,18}
+    \draw[shift={(\x,0)},color=black] (0pt,-2pt);
+    \draw[->,color=black] (0,0) -- (0,1) node [below left] {Gain};
+    \foreach \y in {1}
+    \draw[shift={(0,\y)},color=black] (2pt,0pt) -- (-2pt,0pt);
+    \clip(-1,-2) rectangle (18,2);
+    \draw[color=blue] (6,1) -- (12,1);
+    \draw[color=blue] (6,1) -- (6,0);
+    \draw[color=blue] (12,1) -- (12,0);
+    \node [above] at (1,1) {\large Bandpass filter};
+    \end{tikzpicture}
+}
+
+\resizebox{\textwidth}{!}{
+    % Saw wave
+    \begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm]
+    \draw[->,color=black] (0,0) -- (18,0) node [below] {Frequency};;
+    \foreach \x in {1,2,...,18}
+    \draw[shift={(\x,0)},color=black] (0pt,-2pt);
+    \draw[->,color=black] (0,0) -- (0,1) node [below left] {Gain};
+    \foreach \y in {1}
+    \draw[shift={(0,\y)},color=black] (2pt,0pt) -- (-2pt,0pt);
+    \clip(-1,-2) rectangle (18,2);
+    \draw[color=blue] (6,1) -- (0,1);
+    \draw[color=blue] (12,1) -- (18,1);
+    \draw[color=blue] (6,1) -- (6,0);
+    \draw[color=blue] (12,1) -- (12,0);
+    \node [above] at (1,1) {\large Bandreject filter};
+    \end{tikzpicture}
+}
+\end{figure}
+
+\subsubsection{Implementation of a lowpass and highpass filter with FFT}
 
 \subsubsection{Implementation using (2-pole) recursive filters}
 
@@ -281,5 +356,5 @@ This code gives off perfect anti-aliasing and is fast enough for use in our synt
 
 \subsection{Capabilities and Limitations of this program}
 
-\subsection{Lessons learned}
+\subsection{Looking forward}
 \end{document}
