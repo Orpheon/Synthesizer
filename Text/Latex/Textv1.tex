@@ -86,14 +86,14 @@
 
 \subsection{Pipes and Modules}
 
-To achieve a completely modular synthesizer, we already need to give up a fixed circuit and have to use the module concept. On top of that, because of recursive loops, we need to actually let the data flow between the different modules, and not just sum the effects of the modules when needed. This means we need at least 1 buffer between every module. We also need a clear way to connect those modules, so a pipe system for connecting inputs and outputs of different modules will be necessary. And finally, some way to inject the current MIDI data and duration of every note as well as a way to capture the processed sound for output is needed.
+To achieve a completely modular synthesizer, we already need to give up a fixed circuit and have to use the module concept. On top of that, because of recursive loops, we need to actually let the data flow between the different modules, and not just sum the effects of the modules recursively. This means we need at least 1 buffer between every module. We also need a clear way to connect those modules, so a pipe system for connecting inputs and outputs of different modules will be necessary. And finally, some way to inject the current MIDI data and duration of every note as well as a way to capture the processed sound for output is needed.
 
 \subsubsection{Basic system}
 
-In this specific implementation, modules are pure functions, or atleast behave like such towards the outside. A module is always connected to other modules via so-called pipes, which contain the actual data. Modules can then load the data from their input pipes, process it, and dump the result into their output pipes. The main advantage of this system is that it's stable and will work with any wiring setup, even recursive loops. In such closed feed-back systems, there will be a propagation delay depending on the amount of pipes the data has to travel, and so no infinite recursion appears. Splitting data and doing parallel processing before merging it again is also implicitely supported, as every module and pipe only acts locally.
-One major issue is execution choice. A recursive "pull" query where every module calls the modules it depends on for their output cannot work, infinite recursion is a possibility. Even without recursion, there is always the risk that some part of the circuit did not get updated, which might affect the rest. I haven't found a clean solution to this without drawbacks, the one I chose just makes every module execute once in more or less random order (it is not truely random, in fact it is in order of creation), which in worse case makes a signal wait an extra frame between two modules but guarantees that every module is executed once and only once per frame, and done so in a consistent way.
+In this specific implementation, modules are pure functions, or atleast behave as such towards the outside. A module is always connected to other modules via so-called pipes, which contain the actual data. Modules can then load the data from their input pipes, process it, and dump the result into their output pipes. The main advantage of this system is that it's stable and will work with any wiring setup, even feedback loops. In such closed feedback systems, there will be a propagation delay depending on the amount of pipes the data has to travel, and so no infinite recursion appears. Splitting data and doing parallel processing before merging it again is also implicitely supported, as every module and pipe only acts locally.
+One major issue is execution order. A recursive "pull" query where every module calls the modules it depends on for their output cannot work, infinite recursion is a possibility. Even without recursion, there is always the risk that some part of the circuit did not get updated, which might affect the rest. I haven't found a clean solution to this without drawbacks, the one I chose just makes every module execute once in more or less random order (it is not truely random, in fact it is in order of creation), which in worse case makes a signal wait an extra frame between two modules but guarantees that every module is executed once and only once per frame, and done so in a consistent way.
 
-Injection of user input and retrieval of the sound output is best done with modules dedicated to that. These modules possess only 1 input or output port respectively, and do not by themselves do anything. They just serve as convienient place to connect pipes to, and the main overarching engine can just read and write the contents of their pipes.
+Injection of user input and retrieval of the sound output is best done with modules dedicated to that. These modules possess only 1 input or output port respectively, and do not by themselves do anything. They just serve as convienient place to connect pipes to, and the main overarching engine can simply read and write the contents of their pipes.
 
 \subsubsection{Dealing with Time}
 
@@ -198,7 +198,7 @@ switch (osc_type)
 
 \subsubsection{Anti-Aliased implementation}
 
-The previous approach worked fine for sine waves, but in both other waveforms there is a discontinuity somewhere. In the frequency range, this translates to an infinite frequency, inducing aliasing, as the Nyquist frequency cannot be infinite.
+The previous approach worked fine for sine waves, but in both other waveforms there is a recurring discontinuity. In the frequency range, this translates to an infinite frequency, inducing aliasing, as the Nyquist frequency cannot be infinite.
 There are many, many approaches to fixing this problem in general, it is a recurring obstacle in everything from 3D-graphics to font rendering, and it affects synthesis as well. Luckily, the two waveforms we need are special; their frequencies are easily represented as infinite sums. On top of that, we do not need a particularly fast solution, so we can settle for a mathematically simple and complete one.
 
 The saw wave, in the frequency domain, is nothing but the sum of every harmonic (whole-number multiples of the base frequency) with a 1/k decaying amplitude.
@@ -336,7 +336,14 @@ There are more types of filters common in synthesizers, most notably bandpass an
 
 \subsubsection{Implementation of a lowpass and highpass filter with FFT}
 
+The plan is to first convert the time-domain signal into frequency domain, using the Fast Fourier Transform (FFT), multiply it with our filter function, and then convert it back (using the Inverse Fast Fourier Transform, or IFFT). Contrarily to the ideal mathematical idea in the previous section, we have several limitations. For one, we do not have an input of infinite length, the input will come in small blocks at a time. Related is the problem that frequency is tied to the concept of a period. Our signals will only be approximately periodic, but certainly not precisely so.
+The result is that whenever we attempt to transform the filtered signal back into time-domain, it becomes a periodic signal, and both extremities change. This causes discontinuities between different frames, which results in audible buzzing. There is a way to avoid this, using the overlap-add method, which depends on buffering a bit of extra data of previous frames and including it in the FFT, causing the IFFT to create a longer wave, which can be cut at the right place with much less of an error.
+
+This method turns out to be rather complex, and quickly became a problem to implement. So I searched for simpler methods with less book-keeping involved, and once I had found one I gave up on this particular implementation.
+
 \subsubsection{Implementation using (2-pole) recursive filters}
+
+
 
 \subsection{Other Primitives}
 
