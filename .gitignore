@@ -5,3 +5,8 @@
 *.jar
 *.war
 *.ear
+
+# Latex
+*.aux
+*.toc
+*.log
