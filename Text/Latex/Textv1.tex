@@ -17,8 +17,8 @@
 \setdescription{leftmargin=\parindent,labelindent=1cm}
 \usepackage[parfill]{parskip}
 
-% tikz package
-\usepackage{pgf,tikz}
+% pgfplots for more complex stuff
+\usepackage{pgfplots}
 \usetikzlibrary{arrows}
 \pagestyle{empty}
 
@@ -66,19 +66,21 @@
 
 \clearpage
 
-\section{Introduction}
+\section{Preface}
 
 \subsection{Motivation}
+
+\section{Introduction}
 
 \subsection{Description}
 
 \subsubsection{Synthesizers}
 
-\subsection{Tools}
+\section{Tools}
 
-\subsubsection{Java and the Java Sound API}
+\subsection{Java and the Java Sound API}
 
-\subsubsection{Swing}
+\subsection{Swing}
 
 \clearpage
 
@@ -198,7 +200,7 @@ switch (osc_type)
 
 \subsubsection{Anti-Aliased implementation}
 
-The previous approach worked fine for sine waves, but in both other waveforms there is a recurring discontinuity. In the frequency range, this translates to an infinite frequency, inducing aliasing, as the Nyquist frequency cannot be infinite.
+The previous approach worked fine for sine waves, but in both other waveforms there is a regular discontinuity. In the frequency range, this translates to an infinite frequency, inducing aliasing, as the Nyquist frequency cannot be infinite.
 There are many, many approaches to fixing this problem in general, it is a recurring obstacle in everything from 3D-graphics to font rendering, and it affects synthesis as well. Luckily, the two waveforms we need are special; their frequencies are easily represented as infinite sums. On top of that, we do not need a particularly fast solution, so we can settle for a mathematically simple and complete one.
 
 The saw wave, in the frequency domain, is nothing but the sum of every harmonic (whole-number multiples of the base frequency) with a 1/k decaying amplitude.
@@ -220,7 +222,7 @@ H(f) = \frac{4}{\pi}\sum\limits_{k=1}^\infty{\frac{\sin((2*k-1)*f)}{2*k-1}}
 \end{equation}
 becomes
 \begin{equation}
-H(f) = \frac{4}{\pi}\sum\limits_{k=1}^\frac{F_N}{f}{\frac{\sin((2*k-1)*f)}{2*k-1}}
+H(f) = \frac{4}{\pi}\sum\limits_{k=1}^\frac{F_N}{2f}{\frac{\sin((2*k-1)*f)}{2*k-1}}
 \end{equation}
 which again, only includes all parts of the square wave which are under the Nyquist frequency; a perfect solution, if we have the luxury of enough computing time to calculate this sum (which, for this synthesizer, we do).
 
@@ -265,6 +267,8 @@ Filters are an enormously complex subject and a field for themselves, having a w
 Even of these, innumerable examples exist, so I will concentrate on the commonly used musical filters. By far the most famous of those are the lowpass and highpass filters.
 A lowpass filter, as the name would suggest, lets low frequencies pass while blocking high frequencies. A highpass filter does just the opposite.
 There are more types of filters common in synthesizers, most notably bandpass and bandreject (also called notch) filters, but I have not implemented them, so I won't do more than mention them here.
+
+All of the following filters have at least one very important parameter, the cutoff frequency. Informally stated, this is the location of the filter. Raising the cutoff frequency of a lowpass filter for example allows more frequencies to pass through.
 \begin{figure}
 \centering
 \caption{Ideal filter frequency responses}
@@ -338,12 +342,139 @@ There are more types of filters common in synthesizers, most notably bandpass an
 
 The plan is to first convert the time-domain signal into frequency domain, using the Fast Fourier Transform (FFT), multiply it with our filter function, and then convert it back (using the Inverse Fast Fourier Transform, or IFFT). Contrarily to the ideal mathematical idea in the previous section, we have several limitations. For one, we do not have an input of infinite length, the input will come in small blocks at a time. Related is the problem that frequency is tied to the concept of a period. Our signals will only be approximately periodic, but certainly not precisely so.
 The result is that whenever we attempt to transform the filtered signal back into time-domain, it becomes a periodic signal, and both extremities change. This causes discontinuities between different frames, which results in audible buzzing. There is a way to avoid this, using the overlap-add method, which depends on buffering a bit of extra data of previous frames and including it in the FFT, causing the IFFT to create a longer wave, which can be cut at the right place with much less of an error.
-
-This method turns out to be rather complex, and quickly became a problem to implement. So I searched for simpler methods with less book-keeping involved, and once I had found one I gave up on this particular implementation.
+It makes things worse though, because the FFT/IFFT depends on a signal length of $2^n$ (without either sacrificing a lot performance or using black magic), which means that the real signal length has to be chosen so that added with the overlap constant, it gives a $2^n$ signal. This whole implementation turns out to be rather complex, and quickly became a problem to program. So I searched for simpler methods with less book-keeping involved, and once I had found one I gave up on this particular method.
 
 \subsubsection{Implementation using (2-pole) recursive filters}
 
+One property of conversion between time and frequency domain when considering two functions is what happens to multiplication.
+\begin{equation}
+j(t) = h(t) \times g(t) \iff J(t) = H(t) * G(t)
+\end{equation}
+and vis-versa
+\begin{equation}
+j(t) = h(t) * g(t) \iff J(t) = H(t) \times G(t)
+\end{equation}
+What this means is that multiplying the frequency spectrums of two waves is identical to convolving their time domain functions.
+This means we could also simply pass our filter through an IFFT (the result is called a convolution kernel), and convolve our signal with that.
+Convolution works the following way
+\begin{equation}
+y[n] = h[0]x[n] + h[1]x[n-1] + h[2]x[n-2] + \dots
+\end{equation}
+{\small \it Note: Convolution also exists for continous functions, but we are dealing with discrete signals so I am switching to that notation.}\\
+The problem with convolution is that most interesting filters have very long impulse responses (the time-domain converse of the frequency response), ideal box-filters like we attempted before even possess infinite impulse responses.
+We can give up on ideal box-filters, it then becomes a story of trying to get as close as possible while keeping computation low. One method for this are recursive filters; Instead of just using previous input values, we also use previous output values.
+\begin{equation}
+y[n] = b_0x[n] + b_1x[n-1] + b_2x[n-2] + \dots + a_0y[n] + a_1y[n-1] + a_2y[n-2] + \dots
+\end{equation}
+While not being of obvious use, this allows us to bypass long convolution kernels. The mathematics for deriving the constants $a_0$,$b_0$,\dots is called the Z-transform and is quite complex. Skipping the details, I chose to copy an analog electronical circuit working with up to two previous values (hence being called a 2-pole filter).
+The equation becomes
+\begin{equation}
+y[n] = b_0x[n] + b_1x[n-1] + b_2x[n-2] + a_0y[n] + a_1y[n-1]
+\end{equation}
 
+The frequency response function isn't a perfect box filter anymore, but it is similar enough to work as well, and is much simpler.
+It has two parameters, the cutoff frequency (\(f_c\)) as per before, and also a strange parameter commonly called \(Q\) or resonance.
+Sampling frequency will be denoted as \(F_s\).
+First defining $\omega_0$ which we will need:
+\begin{equation}
+\omega_0 = \frac{2{\pi}f_c}{F_s}
+\end{equation}
+The transfer function (equal to the frequency response) of the lowpass filter:
+\begin{equation}
+H(f) = \frac{\omega_0^2}{f^2 + \frac{\omega_0}{Q}f + \omega_0^2}
+\end{equation}
+\begin{figure}[h]
+\caption{2-pole Lowpass filter frequency response}
+\centering
+\resizebox{\textwidth}{!}{
+
+\begin{tikzpicture}
+\begin{semilogxaxis}[xlabel=Frequency, ylabel=Gain, xmin=1, xmax=20000, ymin=0, ymax=2]
+
+\addplot[domain=1:1e4,color=red] {250000/(x*x + 500*x + 250000)};
+
+\end{semilogxaxis}
+\end{tikzpicture}
+
+
+
+
+}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The transfer function for the highpass filter:
+\begin{equation}
+H(f) = \frac{f^2}{f^2 + \frac{\omega_0}{Q}f + \omega_0^2}
+\end{equation}
+
+
+
+
+Converting this into coefficients for the recursive equation is a complex procedure, so I will directly jump to the actual values.
+First, we create a new constant $a_0$ and negate $a_1$ and $a_2$ to simplify later equations. Our new recursive equation becomes:
+\begin{equation}
+y[n] = \frac{b_0}{a_0}x[n] + \frac{b_1}{a_0}x[n-1] + \frac{b_2}{a_0}x[n-2] - \frac{a_1}{a_0}y[n-1] - \frac{a_2}{a_0}y[n-2]
+\end{equation}
+We first calculate $\alpha$:
+\begin{equation}
+\alpha = \frac{\sin(\omega_0)}{2Q}
+\end{equation}
+The coefficients for a lowpass filter:
+\begin{equation}
+b_0 = \frac{1 - \cos(\omega_0}{2}
+\end{equation}
+\begin{equation}
+b_1 = 1 - \cos(\omega_0)
+\end{equation}
+\begin{equation}
+b_2 = \frac{1 - \cos(\omega_0}{2}
+\end{equation}
+\begin{equation}
+a_0 = 1 + \alpha
+\end{equation}
+\begin{equation}
+a_1 = -2\cos(\omega_0)
+\end{equation}
+\begin{equation}
+a_2 = 1 - \alpha
+\end{equation}
+The coefficients for a highpass filter:
+\begin{equation}
+b_0 = \frac{1 + \cos(\omega_0)}{2}
+\end{equation}
+\begin{equation}
+b_1 = -1 - \cos(\omega_0))
+\end{equation}
+\begin{equation}
+b_2 = \frac{1 + \cos(\omega_0)}{2}
+\end{equation}
+\begin{equation}
+a_0 = 1 + \alpha
+\end{equation}
+\begin{equation}
+a_1 = -2\cos(\omega_0)
+\end{equation}
+\begin{equation}
+a_2 = 1 - \alpha
+\end{equation}
 
 \subsection{Other Primitives}
 
@@ -363,5 +494,6 @@ This method turns out to be rather complex, and quickly became a problem to impl
 
 \subsection{Capabilities and Limitations of this program}
 
-\subsection{Looking forward}
+\section{Looking forward}
+
 \end{document}
