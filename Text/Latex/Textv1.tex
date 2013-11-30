@@ -97,13 +97,13 @@ To achieve a completely modular synthesizer, we already need to give up a fixed 
 \subsubsection{Basic system}
 
 In this specific implementation, modules are pure functions, or atleast behave as such towards the outside. A module is always connected to other modules via so-called pipes, which contain the actual data. Modules can then load the data from their input pipes, process it, and dump the result into their output pipes. The main advantage of this system is that it's stable and will work with any wiring setup, even feedback loops. In such closed feedback systems, there will be a propagation delay depending on the amount of pipes the data has to travel, and so no infinite recursion appears. Splitting data and doing parallel processing before merging it again is also implicitely supported, as every module and pipe only acts locally.
-One major issue is execution order. A recursive "pull" query where every module calls the modules it depends on for their output cannot work, infinite recursion is a possibility. Even without recursion, there is always the risk that some part of the circuit did not get updated, which might affect the rest. I haven't found a clean solution to this without drawbacks, the one I chose just makes every module execute once in more or less random order (it is not truely random, in fact it is in order of creation), which in worse case makes a signal wait an extra frame between two modules but guarantees that every module is executed once and only once per frame, and done so in a consistent way.
+One major issue is execution order. A recursive "pull" query where every module calls the modules it depends on for their output cannot work, infinite recursion is a possibility. Even without recursion, there is always the risk that some part of the circuit did not get updated, which might affect the rest. I haven't found a clean solution to this without drawbacks, the one I chose just makes every module execute once in more or less random order (it is not truely random, in fact it is in order of creation), which in worse case causes a signal to wait an extra frame between two modules but guarantees that every module is executed once and only once per frame, and done so in a consistent way.
 
 Injection of user input and retrieval of the sound output is best done with modules dedicated to that. These modules possess only 1 input or output port respectively, and do not by themselves do anything. They just serve as convienient place to connect pipes to, and the main overarching engine can simply read and write the contents of their pipes.
 
 \subsubsection{Dealing with Time}
 
-A tricky problem is dealing with time-sensitive modules, like envelopes or oscillators. The input does not implicitely declare it's source, so there needs to be a way for the pipes to also carry starting time of a signal. For this, I implemented a separate counter in every pipe, which showed the time at which that signal started. When a module is done with processing and copies the signal data into its output, it also copies in the counter. A negative time can be used as a marker that the pipe is inactive and that module doesn't even need to process anything. Every module can define a special pipe which is taken as reference for the source time, which is especially important when conflicts are possible. If a module does not define such a pipe, the highest starting time (the most recent signal) of all input pipes is assumed to be the reference.
+A tricky problem is dealing with time-sensitive modules, like envelopes or oscillators. The input does not implicitely declare it's duration, so there needs to be a way for the pipes to also carry starting time of a signal. For this, I implemented a separate counter in every pipe, which showed the time at which that signal started. When a module is done with processing and copies the signal data into its output, it also copies in the counter. A negative time can be used as a marker that the pipe is inactive and that module doesn't even need to process anything. Every module can define a special pipe which is taken as reference for the source time, which is especially important when conflicts are possible. If a module does not define such a pipe, the highest starting time (the most recent signal) of all input pipes is assumed to be the reference.
 
 \subsubsection{Stereo/Mono and Polyphony support}
 
@@ -387,6 +387,9 @@ The transfer function (equal to the frequency response) of the lowpass filter:
 \begin{equation}
 H(f) = \frac{\omega_0^2}{f^2 + \frac{\omega_0}{Q}f + \omega_0^2}
 \end{equation}
+
+
+
 \begin{figure}[h]
 \caption{2-pole Lowpass filter frequency response}
 \centering
@@ -400,37 +403,9 @@ H(f) = \frac{\omega_0^2}{f^2 + \frac{\omega_0}{Q}f + \omega_0^2}
 \end{semilogxaxis}
 \end{tikzpicture}
 
-
-
-
 }
+
 \end{figure}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-The transfer function for the highpass filter:
-\begin{equation}
-H(f) = \frac{f^2}{f^2 + \frac{\omega_0}{Q}f + \omega_0^2}
-\end{equation}
-
-
-
 
 Converting this into coefficients for the recursive equation is a complex procedure, so I will directly jump to the actual values.
 First, we create a new constant $a_0$ and negate $a_1$ and $a_2$ to simplify later equations. Our new recursive equation becomes:
@@ -460,7 +435,32 @@ a_1 = -2\cos(\omega_0)
 \begin{equation}
 a_2 = 1 - \alpha
 \end{equation}
-The coefficients for a highpass filter:
+
+The transfer function for the highpass filter:
+\begin{equation}
+H(f) = \frac{f^2}{f^2 + \frac{\omega_0}{Q}f + \omega_0^2}
+\end{equation}
+
+
+\begin{figure}[h]
+\caption{2-pole High filter frequency response}
+\centering
+\resizebox{\textwidth}{!}{
+
+\begin{tikzpicture}
+\begin{semilogxaxis}[xlabel=Frequency, ylabel=Gain, xmin=1, xmax=20000, ymin=0, ymax=2]
+
+\addplot[domain=1:1e4,color=red] {x*x/(x*x + 500*x + 250000)};
+
+\end{semilogxaxis}
+\end{tikzpicture}
+
+}
+
+\end{figure}
+
+
+The coefficients for a highpass filter (following the same recursive equation as the lowpass filter):
 \begin{equation}
 b_0 = \frac{1 + \cos(\omega_0)}{2}
 \end{equation}
@@ -480,15 +480,36 @@ a_1 = -2\cos(\omega_0)
 a_2 = 1 - \alpha
 \end{equation}
 
+This system has the huge advantage of being local, only the last two values of the previous frame must be buffered.
+It does have it's flaws though, mainly that phase is not kept constant throughout the transform, and this means it is possible that the signal oversteps the -1/1 bound. Being a feedback loop, this error then enters every other value and corrupts every future signal, even future frames.
+To limit this, I simply placed a max() bound at the appropriate place, preventing at least any distortion from spreading.
+
 \subsection{Other Primitives}
+
+Apart from the "interesting" modules, there is a list of modules that are required in some form or other but whose inner workings are very simple, and that do not exist as explicit modules in most synthesizers.
 
 \subsubsection{Constants}
 
-\subsubsection{Merger and Splitter}
+Many modules or circuits need paramters, in fact anything not dependent on the input signal is a parameter. These parameters cannot be edited directly inside the module, since everything is supposed to be modular. To solve this problem with as little change to the engine as possible I simply created a "Constants" module which streams a single value the whole time. It does this on all channels, since it is a source of input as much as the standard note input is. There is also a specific GUI for Constants, allowing the user to create one and directly type into a writeable box. This is the only way to parameters in this synthesizer.
 
-\subsubsection{Adder and Multiplier}
+\subsubsection{Merger and Copyer}
+
+When attempting more complex kinds of synthesized sounds, it often becomes useful to split a source signal into different parts, edit those parts separately and then bring them together again. This, along with many other usecases, requires a module to duplicate a signal, and another one to merge them together again. The copying module is not very complex; all data in the input pipe gets copied identically in both output pipes. If more outputs are wanted, the user can chain copiers, although in principle the module supports more than two outputs.
+A merger module is slightly more complex, as there are (at least) two intuitive ways of combining signals. One can multiply them, or one can add them (overlaying the sounds). To give the user freedom of choice, I split the merger into two types, similarly to the oscillator, and a gui menu can be used to control the merging operation of each merger module.
 
 \subsubsection{Range Modifier}
+
+The purpose of a range modifier is simple; it's job is to linearly project a signal between two bounds to two other bounds. 4 parameters are required, the starting bounds $s_{min}$ and $s_{max}$ and the desired bounds $d_{min}$ and $d_{max}$.
+\begin{equation}
+m = \frac{d_{max} - d_{min}}{s_{max} - s_{min}}
+\end{equation}
+\begin{equation}
+b = d_{min} - (s_{min} * ration)
+\end{equation}
+\begin{equation}
+y[t] = x[t]*m + b
+\end{equation}
+This is especially useful if one needs to amplify or attenuate a signal, all you have to do is change the output bounds to match your desired result, and the signal will automatically get scaled to size.
 
 \subsection{GUI}
 
