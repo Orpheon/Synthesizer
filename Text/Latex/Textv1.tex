@@ -17,10 +17,16 @@
 \setdescription{leftmargin=\parindent,labelindent=1cm}
 \usepackage[parfill]{parskip}
 
+% Be able to link urls
+\usepackage{hyperref}
+
 % pgfplots for more complex stuff
 \usepackage{pgfplots}
 \usetikzlibrary{arrows}
 \pagestyle{empty}
+
+% Bibliography style
+\bibliographystyle{plain}
 
 % Wrapping for figures
 \usepackage{wrapfig}
@@ -520,5 +526,7 @@ This is especially useful if one needs to amplify or attenuate a signal, all you
 \subsection{Capabilities and Limitations of this program}
 
 \section{Looking forward}
+
+\bibliography{references}
 
 \end{document}
