@@ -277,7 +277,7 @@ All of the following filters have at least one very important parameter, the cut
 \centering
 \caption{Ideal filter frequency responses}
 \resizebox{\textwidth}{!}{
-    % Saw wave
+    % Lowpass
     \begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm]
     \draw[->,color=black] (0,0) -- (18,0) node [below] {Frequency};;
     \foreach \x in {1,2,...,18}
@@ -292,7 +292,7 @@ All of the following filters have at least one very important parameter, the cut
     \end{tikzpicture}
 }
 \resizebox{\textwidth}{!}{
-    % Saw wave
+    % Highpass
     \begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm]
     \draw[->,color=black] (0,0) -- (18,0) node [below] {Frequency};
     \foreach \x in {1,2,...,18}
@@ -307,7 +307,7 @@ All of the following filters have at least one very important parameter, the cut
     \end{tikzpicture}
 }
 \resizebox{\textwidth}{!}{
-    % Saw wave
+    % Bandpass
     \begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm]
     \draw[->,color=black] (0,0) -- (18,0) node [below] {Frequency};;
     \foreach \x in {1,2,...,18}
@@ -324,7 +324,7 @@ All of the following filters have at least one very important parameter, the cut
 }
 
 \resizebox{\textwidth}{!}{
-    % Saw wave
+    % Bandreject
     \begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1.0cm,y=1.0cm]
     \draw[->,color=black] (0,0) -- (18,0) node [below] {Frequency};;
     \foreach \x in {1,2,...,18}
@@ -390,17 +390,17 @@ H(f) = \frac{\omega_0^2}{f^2 + \frac{\omega_0}{Q}f + \omega_0^2}
 
 
 
-\begin{figure}[h]
-\caption{2-pole Lowpass filter frequency response}
+\begin{figure}[ht]
+\caption{2-pole lowpass filter frequency response}
 \centering
 \resizebox{\textwidth}{!}{
 
 \begin{tikzpicture}
-\begin{semilogxaxis}[xlabel=Frequency, ylabel=Gain, xmin=1, xmax=20000, ymin=0, ymax=2]
+\begin{axis}[xlabel=Frequency, ylabel=Gain, xmin=1, xmax=5, ymin=0, ymax=2, xticklabels={,,}]
 
-\addplot[domain=1:1e4,color=red] {250000/(x*x + 500*x + 250000)};
+\addplot[mark=none, color=red] file {lowpassfrequencyresponse.dat};
 
-\end{semilogxaxis}
+\end{axis}
 \end{tikzpicture}
 
 }
@@ -418,13 +418,13 @@ We first calculate $\alpha$:
 \end{equation}
 The coefficients for a lowpass filter:
 \begin{equation}
-b_0 = \frac{1 - \cos(\omega_0}{2}
+b_0 = \frac{1 - \cos(\omega_0)}{2}
 \end{equation}
 \begin{equation}
 b_1 = 1 - \cos(\omega_0)
 \end{equation}
 \begin{equation}
-b_2 = \frac{1 - \cos(\omega_0}{2}
+b_2 = \frac{1 - \cos(\omega_0)}{2}
 \end{equation}
 \begin{equation}
 a_0 = 1 + \alpha
@@ -442,17 +442,17 @@ H(f) = \frac{f^2}{f^2 + \frac{\omega_0}{Q}f + \omega_0^2}
 \end{equation}
 
 
-\begin{figure}[h]
-\caption{2-pole High filter frequency response}
+\begin{figure}[ht]
+\caption{2-pole highpass filter frequency response}
 \centering
 \resizebox{\textwidth}{!}{
 
 \begin{tikzpicture}
-\begin{semilogxaxis}[xlabel=Frequency, ylabel=Gain, xmin=1, xmax=20000, ymin=0, ymax=2]
+\begin{axis}[xlabel=Frequency, ylabel=Gain, xmin=1, xmax=5, ymin=0, ymax=2, xticklabels={,,}]
 
-\addplot[domain=1:1e4,color=red] {x*x/(x*x + 500*x + 250000)};
+\addplot[mark=none, color=red] file {highpassfrequencyresponse.dat};
 
-\end{semilogxaxis}
+\end{axis}
 \end{tikzpicture}
 
 }
@@ -481,8 +481,8 @@ a_2 = 1 - \alpha
 \end{equation}
 
 This system has the huge advantage of being local, only the last two values of the previous frame must be buffered.
-It does have it's flaws though, mainly that phase is not kept constant throughout the transform, and this means it is possible that the signal oversteps the -1/1 bound. Being a feedback loop, this error then enters every other value and corrupts every future signal, even future frames.
-To limit this, I simply placed a max() bound at the appropriate place, preventing at least any distortion from spreading.
+Sadly, it has a few drawbacks. The resulting filters are not perfect box-filters, although that is easily ignored. Another problem is that phase is not kept constant throughout the transform, and this means it is possible that the signal oversteps the -1/1 bound. Being a feedback loop, this error then propagates through every following signal and even future frames, distorting them all.
+To limit this, I simply placed a max() bound at the appropriate place, preventing at least any distortion from spreading, and keeping the it small enough to not be noticed audibly.
 
 \subsection{Other Primitives}
 
