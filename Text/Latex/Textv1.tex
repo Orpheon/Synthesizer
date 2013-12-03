@@ -96,11 +96,11 @@
 
 The only physical tools used were a computer with peripherals, and a sound system. Several software tools were used though, and I will briefly discuss the most important ones here.
 
-The software itself is programmed in \emph{Java} (by Oracle), and hence is dependent of the \emph{Java runtime environment} (JRE) and all it's requirements. As interface between my software and the OS sound system I used the standard \emph{Java Sound API}, which is part of the javax module package. The GUI itself was made through a popular GUI library called \emph{Swing}, which is also used in many professional applications.
+The software itself is programmed in Java~\cite{Java}, and hence is dependent of the Java runtime environment (JRE) and all it's requirements. As interface between my software and the OS sound system I used the standard Java Sound API~\cite{Javasound}. The GUI itself was made through a popular GUI package called Swing~\cite{Swing}, which is also used in many professional applications.
 
-On top of the tools directly implicated in the making of the software, a few additional ones were used to fac‎ilitate it. A rather famous IDE named \emph{Eclipse} was used for all Java programming, and of enormous importance was the version control system \emph{Git} (with a few extra features from the webservice \emph{Github}). \emph{Python} and \emph{Veusz} were slightly used for debugging and graphing purposes, especially for displaying sound output as an image, but have no direct part in the software.
+On top of the tools directly implicated in the making of the software, a few additional ones were used to fac‎ilitate it. A rather famous IDE named Eclipse~\cite{Eclipse} was used for all Java programming, and of enormous importance was the version control system Git~\cite{Git} (with a few extra features from the webservice Github~\cite{Github}). Python~\cite{Python} and~\cite{Veusz} were slightly used for debugging and graphing purposes, especially for displaying sound output as an image, but have no direct part in the software.
 
-Finally, this text was created with \emph{LaTeX} and the \emph{TikZ} graphing package for all graphs. Certain parts were created with help of the geometry package \emph{Geogebra}, but were always modified afterwards.
+Finally, this text was created with LaTeX~\cite{Latex} and the TikZ/PGF~\cite{Tikz} graphing package for all graphs. Certain parts were created with help of the geometry package Geogebra~\cite{Geogebra}, but were always modified afterwards.
 
 \clearpage
 
@@ -223,7 +223,7 @@ switch (osc_type)
 The previous approach worked fine for sine waves, but in both other waveforms there is a regular discontinuity. In the frequency range, this translates to an infinite frequency, inducing aliasing, as the Nyquist frequency cannot be infinite.
 There are many, many approaches to fixing this problem in general, it is a recurring obstacle in everything from 3D-graphics to font rendering, and it affects synthesis as well. Luckily, the two waveforms we need are special; their frequencies are easily represented as infinite sums. On top of that, we do not need a particularly fast solution, so we can settle for a mathematically simple and complete one.
 
-The saw wave, in the frequency domain, is nothing but the sum of every harmonic (whole-number multiples of the base frequency) with a 1/k decaying amplitude.
+The saw wave, in the frequency domain, is nothing but the sum of every harmonic (whole-number multiples of the base frequency) with a 1/k decaying amplitude~\cite{WolframSaw}.
 (\(f = \) the base frequency, \(F_N = \) the Nyquist frequency)
 \begin{equation}
 H(f) = \frac{2}{\pi}\sum\limits_{k=1}^\infty{\frac{\sin(k*f)}{k}}
@@ -235,7 +235,7 @@ Of course, instead of summing to infinity, we could stop summing as soon as \(k*
 H(f) = \frac{2}{\pi}\sum\limits_{k=1}^\frac{F_N}{f}{\frac{\sin(k*f)}{k}}
 \end{equation}
 
-The same can be done for square waves. Square waves have nearly an identical frequency sum, except only odd harmonics have a non-zero amplitude (this also doubles the normalizing factor, since the range is still -1 to 1 but only half the elements are summed).
+The same can be done for square waves. Square waves have nearly an identical frequency sum, except only odd harmonics have a non-zero amplitude (this also doubles the normalizing factor, since the range is still -1 to 1 but only half the elements are summed)~\cite{WolframSquare}.
 
 \begin{equation}
 H(f) = \frac{4}{\pi}\sum\limits_{k=1}^\infty{\frac{\sin((2*k-1)*f)}{2*k-1}}
@@ -386,20 +386,23 @@ We can give up on ideal box-filters, it then becomes a story of trying to get as
 \begin{equation}
 y[n] = b_0x[n] + b_1x[n-1] + b_2x[n-2] + \dots + a_0y[n] + a_1y[n-1] + a_2y[n-2] + \dots
 \end{equation}
-While not being of obvious use, this allows us to bypass long convolution kernels. The mathematics for deriving the constants $a_0$,$b_0$,\dots is called the Z-transform and is quite complex. Skipping the details, I chose to copy an analog electronical circuit working with up to two previous values (hence being called a 2-pole filter).
-The equation becomes
+While not being of obvious use, this allows us to bypass long convolution kernels. To find the right values of $a_0$,$b_0$,\dots, I copied an analog electronical circuit working two delays, which had the effect of using the last two outputs and inputs in it's calculation (called a two-pole filter). Converting this to digital coefficient values is usually done with a bilinear transform and is a complex affair~\cite[chap. 3.5]{ZoranDFD}.
+First, since we only need the last two values, the equation becomes
 \begin{equation}
 y[n] = b_0x[n] + b_1x[n-1] + b_2x[n-2] + a_0y[n] + a_1y[n-1]
 \end{equation}
 
-The frequency response function isn't a perfect box filter anymore, but it is similar enough to work as well, and is much simpler.
+The frequency response function cannot be a perfect box filter anymore, but it can be similar enough to work almost as well, and is computationally much simpler.
 It has two parameters, the cutoff frequency (\(f_c\)) as per before, and also a strange parameter commonly called \(Q\) or resonance.
 Sampling frequency will be denoted as \(F_s\).
 First defining $\omega_0$ which we will need:
 \begin{equation}
-\omega_0 = \frac{2{\pi}f_c}{F_s}
+\omega_0 = 2{\pi}\frac{f_c}{F_s}
 \end{equation}
-The transfer function (equal to the frequency response) of the lowpass filter:
+
+The exact workings of the bilinear transformation used go beyond the scope of this text, so I will skip directly to the formulas my program uses. Readers interested in the details can read ~\cite[chap. 33]{SmithDSP},~\cite[chap. 3.5]{ZoranDFD} and~\cite{Cookbook}
+
+The transfer function (equal to the frequency response) of the lowpass filter~\cite[section 8.2]{LinearCircuit}:
 \begin{equation}
 H(f) = \frac{\omega_0^2}{f^2 + \frac{\omega_0}{Q}f + \omega_0^2}
 \end{equation}
@@ -423,7 +426,6 @@ H(f) = \frac{\omega_0^2}{f^2 + \frac{\omega_0}{Q}f + \omega_0^2}
 
 \end{figure}
 
-Converting this into coefficients for the recursive equation is a complex procedure, so I will directly jump to the actual values.
 First, we create a new constant $a_0$ and negate $a_1$ and $a_2$ to simplify later equations. Our new recursive equation becomes:
 \begin{equation}
 y[n] = \frac{b_0}{a_0}x[n] + \frac{b_1}{a_0}x[n-1] + \frac{b_2}{a_0}x[n-2] - \frac{a_1}{a_0}y[n-1] - \frac{a_2}{a_0}y[n-2]
@@ -497,7 +499,7 @@ a_2 = 1 - \alpha
 \end{equation}
 
 This system has the huge advantage of being local, only the last two values of the previous frame must be buffered.
-Sadly, it has a few drawbacks. The resulting filters are not perfect box-filters, although that is easily ignored. Another problem is that phase is not kept constant throughout the transform, and this means it is possible that the signal oversteps the -1/1 bound. Being a feedback loop, this error then propagates through every following signal and even future frames, distorting them all.
+Sadly, it has a few drawbacks. The resulting filters are not perfect box-filters, although that is easily ignored. Another problem is that phase is not kept constant throughout the transform, and this means it is possible that the signal amplitude oversteps 1 at certain points. Being a feedback loop, this error then propagates through every following signal and even future frames, distorting the sound forever after.
 To limit this, I simply placed a max() bound at the appropriate place, preventing at least any distortion from spreading, and keeping the it small enough to not be noticed audibly.
 
 \subsection{Other Primitives}
@@ -528,6 +530,8 @@ y[t] = x[t]*m + b
 This is especially useful if one needs to amplify or attenuate a signal, all you have to do is change the output bounds to match your desired result, and the signal will automatically get scaled to size.
 
 \subsection{GUI}
+
+
 
 \clearpage
 
