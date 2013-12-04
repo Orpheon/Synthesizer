@@ -360,9 +360,9 @@ All of the following filters have at least one very important parameter, the cut
 
 \subsubsection{Implementation of a lowpass and highpass filter with FFT}
 
-The plan is to first convert the time-domain signal into frequency domain, using the Fast Fourier Transform (FFT), multiply it with our filter function, and then convert it back (using the Inverse Fast Fourier Transform, or IFFT). Contrarily to the ideal mathematical idea in the previous section, we have several limitations. For one, we do not have an input of infinite length, the input will come in small blocks at a time. Related is the problem that frequency is tied to the concept of a period. Our signals will only be approximately periodic, but certainly not precisely so.
-The result is that whenever we attempt to transform the filtered signal back into time-domain, it becomes a periodic signal, and both extremities change. This causes discontinuities between different frames, which results in audible buzzing. There is a way to avoid this, using the overlap-add method, which depends on buffering a bit of extra data of previous frames and including it in the FFT, causing the IFFT to create a longer wave, which can be cut at the right place with much less of an error.
-It makes things worse though, because the FFT/IFFT depends on a signal length of $2^n$ (without either sacrificing a lot performance or using black magic), which means that the real signal length has to be chosen so that added with the overlap constant, it gives a $2^n$ signal. This whole implementation turns out to be rather complex, and quickly became a problem to program. So I searched for simpler methods with less book-keeping involved, and once I had found one I gave up on this particular method.
+The plan is to first convert the time-domain signal into frequency domain, using the Fast Fourier Transform (FFT), multiply it with our filter function, and then convert it back (using the Inverse Fast Fourier Transform, or IFFT). The FFT and IFFT is more than a topic for itself, and I will not discuss it here. A solid but terse explanation can be found at this page~\cite{DITFFT}, and a more gentle introduction in \emph{The Scientist and Engineer's Guide to DSP}~\cite[chap. 12]{SmithDSP}. Contrarily to the ideal mathematical idea of a filter in the previous section, we have several limitations. For one, we do not have an input of infinite length, the input will come in small blocks at a time. Related is the problem that frequency is tied to the concept of a period. Our signals will only be approximately periodic, but certainly not precisely so.
+The result is that whenever we attempt to transform the filtered signal back into time-domain, it becomes a periodic signal, and both extremities change. This causes discontinuities between different frames, which results in audible buzzing. There is a way to avoid this, using the overlap-add method~\cite{Overlapadd}, which depends on buffering a bit of extra data of previous frames and including it in the FFT, causing the IFFT to create a longer wave, which can be cut at the right place with much less of an error.
+It makes things worse though, because the FFT/IFFT depends on a signal length of $2^n$ (without either sacrificing a lot performance or using black magic), which means that the real signal length has to be chosen so that added with the overlap constant, it gives a $2^n$-length signal. This whole implementation turns out to be rather complex, and quickly became a problem to program. So I searched for simpler methods with less book-keeping involved, and once I had found one I gave up on this particular method.
 
 \subsubsection{Implementation using (2-pole) recursive filters}
 
@@ -400,7 +400,7 @@ First defining $\omega_0$ which we will need:
 \omega_0 = 2{\pi}\frac{f_c}{F_s}
 \end{equation}
 
-The exact workings of the bilinear transformation used go beyond the scope of this text, so I will skip directly to the formulas my program uses. Readers interested in the details can read ~\cite[chap. 33]{SmithDSP},~\cite[chap. 3.5]{ZoranDFD} and~\cite{Cookbook}
+The exact workings of the bilinear transformation used go beyond the scope of this text, so I will skip directly to the formulas my program uses. Readers interested in the details can read \emph{The Scientist and Engineer's Guide to DSP}~\cite[chap. 33]{SmithDSP},\emph{Digital Filter Design}~\cite[chap. 3.5]{ZoranDFD} and \emph{Cookbook formulae for audio EQ biquad filter coefficients}~\cite{Cookbook}
 
 The transfer function (equal to the frequency response) of the lowpass filter~\cite[section 8.2]{LinearCircuit}:
 \begin{equation}
@@ -530,6 +530,8 @@ y[t] = x[t]*m + b
 This is especially useful if one needs to amplify or attenuate a signal, all you have to do is change the output bounds to match your desired result, and the signal will automatically get scaled to size.
 
 \subsection{GUI}
+
+Having a GUI was never intended to be a focal point of this project, but creating larger schemes of interconnected modules quickly became difficult to manage in code. So I decided to attempt a GUI
 
 
 
