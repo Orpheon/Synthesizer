@@ -233,7 +233,7 @@ The saw wave, in the frequency domain, is nothing but the sum of every harmonic 
 \begin{equation}
 H(f) = \frac{2}{\pi}\sum\limits_{k=1}^\infty{\frac{\sin(k*f)}{k}}
 \end{equation}
-{\small \it Note: The \(\frac{2}{\pi}\) normalises the result between -1 and 1.}
+\footnote{The \(\frac{2}{\pi}\) normalises the result between -1 and 1.}
 
 Of course, instead of summing to infinity, we could stop summing as soon as \(k*f > F_N\), therefore only including overtones under the Nyquist frequency.
 \begin{equation}
@@ -289,11 +289,11 @@ This code gives off perfect anti-aliasing and is fast enough for use in our synt
 \subsection{Filters}
 
 Filters are an enormously complex subject and a field for themselves, having a wide range of applications beyond music especially in communications and data analysis. The general definition of a filter is very broad, I am going to refer specifically to filters that modify the gain as a function of frequency.
-Even of these, innumerable examples exist, so I will concentrate on the commonly used musical filters. By far the most famous of those are the lowpass and highpass filters.
+Even of these, innumerable examples exist, so I will concentrate on the commonly used musical filters. By far the most widely used of those are the lowpass and highpass filters.
 A lowpass filter, as the name would suggest, lets low frequencies pass while blocking high frequencies. A highpass filter does just the opposite.
-There are more types of filters common in synthesizers, most notably bandpass and bandreject (also called notch) filters, but I have not implemented them, so I won't do more than mention them here.
+There are more types of filters common in synthesizers, most notably bandpass and bandreject (also called notch) filters, but I have not implemented them as they can be created using lowpass and highpass filters, so I won't do more than mention them here.
 
-All of the following filters have at least one very important parameter, the cutoff frequency. Informally stated, this is the location of the filter. Raising the cutoff frequency of a lowpass filter for example allows more frequencies to pass through.
+All of the following filters have at least one very important parameter, the cutoff frequency. Informally stated, this is the boundary/location of the filter (see figure). Raising the cutoff frequency of a lowpass filter for example allows more frequencies to pass through.
 \begin{figure}
 \centering
 \caption{Ideal filter frequency responses}
@@ -310,6 +310,8 @@ All of the following filters have at least one very important parameter, the cut
     \draw[color=blue] (0,1) -- (7,1);
     \draw[color=blue] (7,1) -- (7,0);
     \node [above] at (1,1) {\large Lowpass filter };
+    \draw[color=red] (7,0) -- (7,0.25);
+    \node [below, color=red] at (7,0) {\large Cutoff Frequency };
     \end{tikzpicture}
 }
 \resizebox{\textwidth}{!}{
@@ -325,6 +327,8 @@ All of the following filters have at least one very important parameter, the cut
     \draw[color=blue] (18,1) -- (11,1);
     \draw[color=blue] (11,1) -- (11,0);
     \node [above] at (1,1) {\large Highpass filter};
+    \draw[color=red] (11,0) -- (11,0.25);
+    \node [below, color=red] at (11,0) {\large Cutoff Frequency };
     \end{tikzpicture}
 }
 \resizebox{\textwidth}{!}{
@@ -341,6 +345,8 @@ All of the following filters have at least one very important parameter, the cut
     \draw[color=blue] (6,1) -- (6,0);
     \draw[color=blue] (12,1) -- (12,0);
     \node [above] at (1,1) {\large Bandpass filter};
+    \draw[color=red] (9,0) -- (9,0.25);
+    \node [below, color=red] at (9,0) {\large Cutoff Frequency };
     \end{tikzpicture}
 }
 
@@ -359,53 +365,55 @@ All of the following filters have at least one very important parameter, the cut
     \draw[color=blue] (6,1) -- (6,0);
     \draw[color=blue] (12,1) -- (12,0);
     \node [above] at (1,1) {\large Bandreject filter};
+    \draw[color=red] (9,0) -- (9,0.25);
+    \node [below, color=red] at (9,0) {\large Cutoff Frequency };
     \end{tikzpicture}
 }
 \end{figure}
 
 \subsubsection{Implementation of a lowpass and highpass filter with FFT}
 
-The plan is to first convert the time-domain signal into frequency domain, using the Fast Fourier Transform (FFT), multiply it with our filter function, and then convert it back (using the Inverse Fast Fourier Transform, or IFFT). The FFT and IFFT is more than a topic for itself, and I will not discuss it here. A solid but terse explanation can be found at this page~\cite{DITFFT}, and a more gentle introduction in \emph{The Scientist and Engineer's Guide to DSP}~\cite[chap. 12]{SmithDSP}. Contrarily to the ideal mathematical idea of a filter in the previous section, we have several limitations. For one, we do not have an input of infinite length, the input will come in small blocks at a time. Related is the problem that frequency is tied to the concept of a period. Our signals will only be approximately periodic, but certainly not precisely so.
-The result is that whenever we attempt to transform the filtered signal back into time-domain, it becomes a periodic signal, and both extremities change. This causes discontinuities between different frames, which results in audible buzzing. There is a way to avoid this, using the overlap-add method~\cite{Overlapadd}, which depends on buffering a bit of extra data of previous frames and including it in the FFT, causing the IFFT to create a longer wave, which can be cut at the right place with much less of an error.
-It makes things worse though, because the FFT/IFFT depends on a signal length of $2^n$ (without either sacrificing a lot performance or using black magic), which means that the real signal length has to be chosen so that added with the overlap constant, it gives a $2^n$-length signal. This whole implementation turns out to be rather complex, and quickly became a problem to program. So I searched for simpler methods with less book-keeping involved, and once I had found one I gave up on this particular method.
+The most direct way to implement such filters would be to first convert the time-domain signal into frequency domain, using the Fast Fourier Transform (FFT), multiply it with our filter function, and then convert it back (using the Inverse Fast Fourier Transform, or IFFT). The FFT and IFFT are more than a topic for themselves, and I will not discuss them in detail here. A solid but terse explanation can be found at this page~\cite{DITFFT}, and a more gentle introduction in \emph{The Scientist and Engineer's Guide to DSP}~\cite[chap. 12]{SmithDSP}.
+
+Ideal filters as shown in the previous figure are impossible to achieve, for several reasons. For one, we do not have an input of infinite length, the input will come in small blocks at a time. Related is the problem that frequency is tied to the concept of a period. Our signals will only be approximately periodic, but certainly not precisely so. The FFT assumes a periodic signal, and feeding a non-periodic signal through an FFT and then an IFFT will make it periodic with itself, which will change both extremeties. This causes discontinuities between different frames, which results in audible buzzing. There is a way to avoid this, using the overlap-add method~\cite{Overlapadd}, which depends on buffering a bit of extra data of previous frames and including it in the FFT, causing the IFFT to create a longer wave, which can be cut at the right place with much less of an error.
+Sadly, the FFT/IFFT depends on a signal length of $2^n$ (without either sacrificing a lot of performance or using some very complex techniques), which means that the real signal length has to be chosen so that added with the overlap constant, it gives a $2^n$-length signal. This whole implementation turns out to be rather difficult, and quickly became a problem to program. So I searched for simpler methods with less book-keeping involved, and once I had found one I took that route instead.
 
 \subsubsection{Implementation using (2-pole) recursive filters}
 
 One property of conversion between time and frequency domain when considering two functions is what happens to multiplication.
 \begin{equation}
 j(t) = h(t) \times g(t) \iff J(t) = H(t) * G(t)
-\end{equation}
+\end{equation}\footnote{I am using the symbol $\times$ for multiplication and $*$ for convolution}
 and vis-versa
 \begin{equation}
 j(t) = h(t) * g(t) \iff J(t) = H(t) \times G(t)
 \end{equation}
-What this means is that multiplying the frequency spectrums of two waves is identical to convolving their time domain functions.
+Multiplying the frequency spectrums of two waves is identical to convolving their time domain functions.
 This means we could also simply pass our filter through an IFFT (the result is called a convolution kernel), and convolve our signal with that.
-Convolution works the following way
+Convolution works the following way ($h$ here being the filter convolution kernel, and $x$ the input signal).
 \begin{equation}
 y[n] = h[0]x[n] + h[1]x[n-1] + h[2]x[n-2] + \dots
 \end{equation}
-{\small \it Note: Convolution also exists for continous functions, but we are dealing with discrete signals so I am switching to that notation.}\\
+\footnote{Convolution also exists for continous functions, but we are dealing with discrete signals so I am switching to the notation of x[n] instead of x(t).}
 The problem with convolution is that most interesting filters have very long impulse responses (the time-domain converse of the frequency response), ideal box-filters like we attempted before even possess infinite impulse responses.
-We can give up on ideal box-filters, it then becomes a story of trying to get as close as possible while keeping computation low. One method for this are recursive filters; Instead of just using previous input values, we also use previous output values.
+We can give up on ideal box-filters, it then becomes a story of trying to get as close as possible while keeping computation low. One method for this are recursive filters; Instead of just using previous input values, we also reuse previous output values.
 \begin{equation}
 y[n] = b_0x[n] + b_1x[n-1] + b_2x[n-2] + \dots + a_0y[n] + a_1y[n-1] + a_2y[n-2] + \dots
 \end{equation}
-While not being of obvious use, this allows us to bypass long convolution kernels. To find the right values of $a_0$,$b_0$,\dots, I copied an analog electronical circuit working two delays, which had the effect of using the last two outputs and inputs in it's calculation (called a two-pole filter). Converting this to digital coefficient values is usually done with a bilinear transform and is a complex affair~\cite[chap. 3.5]{ZoranDFD}.
+While not being of obvious use, this allows us to shorten convolution kernels. To find the right values of $a_0$,$b_0$,\dots, I copied an analog electronical circuit working two delays, which had the effect of using the last two outputs and inputs in it's calculation (called a two-pole filter). Converting this to digital coefficient values is usually done with a bilinear transform and is a complex affair~\cite[chap. 3.5]{ZoranDFD}.
 First, since we only need the last two values, the equation becomes
 \begin{equation}
 y[n] = b_0x[n] + b_1x[n-1] + b_2x[n-2] + a_0y[n] + a_1y[n-1]
 \end{equation}
-
 The frequency response function cannot be a perfect box filter anymore, but it can be similar enough to work almost as well, and is computationally much simpler.
-It has two parameters, the cutoff frequency (\(f_c\)) as per before, and also a strange parameter commonly called \(Q\) or resonance.
+It has two parameters, the cutoff frequency (\(f_c\)) as per before, and also a new parameter commonly called \(Q\) or resonance. The notation $Q$ comes from electronics where it is related to the dampening of a signal, and it's effect is to boost the gain of frequencies right \emph{before} the cutoff frequency, creating very shrill lead sounds often used in music.
 Sampling frequency will be denoted as \(F_s\).
 First defining $\omega_0$ which we will need:
 \begin{equation}
 \omega_0 = 2{\pi}\frac{f_c}{F_s}
 \end{equation}
 
-The exact workings of the bilinear transformation used go beyond the scope of this text, so I will skip directly to the formulas my program uses. Readers interested in the details can read \emph{The Scientist and Engineer's Guide to DSP}~\cite[chap. 33]{SmithDSP},\emph{Digital Filter Design}~\cite[chap. 3.5]{ZoranDFD} and \emph{Cookbook formulae for audio EQ biquad filter coefficients}~\cite{Cookbook}
+The exact workings of the bilinear transformation used go beyond the scope of this text, so I will skip directly to the formulas my program uses. Readers interested in the details can read \emph{The Scientist and Engineer's Guide to DSP}~\cite[chap. 33]{SmithDSP},\emph{Digital Filter Design}~\cite[chap. 3.5]{ZoranDFD} and \emph{Cookbook formulae for audio EQ biquad filter coefficients}~\cite{Cookbook}.
 
 The transfer function (equal to the frequency response) of the lowpass filter~\cite[section 8.2]{LinearCircuit}:
 \begin{equation}
@@ -431,7 +439,7 @@ H(f) = \frac{\omega_0^2}{f^2 + \frac{\omega_0}{Q}f + \omega_0^2}
 
 \end{figure}
 
-First, we create a new constant $a_0$ and negate $a_1$ and $a_2$ to simplify later equations. Our new recursive equation becomes:
+First, we create a new constant $a_0$ and negate $a_1$ and $a_2$ to simplify later equations. Our new recursive equation becomes (equations from \emph{Cookbook formulae for audio EQ biquad filter coefficients}~\cite{Cookbook}):
 \begin{equation}
 y[n] = \frac{b_0}{a_0}x[n] + \frac{b_1}{a_0}x[n-1] + \frac{b_2}{a_0}x[n-2] - \frac{a_1}{a_0}y[n-1] - \frac{a_2}{a_0}y[n-2]
 \end{equation}
@@ -504,7 +512,7 @@ a_2 = 1 - \alpha
 \end{equation}
 
 This system has the huge advantage of being local, only the last two values of the previous frame must be buffered.
-Sadly, it has a few drawbacks. The resulting filters are not perfect box-filters, although that is easily ignored. Another problem is that phase is not kept constant throughout the transform, and this means it is possible that the signal amplitude oversteps 1 at certain points. Being a feedback loop, this error then propagates through every following signal and even future frames, distorting the sound forever after.
+Sadly, it has a few drawbacks. The resulting filters are not perfect box-filters, although that is only barely audible, and for music might even be desirable. Another problem is that phase is not kept constant throughout the transform, and this means it is possible that the signal amplitude oversteps 1 at certain points. Being a feedback loop, this then propagates through every following signal and even future frames, distorting the sound forever after.
 To limit this, I simply placed a max() bound at the appropriate place, preventing at least any distortion from spreading, and keeping the it small enough to not be noticed audibly.
 
 \subsection{Other Primitives}
