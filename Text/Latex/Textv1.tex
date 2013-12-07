@@ -35,6 +35,9 @@
 \usetikzlibrary{arrows}
 \pagestyle{empty}
 
+% Images
+\usepackage{graphicx}
+
 % Bibliography
 \bibliographystyle{acm}
 
@@ -543,9 +546,12 @@ y[t] = x[t]*m + b
 This is especially useful if one needs to amplify or attenuate a signal, all you have to do is change the output bounds to match your desired result, and the signal will automatically get scaled to size.
 
 \subsection{GUI}
-
-Having a GUI was never intended to be a focal point of this project, but creating larger schemes of interconnected modules quickly became difficult to manage in code. So I decided to attempt a GUI
-
+\begin{figure}[ht]
+\caption{Screenshot of the current GUI, with comments in red}
+\includegraphics[width=\textwidth]{GUI_cropped}
+\end{figure}
+A fixed layout could not be used to control a completely free and modular system, so instead I only designed a framework for modules. Most modules (with a few exceptions) are displayed as grey boxes with three rows: The name, the input ports and the output ports. The module box is as small as it can be while fitting all of these together, and the user can drag it anywhere with the mouse, "solving" the problem of layout. Pipes are represented also very minimally, just as a straight line from one port to another. These can be connected by clicking on one port and then on another, and disconnected or reconnected similarly. Right-clicking on the space between modules opens a menu which allows the user to create a new module, or start/stop playing sound. Right-clicking on the module opens up a module-specific options menu. For example, on oscillators this allows the choice of wave function, on the input source allows to create a new note.
+The GUI was deliberately kept simple, as it was only a sidelight of this entire project and its purpose was to create an interface to the engine, not be a central aspect for itself. The engine was specifically designed to run separately from the GUI, it would not be difficult to create a completely different interface.
 
 
 \clearpage
