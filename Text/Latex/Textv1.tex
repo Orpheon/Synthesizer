@@ -95,23 +95,25 @@ It was never in doubt for me that my ideal matura project would be a software, a
 \subsection{A short history of synthesizers}
 
 A synthesizer is an (usually electronic) device where one can shape and create a sound, normally for use in music. The earliest example that could be considered a synthesizer is a standard pipe organ, as the organ player has a large control over the shape of the sound by choosing what pipes are used. In fact, the organ was even a model for one of the first approaches to synthesis called \emph{additive synthesis}. The basic idea behind additive synthesis is to sum many simple waves together to form a more complex one. This was famously used in an electronic form first by Thaddeus Cahill as the Telharmonium in 1897~\cite{Telharmonium}, and later in smaller, more practical versions like the Hammond organ~\cite{Hammond}.
-In the late 1960s a new device named after it's creator Robert Moog appeared and quickly gained fame, as it used a new synthesis paradigm allowing many new sounds to be created. Moog synthesizers used \emph{subtractive synthesis}, in which a sound is first created by summing simple waveforms and then unwanted frequencies are cut out and filtered, to shape the sound in a distinctive way. On top of this, the invention of the transistor just prior made the machine much cheaper and smaller. Since then, different models of the original Moog synthesizer were created, and later competitors joined into what was becoming a large market. More synthesis methods were invented, although subtractive synthesis still is the dominant model to this day thanks to it's simplicity and power, on par with sampling-based techniques. More recently, thanks to the computer, most electronic music is now done digitally with software, as this is again a good deal cheaper and more practical. Professional audio software still can cost large amounts, but usually less so than a full hardware setup, especially including all advantages software brings (plugins, easy distribution, saving, undo/redo, etc).
+In the late 1960s a new device named after its creator Robert Moog appeared and quickly gained fame, as it used a new synthesis paradigm allowing many new sounds to be created. Moog synthesizers used \emph{subtractive synthesis}, in which a sound is first created by summing simple waveforms and then unwanted frequencies are cut out and filtered, to shape the sound in a distinctive way. On top of this, the invention of the transistor just prior made the machine much cheaper and smaller. Since then, different models of the original Moog synthesizer were created, and later competitors joined into what was becoming a large market. More synthesis methods were invented, although subtractive synthesis still is the dominant model to this day thanks to its simplicity and power, on par with sampling-based techniques. More recently, thanks to the computer, most electronic music is now done digitally with software, as this is again a good deal cheaper and more practical. Professional audio software still can cost large amounts, but usually less so than a full hardware setup, especially including all advantages software brings (plugins, easy distribution, saving, undo/redo, etc).
 
 \subsection{Modularity}
 
-The first analog synthesizers were very modular. One didn't buy "a synthesizer", one bought a few oscillators, 2 or 3 amplifiers, some distortion modules and a lot of cables. These boxes were then placed in racks and connected together in various ways. Even when synthesizers started to be selled as a unit (Moog synthesizer), the ability to freely connect any part with any other on one hand allowed a large amount of freedom and on the other forced the musician to understand the workings of the synthesizer modules themselves~\cite{ModularMoog}. With time, this changed, with the extreme appearing in current software synthesizers, which for the most part only allow the user to modify some parameters, and not the wiring or order of the modules processed. There of course exist exceptions to this rule (Reason is a notable synthesizer which allows changing the wiring, but it is far from absolutely modular~\cite{Reason}), but most famous synthesizers have a fixed pipeline or limited parameter wiring, and none of the well-known professional tools allow custom feedback loops.
+The first analog synthesizers were very modular. One did not buy "a synthesizer", one bought a few oscillators, 2 or 3 amplifiers, some distortion modules and a lot of cables. These boxes were then placed in racks and connected together in various ways. Even when synthesizers started to be selled as a unit (Moog synthesizer), the ability to freely connect any part with any other on one hand allowed a large amount of freedom and on the other forced the musician to understand the workings of the synthesizer modules themselves~\cite{ModularMoog}. With time, this changed, with the extreme appearing in current software synthesizers, which for the most part only allow the user to modify some parameters, and not the wiring or order of the modules processed. There of course exist exceptions to this rule (Reason is a notable synthesizer which allows changing the wiring, but it is far from absolutely modular~\cite{Reason}), but most famous synthesizers have a fixed pipeline or limited parameter wiring, and none of the well-known professional tools allow custom feedback loops.
+
+\subsection{Goal of this project}
+
+The goal was to create a software synthesizer in the same spirit as the old analog synthesizers: You have many simple modules and can connect them together in arbitrary ways to create an immense variety of sounds. For this to be realisable, the program needs a clear separation between the over-arching framework and the modules, who all only are local. It also needs a reliable piping system to connect different modules together, some way to deal with signal and time propagation, and a certain library of modules to be used. Finally, some thought must be put in the construction of the interface through which the user can create these networks and link them up.
 
 \section{Tools}
 
-The only physical tools used were a computer with peripherals, and a sound system. Several software tools were used though, and I will briefly discuss the most important ones here.
+The only physical tools used were a computer with peripherals and a sound system. Several software tools were used though, and I will briefly discuss the most important ones here.
 
-The software itself is programmed in Java~\cite{Java}, and hence is dependent of the Java runtime environment (JRE) and all it's requirements. As interface between my software and the OS sound system I used the standard Java Sound API~\cite{Javasound}. The GUI itself was made through a popular GUI package called Swing~\cite{Swing}, which is also used in many professional applications.
+The software itself is programmed in Java~\cite{Java}, and hence is dependent of the Java runtime environment (JRE) and all its requirements. As interface between my software and the OS sound system I used the standard Java Sound API~\cite{Javasound}. The GUI was made with a popular GUI library called Swing~\cite{Swing}, which is also used in many professional applications.
 
-On top of the tools directly implicated in the making of the software, a few additional ones were used to fac‎ilitate it. A rather famous IDE named Eclipse~\cite{Eclipse} was used for all Java programming, and of enormous importance was the version control system Git~\cite{Git} (with a few extra features from the webservice Github~\cite{Github}). Python~\cite{Python} and~\cite{Veusz} were slightly used for debugging and graphing purposes, especially for displaying sound output as an image, but have no direct part in the software.
+On top of the tools directly implicated in the making of the software, a few additional ones were used to fac‎ilitate it. A rather famous IDE named Eclipse~\cite{Eclipse} was used for all Java programming, and of enormous importance was the version control system Git~\cite{Git} (with a few extra features from the webservice Github~\cite{Github}). Python~\cite{Python} and Veusz~\cite{Veusz} were slightly used for debugging and graphing purposes, especially for displaying sound output as an image, but have no direct part in the software.
 
 Finally, this text was created with LaTeX~\cite{Latex} and the TikZ/PGF~\cite{Tikz} graphing package for all graphs. Certain parts were created with help of the geometry package Geogebra~\cite{Geogebra}, but were always modified afterwards.
-
-\clearpage
 
 \section{Implementation}
 
@@ -121,14 +123,14 @@ To achieve a completely modular synthesizer, we already need to give up a fixed 
 
 \subsubsection{Basic system}
 
-In this specific implementation, modules are pure functions, or atleast behave as such towards the outside. A module is always connected to other modules via so-called pipes, which contain the actual data. Modules can then load the data from their input pipes, process it, and dump the result into their output pipes. The main advantage of this system is that it's stable and will work with any wiring setup, even feedback loops. In such closed feedback systems, there will be a propagation delay depending on the amount of pipes the data has to travel, and so no infinite recursion appears. Splitting data and doing parallel processing before merging it again is also implicitely supported, as every module and pipe only acts locally.
-One major issue is execution order. A recursive "pull" query where every module calls the modules it depends on for their output cannot work, infinite recursion is a possibility. Even without recursion, there is always the risk that some part of the circuit did not get updated, which might affect the rest. I haven't found a clean solution to this without drawbacks, the one I chose just makes every module execute once in more or less random order (it is not truely random, in fact it is in order of creation), which in worse case causes a signal to wait an extra frame between two modules but guarantees that every module is executed once and only once per frame, and done so in a consistent way.
+In this specific implementation, modules are pure functions, or atleast behave as such towards the outside. A module is always connected to other modules via so-called pipes, which contain the actual data. Modules can then load the data from their input pipes, process it, and dump the result into their output pipes. The main advantage of this system is that it is stable and will work with any wiring setup, even feedback loops. In such closed feedback systems, there will be a propagation delay depending on the amount of pipes the data has to travel, and so no infinite recursion appears. Splitting data and doing parallel processing before merging it again is also implicitely supported, as every module and pipe only acts locally.
+One major issue is execution order. A recursive "pull" query where every module calls the modules it depends on for their output cannot work, infinite recursion is a possibility. Even without recursion, there is always the risk that some part of the circuit did not get updated, which might affect the rest. I have not found a clean solution to this without drawbacks, the one I chose just makes every module execute once in more or less random order (it is not truely random, in fact it is in order of creation), which in worse case causes a signal to wait an extra frame between two modules but guarantees that every module is executed once and only once per frame, and done so in a consistent way.
 
-Injection of user input and retrieval of the sound output is best done with modules dedicated to that. These modules possess only 1 input or output port respectively, and do not by themselves do anything. They just serve as convienient place to connect pipes to, and the main overarching engine can simply read and write the contents of their pipes.
+Injection of user input and retrieval of the sound output is best done with modules dedicated to that. These modules possess only 1 input or output port respectively, and do not by themselves do anything. They just serve as convienient places to connect pipes to, and the main overarching engine can simply read and write the contents of their pipes.
 
 \subsubsection{Dealing with Time}
 
-A tricky problem is dealing with time-sensitive modules, like envelopes or oscillators. The input does not implicitely declare it's duration, so there needs to be a way for the pipes to also carry starting time of a signal. For this, I implemented a separate counter in every pipe, which showed the time at which that signal started. When a module is done with processing and copies the signal data into its output, it also copies in the counter. A negative time can be used as a marker that the pipe is inactive and that module doesn't even need to process anything. Every module can define a special pipe which is taken as reference for the source time, which is especially important when conflicts are possible. If a module does not define such a pipe, the highest starting time (the most recent signal) of all input pipes is assumed to be the reference.
+A tricky problem is dealing with time-sensitive modules, like envelopes or oscillators. The input does not implicitely declare its duration, so there needs to be a way for the pipes to also carry starting time of a signal. For this, I implemented a separate counter in every pipe, which showed the time at which that signal started. When a module is done with processing and copies the signal data into its output, it also copies in the counter. A negative time can be used as a marker that the pipe is inactive and that the module does not even need to process anything. Every module can define a special pipe which is taken as reference for the source time, which is especially important when conflicts are possible. If a module does not define such a pipe, the highest starting time (the most recent signal) of all input pipes dominates the others.
 
 \subsubsection{Stereo/Mono and Polyphony support}
 
@@ -137,7 +139,7 @@ Additionally, a nice feature would be stereo support. My implementation lacks st
 
 \subsection{Oscillators}
 
-Oscillators are generators that can create a periodic waveform. They are the basis of additive and subtractive synthesis by creating a basic wave to be shaped and modified by every other module. Usually osillators create a few types of mathematically well-defined primitive waveforms, like sine or square waves. Apart from the wave function, they also possess two parameters, frequency and phase. Frequency describes the amount of oscillations per second, and a difference in frequency is percieved as a difference in pitch. Phase is very difficult to percieve audibly in most cases, it is the initial offset the oscillation started with. Contrarily to frequency, phase has a bounded range, usually from 0 to 2$\pi$ or from 0 to 1, depending on the implementation.
+Oscillators are generators that can create a periodic waveform. They are the basis of additive and subtractive synthesis by creating a basic wave to be shaped and modified by every other module. Usually oscillators create a few types of mathematically well-defined primitive waveforms, like sine or square waves. Apart from the wave function, they also possess two parameters, frequency and phase. Frequency describes the amount of oscillations per second, and a difference in frequency is percieved as a difference in pitch. Phase is very difficult to percieve audibly in most cases, it is the initial offset the oscillation started with. Contrarily to frequency, phase has a bounded range, usually from 0 to 2$\pi$ or from 0 to 1, depending on the implementation.
 
 In this synthesizer, the 3 most fundamental waveforms are supported. These are the sine wave, the "square wave" or pulse wave, and the popular sawtooth-wave, also called saw-wave.
 \begin{figure}[h]
@@ -202,7 +204,7 @@ In this synthesizer, the 3 most fundamental waveforms are supported. These are t
 
 \subsubsection{Basic implementation}
 
-As already noted, oscillators only require two parameters, phase and frequency. It is quite easy to deal with stereo behavior, as the channels are independent, one can simply first calculate the left side and then the right side. Oscillators also depend heavily on the global time and on the pipe starting time. Through this the current time since starting to oscillate can be calculated trivially, and it is generally a good idea to do modulo the period of the wave as well. Afterwards, the resulting signal is calculated differently depending on the type.
+As already noted, oscillators only require two parameters, phase and frequency. It is quite easy to deal with stereo behavior, as the channels are independent, one can simply first calculate the left side and then the right side. Oscillators also depend heavily on the global time and on the pipe starting time. Through this the current time since starting to oscillate can be calculated trivially, and it is generally a good idea to do modulo the period of the wave as well (it had a large effect on performance after a minute or so). Afterwards, the resulting signal is calculated differently depending on the type.
 \\\begin{minipage}{\linewidth}
 \begin{lstlisting}
 double x = time * frequency + phase;
@@ -235,23 +237,24 @@ There are many, many approaches to fixing this problem in general, it is a recur
 The saw wave, in the frequency domain, is nothing but the sum of every harmonic (whole-number multiples of the base frequency) with a 1/k decaying amplitude~\cite{WolframSaw}.
 (\(f = \) the base frequency, \(F_N = \) the Nyquist frequency)
 \begin{equation}
-H(f) = \frac{2}{\pi}\sum\limits_{k=1}^\infty{\frac{\sin(k*f)}{k}}
+g(t) = \frac{2}{\pi}\sum\limits_{k=1}^\infty{\frac{\sin(kft)}{k}}
 \end{equation}
 \footnote{The \(\frac{2}{\pi}\) normalises the result between -1 and 1.}
+\footnote{Actually, this equation results in an inverse sawtooth wave, but as the difference is very difficult to hear I chose the simpler one.}
 
-Of course, instead of summing to infinity, we could stop summing as soon as \(k*f > F_N\), therefore only including overtones under the Nyquist frequency.
+Of course, instead of summing to infinity, we could stop summing as soon as \(kf > F_N\), therefore only including overtones under the Nyquist frequency.
 \begin{equation}
-H(f) = \frac{2}{\pi}\sum\limits_{k=1}^\frac{F_N}{f}{\frac{\sin(k*f)}{k}}
+g(t) = \frac{2}{\pi}\sum\limits_{k=1}^\frac{F_N}{f}{\frac{\sin(kft)}{k}}
 \end{equation}
 
 The same can be done for square waves. Square waves have nearly an identical frequency sum, except only odd harmonics have a non-zero amplitude (this also doubles the normalizing factor, since the range is still -1 to 1 but only half the elements are summed)~\cite{WolframSquare}.
 
 \begin{equation}
-H(f) = \frac{4}{\pi}\sum\limits_{k=1}^\infty{\frac{\sin((2*k-1)*f)}{2*k-1}}
+g(t) = \frac{4}{\pi}\sum\limits_{k=1}^\infty{\frac{\sin((2k-1)ft)}{2k-1}}
 \end{equation}
 becomes
 \begin{equation}
-H(f) = \frac{4}{\pi}\sum\limits_{k=1}^\frac{F_N}{2f}{\frac{\sin((2*k-1)*f)}{2*k-1}}
+g(t) = \frac{4}{\pi}\sum\limits_{k=1}^\frac{F_N}{2f}{\frac{\sin((2k-1)ft)}{2k-1}}
 \end{equation}
 which again, only includes all parts of the square wave which are under the Nyquist frequency; a perfect solution, if we have the luxury of enough computing time to calculate this sum (which, for this synthesizer, we do).
 
@@ -295,7 +298,7 @@ This code gives off perfect anti-aliasing and is fast enough for use in our synt
 Filters are an enormously complex subject and a field for themselves, having a wide range of applications beyond music especially in communications and data analysis. The general definition of a filter is very broad, I am going to refer specifically to filters that modify the gain as a function of frequency.
 Even of these, innumerable examples exist, so I will concentrate on the commonly used musical filters. By far the most widely used of those are the lowpass and highpass filters.
 A lowpass filter, as the name would suggest, lets low frequencies pass while blocking high frequencies. A highpass filter does just the opposite.
-There are more types of filters common in synthesizers, most notably bandpass and bandreject (also called notch) filters, but I have not implemented them as they can be created using lowpass and highpass filters, so I won't do more than mention them here.
+There are more types of filters common in synthesizers, most notably bandpass and bandreject (also called notch) filters, but I have not implemented them as they can be created using lowpass and highpass filters, so I will not do more than mention them here.
 
 All of the following filters have at least one very important parameter, the cutoff frequency. Informally stated, this is the boundary/location of the filter (see figure). Raising the cutoff frequency of a lowpass filter for example allows more frequencies to pass through.
 \begin{figure}
@@ -384,33 +387,32 @@ Sadly, the FFT/IFFT depends on a signal length of $2^n$ (without either sacrific
 
 \subsubsection{Implementation using (2-pole) recursive filters}
 
-One property of conversion between time and frequency domain when considering two functions is what happens to multiplication.
+One property of conversion between time and frequency domain when considering two functions is what happens to multiplication.\footnote{I am using the symbol $\times$ for multiplication and $*$ for convolution}
 \begin{equation}
 j(t) = h(t) \times g(t) \iff J(t) = H(t) * G(t)
-\end{equation}\footnote{I am using the symbol $\times$ for multiplication and $*$ for convolution}
+\end{equation}
 and vis-versa
 \begin{equation}
 j(t) = h(t) * g(t) \iff J(t) = H(t) \times G(t)
 \end{equation}
 Multiplying the frequency spectrums of two waves is identical to convolving their time domain functions.
 This means we could also simply pass our filter through an IFFT (the result is called a convolution kernel), and convolve our signal with that.
-Convolution works the following way ($h$ here being the filter convolution kernel, and $x$ the input signal).
+Convolution works the following way ($h$ here being the filter convolution kernel, and $x$ the input signal).\footnote{Convolution also exists for continous functions, but we are dealing with discrete signals so I am switching to the notation of x[n] instead of x(t).}
 \begin{equation}
 y[n] = h[0]x[n] + h[1]x[n-1] + h[2]x[n-2] + \dots
 \end{equation}
-\footnote{Convolution also exists for continous functions, but we are dealing with discrete signals so I am switching to the notation of x[n] instead of x(t).}
 The problem with convolution is that most interesting filters have very long impulse responses (the time-domain converse of the frequency response), ideal box-filters like we attempted before even possess infinite impulse responses.
 We can give up on ideal box-filters, it then becomes a story of trying to get as close as possible while keeping computation low. One method for this are recursive filters; Instead of just using previous input values, we also reuse previous output values.
 \begin{equation}
 y[n] = b_0x[n] + b_1x[n-1] + b_2x[n-2] + \dots + a_0y[n] + a_1y[n-1] + a_2y[n-2] + \dots
 \end{equation}
-While not being of obvious use, this allows us to shorten convolution kernels. To find the right values of $a_0$,$b_0$,\dots, I copied an analog electronical circuit working two delays, which had the effect of using the last two outputs and inputs in it's calculation (called a two-pole filter). Converting this to digital coefficient values is usually done with a bilinear transform and is a complex affair~\cite[chap. 3.5]{ZoranDFD}.
+While not being of obvious use, this allows us to shorten convolution kernels. To find the right values of $a_0$,$b_0$,\dots, I copied an analog electronical circuit working with two delays, which had the effect of using the last two outputs and inputs in its calculation (called a two-pole filter). Converting this to digital coefficient values is usually done with a bilinear transform and is a complex affair~\cite[chap. 3.5]{ZoranDFD}.
 First, since we only need the last two values, the equation becomes
 \begin{equation}
 y[n] = b_0x[n] + b_1x[n-1] + b_2x[n-2] + a_0y[n] + a_1y[n-1]
 \end{equation}
 The frequency response function cannot be a perfect box filter anymore, but it can be similar enough to work almost as well, and is computationally much simpler.
-It has two parameters, the cutoff frequency (\(f_c\)) as per before, and also a new parameter commonly called \(Q\) or resonance. The notation $Q$ comes from electronics where it is related to the dampening of a signal, and it's effect is to boost the gain of frequencies right \emph{before} the cutoff frequency, creating very shrill lead sounds often used in music.
+It has two parameters, the cutoff frequency (\(f_c\)) as per before, and also a new parameter commonly called \(Q\) or resonance. The notation $Q$ comes from electronics where it is related to the dampening of a signal, and its effect is to boost the gain of frequencies right \emph{before} the cutoff frequency, creating very shrill lead sounds often used in music.
 Sampling frequency will be denoted as \(F_s\).
 First defining $\omega_0$ which we will need:
 \begin{equation}
@@ -521,11 +523,11 @@ To limit this, I simply placed a max() bound at the appropriate place, preventin
 
 \subsection{Other Primitives}
 
-Apart from the "interesting" modules, there is a list of modules that are required in some form or other but whose inner workings are very simple, and that do not exist as explicit modules in most synthesizers.
+Apart from the mathematically challenging modules, there is a list of modules that are required in some form or other but whose inner workings are very simple, and that do not exist as explicit modules in most synthesizers.
 
 \subsubsection{Constants}
 
-Many modules or circuits need paramters, in fact anything not dependent on the input signal is a parameter. These parameters cannot be edited directly inside the module, since everything is supposed to be modular. To solve this problem with as little change to the engine as possible I simply created a "Constants" module which streams a single value the whole time. It does this on all channels, since it is a source of input as much as the standard note input is. There is also a specific GUI for Constants, allowing the user to create one and directly type into a writeable box. This is the only way to use parameters in this synthesizer.
+Many modules or circuits need paramters, in fact anything not dependent on the input signal is a parameter. These parameters cannot be edited directly inside the module, since everything is supposed to be modular. To solve this problem with as little change to the engine as possible I created a "Constants" module which streams a single value the whole time. It does this on all channels, since it is a source of input as much as the standard note input is. There is also a specific GUI for Constants, allowing the user to create one and directly type into a writeable box. This is the only way to use parameters in this synthesizer.
 
 \subsubsection{Merger and Copyer}
 
@@ -534,15 +536,15 @@ A merger module is slightly more complex, as there are (at least) two intuitive 
 
 \subsubsection{Range Modifier}
 
-The purpose of a range modifier is simple; it's job is to linearly project a signal between two bounds to two other bounds. 4 parameters are required, the starting bounds $s_{min}$ and $s_{max}$ and the desired bounds $d_{min}$ and $d_{max}$.
+The purpose of a range modifier is simple; its job is to linearly project a signal between two bounds to two other bounds. 4 parameters are required, the starting bounds $s_{min}$ and $s_{max}$ and the desired bounds $d_{min}$ and $d_{max}$.
 \begin{equation}
 m = \frac{d_{max} - d_{min}}{s_{max} - s_{min}}
 \end{equation}
 \begin{equation}
-b = d_{min} - (s_{min} * ration)
+b = d_{min} - (s_{min}m)
 \end{equation}
 \begin{equation}
-y[t] = x[t]*m + b
+y[t] = x[t]m + b
 \end{equation}
 This is especially useful if one needs to amplify or attenuate a signal, all you have to do is change the output bounds to match your desired result, and the signal will automatically get scaled to size.
 
