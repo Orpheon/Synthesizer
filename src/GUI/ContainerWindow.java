@@ -96,7 +96,7 @@ public class ContainerWindow extends JFrame
         JMenuBar menu_bar;
         menu_bar = new JMenuBar();
         menu = new JMenu("Testing");
-        menu_bar.add(menu);
+        //menu_bar.add(menu);
         add(menu_bar, BorderLayout.PAGE_START);
 
         central_container = new JPanel();
