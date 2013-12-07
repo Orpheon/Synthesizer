@@ -87,6 +87,7 @@
 
 \section{Preface}
 
+It was never in doubt for me that my ideal matura project would be a software, and from there only a small amount of tasks were simultaneously of my skill level, part of my interests and of the size required for a matura project. Having dabbled in electronic music production before, I was already familiar with the main methods and problems, and was very interested in the precise mathematics. Particularly one software, ZynAddSubFX~\cite{ZASF}, fascinated me by its power, its sound and the shear amount of parameters and control it gave. It was perfect in almost every aspect except for one central flaw which marred it in my opinion, and that was the lack of rewiring support. The sound pipeline was fixed, only a select few parameters could be automated, and those usually did not correspond to what I needed. With this project I hoped to do the opposite, and provided modularity from the ground up. Another goal was to gain an understanding in signal theory, which is best done by creating a project that relied on it. The final choice concerned the programming language, and on advice I chose a language I did not know so well at the time with hopes of learning it; Java.
 
 
 \section{Introduction}
@@ -558,9 +559,11 @@ The GUI was deliberately kept simple, as it was only a sidelight of this entire 
 
 \section{Results}
 
-\subsection{Capabilities and Limitations of this program}
+The resulting software is a stable java program with a GUI interface that allows creating sounds and plays them- Notes can be added manually, and then the exact pathway of the sound can be specified for complete control over the synthesis, before outputting it directly to the standard sound output. 8 types of modules are fully supported, and a few others are coded but are not completely stable or lack a GUI interface (Distortion module, Stereo to Mono splitter). Stereo currently lacks a GUI interface, but the entirety of the engine supports stereo just as well as mono. Polyphony works perfectly, and the amount of free channels can easily be set as a constant when compiling the program.
 
-\section{Looking forward}
+Future goals would be first and foremost to allow MIDI input, adding more types of modules, polishing the interface and saving. Then support for JACK and external modulation of parameters could be implemented, and finally dedicated editor windows for some of the modules.
+
+\section{Reflection}
 
 \bibliography{references}
 
