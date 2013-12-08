@@ -75,19 +75,20 @@
 
 % Title
 \title{\LARGE \textbf {Programming a Modular Software Synthesizer} \vspace{1em}}
-\author{Alexander Liebend\"{o}rfer}
+\author{Alexander Liebend\"{o}rfer\\Klasse 5D}
+\date{\today}
 
 % Document
 \begin{document}
 \maketitle
 \clearpage
 \tableofcontents
-
+\listoffigures
 \clearpage
 
 \section{Preface}
 
-It was never in doubt for me that my ideal matura project would be a software, and from there only a small amount of tasks were simultaneously of my skill level, part of my interests and of the size required for a matura project. Having dabbled in electronic music production before, I was already familiar with the main methods and problems, and was very interested in the precise mathematics. Particularly one software, ZynAddSubFX~\cite{ZASF}, fascinated me by its power, its sound and the shear amount of parameters and control it gave. It was perfect in almost every aspect except for one central flaw which marred it in my opinion, and that was the lack of rewiring support. The sound pipeline was fixed, only a select few parameters could be automated, and those usually did not correspond to what I needed. With this project I hoped to do the opposite, and provided modularity from the ground up. Another goal was to gain an understanding in signal theory, which is best done by creating a project that relied on it. The final choice concerned the programming language, and on advice I chose a language I did not know so well at the time with hopes of learning it; Java.
+It was never in doubt for me that my ideal matura project would be a software, and from there only a small amount of tasks were simultaneously of my skill level, part of my interests and of the size required for a matura project. Having dabbled in electronic music production before, I was already familiar with the main methods and problems, and was very interested in the precise mathematics. Particularly one software, ZynAddSubFX~\cite{ZASF}, fascinated me by its power, its sound and the shear amount of parameters and control it gave. It was perfect in almost every aspect except for one central flaw which marred it in my opinion, and that was the lack of rewiring support. The sound pipeline was fixed, only a select few parameters could be automated, and those usually did not correspond to what I needed. With this project I hoped to do the opposite, and provided modularity from the ground up. Another goal was to gain an understanding in signal theory, which is best done by creating a project that relied on it. The final choice concerned the programming language, and on advice I chose a language I did not know so well at the time with hopes of learning it: Java.
 
 
 \section{Introduction}
@@ -237,24 +238,24 @@ There are many, many approaches to fixing this problem in general, it is a recur
 The saw wave, in the frequency domain, is nothing but the sum of every harmonic (whole-number multiples of the base frequency) with a 1/k decaying amplitude~\cite{WolframSaw}.
 (\(f = \) the base frequency, \(F_N = \) the Nyquist frequency)
 \begin{equation}
-g(t) = \frac{2}{\pi}\sum\limits_{k=1}^\infty{\frac{\sin(kft)}{k}}
+g(t) = \frac{2}{\pi}\sum\limits_{k=1}^\infty{\left(\frac{\sin(kft)}{k}\right)}
 \end{equation}
 \footnote{The \(\frac{2}{\pi}\) normalises the result between -1 and 1.}
 \footnote{Actually, this equation results in an inverse sawtooth wave, but as the difference is very difficult to hear I chose the simpler one.}
 
 Of course, instead of summing to infinity, we could stop summing as soon as \(kf > F_N\), therefore only including overtones under the Nyquist frequency.
 \begin{equation}
-g(t) = \frac{2}{\pi}\sum\limits_{k=1}^\frac{F_N}{f}{\frac{\sin(kft)}{k}}
+g(t) = \frac{2}{\pi}\sum\limits_{k=1}^\frac{F_N}{f}{\left(\frac{\sin(kft)}{k}\right)}
 \end{equation}
 
-The same can be done for square waves. Square waves have nearly an identical frequency sum, except only odd harmonics have a non-zero amplitude (this also doubles the normalizing factor, since the range is still -1 to 1 but only half the elements are summed)~\cite{WolframSquare}.
+The same can be done for square waves. Square waves have nearly an identical frequency sum, except only odd harmonics have a non-zero amplitude (this also doubles the normalizing factor, since the range is still -1 to 1 but only half the elements are summed).~\cite{WolframSquare}
 
 \begin{equation}
-g(t) = \frac{4}{\pi}\sum\limits_{k=1}^\infty{\frac{\sin((2k-1)ft)}{2k-1}}
+g(t) = \frac{4}{\pi}\sum\limits_{k=1}^\infty{\left(\frac{\sin((2k-1)ft)}{2k-1}\right)}
 \end{equation}
 becomes
 \begin{equation}
-g(t) = \frac{4}{\pi}\sum\limits_{k=1}^\frac{F_N}{2f}{\frac{\sin((2k-1)ft)}{2k-1}}
+g(t) = \frac{4}{\pi}\sum\limits_{k=1}^\frac{F_N}{2f}{\left(\frac{\sin((2k-1)ft)}{2k-1}\right)}
 \end{equation}
 which again, only includes all parts of the square wave which are under the Nyquist frequency; a perfect solution, if we have the luxury of enough computing time to calculate this sum (which, for this synthesizer, we do).
 
@@ -419,7 +420,7 @@ First defining $\omega_0$ which we will need:
 \omega_0 = 2{\pi}\frac{f_c}{F_s}
 \end{equation}
 
-The exact workings of the bilinear transformation used go beyond the scope of this text, so I will skip directly to the formulas my program uses. Readers interested in the details can read \emph{The Scientist and Engineer's Guide to DSP}~\cite[chap. 33]{SmithDSP},\emph{Digital Filter Design}~\cite[chap. 3.5]{ZoranDFD} and \emph{Cookbook formulae for audio EQ biquad filter coefficients}~\cite{Cookbook}.
+The exact workings of the bilinear transformation used go beyond the scope of this text, so I will skip directly to the formulas my program uses. Readers interested in the details can read \emph{The Scientist and Engineer's Guide to DSP}~\cite[chap. 33]{SmithDSP},\emph{Digital Filter Design}~\cite[chap. 3.5]{ZoranDFD} and \emph{Cookbook formulae for audio EQ}~\cite{Cookbook}.
 
 The transfer function (equal to the frequency response) of the lowpass filter~\cite[section 8.2]{LinearCircuit}:
 \begin{equation}
@@ -445,7 +446,7 @@ H(f) = \frac{\omega_0^2}{f^2 + \frac{\omega_0}{Q}f + \omega_0^2}
 
 \end{figure}
 
-First, we create a new constant $a_0$ and negate $a_1$ and $a_2$ to simplify later equations. Our new recursive equation becomes (equations from \emph{Cookbook formulae for audio EQ biquad filter coefficients}~\cite{Cookbook}):
+First, we create a new constant $a_0$ and negate $a_1$ and $a_2$ to simplify later equations. Our new recursive equation becomes (equations from \emph{Cookbook formulae for audio EQ}~\cite{Cookbook}):
 \begin{equation}
 y[n] = \frac{b_0}{a_0}x[n] + \frac{b_1}{a_0}x[n-1] + \frac{b_2}{a_0}x[n-2] - \frac{a_1}{a_0}y[n-1] - \frac{a_2}{a_0}y[n-2]
 \end{equation}
@@ -538,10 +539,10 @@ A merger module is slightly more complex, as there are (at least) two intuitive 
 
 The purpose of a range modifier is simple; its job is to linearly project a signal between two bounds to two other bounds. 4 parameters are required, the starting bounds $s_{min}$ and $s_{max}$ and the desired bounds $d_{min}$ and $d_{max}$.
 \begin{equation}
-m = \frac{d_{max} - d_{min}}{s_{max} - s_{min}}
+m := \frac{d_{max} - d_{min}}{s_{max} - s_{min}}
 \end{equation}
 \begin{equation}
-b = d_{min} - (s_{min}m)
+b := d_{min} - (s_{min}m)
 \end{equation}
 \begin{equation}
 y[t] = x[t]m + b
@@ -563,9 +564,20 @@ The GUI was deliberately kept simple, as it was only a sidelight of this entire 
 
 The resulting software is a stable java program with a GUI interface that allows creating sounds and plays them- Notes can be added manually, and then the exact pathway of the sound can be specified for complete control over the synthesis, before outputting it directly to the standard sound output. 8 types of modules are fully supported, and a few others are coded but are not completely stable or lack a GUI interface (Distortion module, Stereo to Mono splitter). Stereo currently lacks a GUI interface, but the entirety of the engine supports stereo just as well as mono. Polyphony works perfectly, and the amount of free channels can easily be set as a constant when compiling the program.
 
-Future goals would be first and foremost to allow MIDI input, adding more types of modules, polishing the interface and saving. Then support for JACK and external modulation of parameters could be implemented, and finally dedicated editor windows for some of the modules.
+Future goals would be first and foremost to allow MIDI input, adding more types of modules, polishing the interface and saving. Then support for JACK and external modulation of parameters could be implemented, and finally dedicated editor windows for some of the modules. A further possible goal would be an interface as a VSTi plugin for use in non-JACK compatible audio software.
+
+A complete copy of the code can be found at \url{https://github.com/Orpheon/Synthesizer}, licensed under GPLv3.\\
+For a protocol of work done, the reader can check the git commit logs at \url{https://github.com/Orpheon/Synthesizer/commits/master}. These include all changes ever done to the codebase sorted chronologically and commented.
 
 \section{Reflection}
+
+As soon as I knew what project I would be doing, I first tried to learn necessary mathematics and then jump as soon as possible into prototyping, with the mindset that doing and later fixing was faster than thinking then doing. In retrospect, this was probably a good idea; I believe I would not have planned for the major mistakes, and the lost time because of some flawed design decisions was usually quite small. The only exception to this was the use of LaTeX for this document; I wasted much time on formatting beforehand that was completely unnecessary.
+One of the main lessons of this project for me was that I had underestimated the GUI and the work it took to dive into completely new libraries (Swing). Trying to design the user interface separately from the engine was problematic and wasted a lot of time. Likewise, error handling was something I did not grasp correctly until very near the end, and were I to rewrite the program I would probably use exceptions a lot more (and println statements or "\emph{return -1;}" a lot less).
+
+\section{Acknowledgements}
+
+Two sources of information proved to be very helpful, IRC chat on Freenode servers~\cite{Freenode} (particularly the \emph{\#\#math} and \emph{\#\#java} channels) and StackOverflow~\cite{Stackoverflow} as well as all its derivations. Both were a great help for understanding certain algorithms and dealing with Swing/LaTeX.
+I also wish to thank my project teacher Christian Datzko for connections to other experts and his criticism on the engine structure, as well as his help on priority assessment.
 
 \bibliography{references}
 
