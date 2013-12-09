@@ -20,6 +20,9 @@
 % Be able to link urls
 \usepackage{hyperref}
 
+% Get References in TOC
+\usepackage{tocbibind}
+
 % Hide the ugly url border
 \hypersetup{
     colorlinks=true,        % false: boxed links; true: colored links
@@ -33,7 +36,6 @@
 % pgfplots for more complex stuff
 \usepackage{pgfplots}
 \usetikzlibrary{arrows}
-\pagestyle{empty}
 
 % Images
 \usepackage{graphicx}
@@ -73,15 +75,22 @@
 % Math stuff
 \usepackage{amsmath}
 
-% Title
-\title{\LARGE \textbf {Programming a Modular Software Synthesizer} \vspace{1em}}
-\author{Alexander Liebend\"{o}rfer\\Klasse 5D}
-\date{\today}
+\date{13th December 2013}
 
 % Document
 \begin{document}
-\maketitle
-\clearpage
+
+\begin{titlepage}
+\centering
+{\LARGE \textbf {Programming a Modular Software Synthesizer}\vspace{2em}}
+\linespread{2}
+\large{Alexander Liebend\"{o}rfer\\Class 5D\\Gymnasium Kirschgarten\\~\\
+Supervisor: Christian Datzko\\Co-Supervisor: Mandy Schiele\\~\\}
+
+\vspace{10em}
+\makebox[\textwidth][c]{\includegraphics[width=\paperwidth]{./ComplexWaveprocessed}}
+\end{titlepage}
+
 \tableofcontents
 \listoffigures
 \clearpage
@@ -124,12 +133,12 @@ To achieve a completely modular synthesizer, we already need to give up a fixed 
 
 \subsubsection{Basic system}
 
-In this specific implementation, modules are pure functions, or atleast behave as such towards the outside. A module is always connected to other modules via so-called pipes, which contain the actual data. Modules can then load the data from their input pipes, process it, and dump the result into their output pipes. The main advantage of this system is that it is stable and will work with any wiring setup, even feedback loops. In such closed feedback systems, there will be a propagation delay depending on the amount of pipes the data has to travel, and so no infinite recursion appears. Splitting data and doing parallel processing before merging it again is also implicitely supported, as every module and pipe only acts locally.
+In this specific implementation, modules are pure functions, or at least behave as such towards the outside. A module is always connected to other modules via so-called pipes, which contain the actual data. Modules can then load the data from their input pipes, process it, and dump the result into their output pipes. The main advantage of this system is that it is stable and will work with any wiring setup, even feedback loops. In such closed feedback systems, there will be a propagation delay depending on the amount of pipes the data has to travel, and so no infinite recursion appears. Splitting data and doing parallel processing before merging it again is also implicitely supported, as every module and pipe only acts locally.
 One major issue is execution order. A recursive "pull" query where every module calls the modules it depends on for their output cannot work, infinite recursion is a possibility. Even without recursion, there is always the risk that some part of the circuit did not get updated, which might affect the rest. I have not found a clean solution to this without drawbacks, the one I chose just makes every module execute once in more or less random order (it is not truely random, in fact it is in order of creation), which in worse case causes a signal to wait an extra frame between two modules but guarantees that every module is executed once and only once per frame, and done so in a consistent way.
 
-Injection of user input and retrieval of the sound output is best done with modules dedicated to that. These modules possess only 1 input or output port respectively, and do not by themselves do anything. They just serve as convienient places to connect pipes to, and the main overarching engine can simply read and write the contents of their pipes.
+Injection of user input and retrieval of the sound output is best done with modules dedicated to that. These modules possess only 1 input or output port respectively, and do not by themselves do anything. They just serve as convenient places to connect pipes to, and the main overarching engine can simply read and write the contents of their pipes.
 
-\subsubsection{Dealing with Time}
+\subsubsection{Dealing with time}
 
 A tricky problem is dealing with time-sensitive modules, like envelopes or oscillators. The input does not implicitely declare its duration, so there needs to be a way for the pipes to also carry starting time of a signal. For this, I implemented a separate counter in every pipe, which showed the time at which that signal started. When a module is done with processing and copies the signal data into its output, it also copies in the counter. A negative time can be used as a marker that the pipe is inactive and that the module does not even need to process anything. Every module can define a special pipe which is taken as reference for the source time, which is especially important when conflicts are possible. If a module does not define such a pipe, the highest starting time (the most recent signal) of all input pipes dominates the others.
 
@@ -140,7 +149,7 @@ Additionally, a nice feature would be stereo support. My implementation lacks st
 
 \subsection{Oscillators}
 
-Oscillators are generators that can create a periodic waveform. They are the basis of additive and subtractive synthesis by creating a basic wave to be shaped and modified by every other module. Usually oscillators create a few types of mathematically well-defined primitive waveforms, like sine or square waves. Apart from the wave function, they also possess two parameters, frequency and phase. Frequency describes the amount of oscillations per second, and a difference in frequency is percieved as a difference in pitch. Phase is very difficult to percieve audibly in most cases, it is the initial offset the oscillation started with. Contrarily to frequency, phase has a bounded range, usually from 0 to 2$\pi$ or from 0 to 1, depending on the implementation.
+Oscillators are generators that can create a periodic waveform. They are the basis of additive and subtractive synthesis by creating a basic wave to be shaped and modified by every other module. Usually oscillators create a few types of mathematically well-defined primitive waveforms, like sine or square waves. Apart from the wave function, they also possess two parameters, frequency and phase. Frequency describes the amount of oscillations per second, and a difference in frequency is perceived as a difference in pitch. Phase is very difficult to perceive audibly in most cases, it is the initial offset the oscillation started with. Contrarily to frequency, phase has a bounded range, usually from 0 to 2$\pi$ or from 0 to 1, depending on the implementation.
 
 In this synthesizer, the 3 most fundamental waveforms are supported. These are the sine wave, the "square wave" or pulse wave, and the popular sawtooth-wave, also called saw-wave.
 \begin{figure}[h]
@@ -299,7 +308,7 @@ This code gives off perfect anti-aliasing and is fast enough for use in our synt
 Filters are an enormously complex subject and a field for themselves, having a wide range of applications beyond music especially in communications and data analysis. The general definition of a filter is very broad, I am going to refer specifically to filters that modify the gain as a function of frequency.
 Even of these, innumerable examples exist, so I will concentrate on the commonly used musical filters. By far the most widely used of those are the lowpass and highpass filters.
 A lowpass filter, as the name would suggest, lets low frequencies pass while blocking high frequencies. A highpass filter does just the opposite.
-There are more types of filters common in synthesizers, most notably bandpass and bandreject (also called notch) filters, but I have not implemented them as they can be created using lowpass and highpass filters, so I will not do more than mention them here.
+There are more types of filters common in synthesizers, most notably bandpass and bandreject (also called notch) filters, but I have not implemented them as they can be created using lowpass and highpass filters, so I will not discuss them here.
 
 All of the following filters have at least one very important parameter, the cutoff frequency. Informally stated, this is the boundary/location of the filter (see figure). Raising the cutoff frequency of a lowpass filter for example allows more frequencies to pass through.
 \begin{figure}
@@ -381,7 +390,7 @@ All of the following filters have at least one very important parameter, the cut
 
 \subsubsection{Implementation of a lowpass and highpass filter with FFT}
 
-The most direct way to implement such filters would be to first convert the time-domain signal into frequency domain, using the Fast Fourier Transform (FFT), multiply it with our filter function, and then convert it back (using the Inverse Fast Fourier Transform, or IFFT). The FFT and IFFT are more than a topic for themselves, and I will not discuss them in detail here. A solid but terse explanation can be found at this page~\cite{DITFFT}, and a more gentle introduction in \emph{The Scientist and Engineer's Guide to DSP}~\cite[chap. 12]{SmithDSP}.
+The most direct way to implement such filters would be to first convert the time-domain signal into frequency domain, using the Fast Fourier Transform (FFT), multiply it with our filter function, and then convert it back (using the Inverse Fast Fourier Transform, or IFFT). The FFT and IFFT are more than a topic for themselves, and I will not discuss them in detail here. A solid but terse explanation can be found at \emph{Decimation-in-time Radix-2 FFT}~\cite{DITFFT}, and a more gentle introduction in \emph{The Scientist and Engineer's Guide to DSP}~\cite[chap. 12]{SmithDSP}.
 
 Ideal filters as shown in the previous figure are impossible to achieve, for several reasons. For one, we do not have an input of infinite length, the input will come in small blocks at a time. Related is the problem that frequency is tied to the concept of a period. Our signals will only be approximately periodic, but certainly not precisely so. The FFT assumes a periodic signal, and feeding a non-periodic signal through an FFT and then an IFFT will make it periodic with itself, which will change both extremeties. This causes discontinuities between different frames, which results in audible buzzing. There is a way to avoid this, using the overlap-add method~\cite{Overlapadd}, which depends on buffering a bit of extra data of previous frames and including it in the FFT, causing the IFFT to create a longer wave, which can be cut at the right place with much less of an error.
 Sadly, the FFT/IFFT depends on a signal length of $2^n$ (without either sacrificing a lot of performance or using some very complex techniques), which means that the real signal length has to be chosen so that added with the overlap constant, it gives a $2^n$-length signal. This whole implementation turns out to be rather difficult, and quickly became a problem to program. So I searched for simpler methods with less book-keeping involved, and once I had found one I took that route instead.
@@ -392,11 +401,11 @@ One property of conversion between time and frequency domain when considering tw
 \begin{equation}
 j(t) = h(t) \times g(t) \iff J(t) = H(t) * G(t)
 \end{equation}
-and vis-versa
+and vice versa
 \begin{equation}
 j(t) = h(t) * g(t) \iff J(t) = H(t) \times G(t)
 \end{equation}
-Multiplying the frequency spectrums of two waves is identical to convolving their time domain functions.
+Multiplying the frequency spectra of two waves is identical to convolving their time domain functions.
 This means we could also simply pass our filter through an IFFT (the result is called a convolution kernel), and convolve our signal with that.
 Convolution works the following way ($h$ here being the filter convolution kernel, and $x$ the input signal).\footnote{Convolution also exists for continous functions, but we are dealing with discrete signals so I am switching to the notation of x[n] instead of x(t).}
 \begin{equation}
@@ -520,7 +529,7 @@ a_2 = 1 - \alpha
 
 This system has the huge advantage of being local, only the last two values of the previous frame must be buffered.
 Sadly, it has a few drawbacks. The resulting filters are not perfect box-filters, although that is only barely audible, and for music might even be desirable. Another problem is that phase is not kept constant throughout the transform, and this means it is possible that the signal amplitude oversteps 1 at certain points. Being a feedback loop, this then propagates through every following signal and even future frames, distorting the sound forever after.
-To limit this, I simply placed a max() bound at the appropriate place, preventing at least any distortion from spreading, and keeping the it small enough to not be noticed audibly.
+To limit this, I simply placed a max() bound at the appropriate place, preventing at least any distortion from spreading, and keeping it small enough to not be noticed audibly.
 
 \subsection{Other Primitives}
 
@@ -562,7 +571,7 @@ The GUI was deliberately kept simple, as it was only a sidelight of this entire 
 
 \section{Results}
 
-The resulting software is a stable java program with a GUI interface that allows creating sounds and plays them- Notes can be added manually, and then the exact pathway of the sound can be specified for complete control over the synthesis, before outputting it directly to the standard sound output. 8 types of modules are fully supported, and a few others are coded but are not completely stable or lack a GUI interface (Distortion module, Stereo to Mono splitter). Stereo currently lacks a GUI interface, but the entirety of the engine supports stereo just as well as mono. Polyphony works perfectly, and the amount of free channels can easily be set as a constant when compiling the program.
+The resulting software is a stable java program with a GUI interface that allows creating sounds and plays them. Notes can be added manually, and then the exact pathway of the sound can be specified for complete control over the synthesis, before outputting it directly to the standard sound output. 8 types of modules are fully supported, and a few others are coded but are not completely stable or lack a GUI interface (Distortion module, Stereo to Mono splitter). Stereo currently lacks a GUI interface, but the entirety of the engine supports stereo just as well as mono. Polyphony works perfectly, and the amount of free channels can easily be set as a constant when compiling the program.
 
 Future goals would be first and foremost to allow MIDI input, adding more types of modules, polishing the interface and saving. Then support for JACK and external modulation of parameters could be implemented, and finally dedicated editor windows for some of the modules. A further possible goal would be an interface as a VSTi plugin for use in non-JACK compatible audio software.
 
@@ -572,13 +581,25 @@ For a protocol of work done, the reader can check the git commit logs at \url{ht
 \section{Reflection}
 
 As soon as I knew what project I would be doing, I first tried to learn necessary mathematics and then jump as soon as possible into prototyping, with the mindset that doing and later fixing was faster than thinking then doing. In retrospect, this was probably a good idea; I believe I would not have planned for the major mistakes, and the lost time because of some flawed design decisions was usually quite small. The only exception to this was the use of LaTeX for this document; I wasted much time on formatting beforehand that was completely unnecessary.
+
 One of the main lessons of this project for me was that I had underestimated the GUI and the work it took to dive into completely new libraries (Swing). Trying to design the user interface separately from the engine was problematic and wasted a lot of time. Likewise, error handling was something I did not grasp correctly until very near the end, and were I to rewrite the program I would probably use exceptions a lot more (and println statements or "\emph{return -1;}" a lot less).
 
 \section{Acknowledgements}
 
 Two sources of information proved to be very helpful, IRC chat on Freenode servers~\cite{Freenode} (particularly the \emph{\#\#math} and \emph{\#\#java} channels) and StackOverflow~\cite{Stackoverflow} as well as all its derivations. Both were a great help for understanding certain algorithms and dealing with Swing/LaTeX.
-I also wish to thank my project teacher Christian Datzko for connections to other experts and his criticism on the engine structure, as well as his help on priority assessment.
+I also wish to thank my supervisor Christian Datzko for connections to other experts and his criticism on the engine structure, as well as his help on priority assessment.
 
 \bibliography{references}
+
+\appendix
+\section{Appendix}
+Apart from everything in the reference, there are a few additional sources that are never needed in this text but that I used for creating the software. I will list them here for completition.
+\\My own StackOverflow questions:
+\\\url{http://math.stackexchange.com/questions/524399/bound-on-signal-after-passing-through-2\\-pole-lowpass-filter}
+\\\url{http://tex.stackexchange.com/questions/146561/plotting-semilog-plot-with-pgfplot}
+\\Other links:
+\\\url{http://zetcode.com/tutorials/javaswingtutorial}
+\\\url{http://stackoverflow.com/questions/4364823/how-to-get-frequency-from-fft-result?lq=1}
+\\\url{http://www.phys.unsw.edu.au/jw/notes.html}
 
 \end{document}

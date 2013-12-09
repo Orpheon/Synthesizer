@@ -1,0 +1,65 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: Textv1.aux
+The style file: acm.bst
+Database file #1: references.bib
+Warning--to sort, need author or key in ZASF
+Warning--to sort, need author or key in Telharmonium
+Warning--to sort, need author or key in Hammond
+Warning--to sort, need author or key in ModularMoog
+Warning--to sort, need author or key in Reason
+Warning--to sort, need author or key in Java
+Warning--to sort, need author or key in Javasound
+Warning--to sort, need author or key in Swing
+Warning--to sort, need author or key in Eclipse
+Warning--to sort, need author or key in Git
+Warning--to sort, need author or key in Github
+Warning--to sort, need author or key in Python
+Warning--to sort, need author or key in Veusz
+Warning--to sort, need author or key in Latex
+Warning--to sort, need author or key in Tikz
+Warning--to sort, need author or key in Geogebra
+Warning--to sort, need author or key in Overlapadd
+Warning--to sort, need author or key in Freenode
+Warning--to sort, need author or key in Stackoverflow
+You've used 26 entries,
+            2253 wiz_defined-function locations,
+            643 strings with 6526 characters,
+and the built_in function-call counts, 4784 in all, are:
+= -- 470
+> -- 68
+< -- 0
++ -- 42
+- -- 14
+* -- 155
+:= -- 636
+add.period$ -- 85
+call.type$ -- 26
+change.case$ -- 82
+chr.to.int$ -- 0
+cite$ -- 45
+duplicate$ -- 204
+empty$ -- 599
+format.name$ -- 14
+if$ -- 1138
+int.to.chr$ -- 0
+int.to.str$ -- 26
+missing$ -- 6
+newline$ -- 140
+num.names$ -- 14
+pop$ -- 251
+preamble$ -- 1
+purify$ -- 59
+quote$ -- 0
+skip$ -- 132
+stack$ -- 0
+substring$ -- 132
+swap$ -- 33
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 98
+warning$ -- 19
+while$ -- 14
+width$ -- 28
+write$ -- 253
+(There were 19 warnings)

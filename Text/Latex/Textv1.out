@@ -1,0 +1,29 @@
+\BOOKMARK [1][-]{section*.2}{Contents}{}
+\BOOKMARK [1][-]{section*.4}{List of Figures}{}
+\BOOKMARK [1][-]{section.1}{Preface}{}
+\BOOKMARK [1][-]{section.2}{Introduction}{}
+\BOOKMARK [2][-]{subsection.2.1}{A short history of synthesizers}{section.2}
+\BOOKMARK [2][-]{subsection.2.2}{Modularity}{section.2}
+\BOOKMARK [2][-]{subsection.2.3}{Goal of this project}{section.2}
+\BOOKMARK [1][-]{section.3}{Tools}{}
+\BOOKMARK [1][-]{section.4}{Implementation}{}
+\BOOKMARK [2][-]{subsection.4.1}{Pipes and Modules}{section.4}
+\BOOKMARK [3][-]{subsubsection.4.1.1}{Basic system}{subsection.4.1}
+\BOOKMARK [3][-]{subsubsection.4.1.2}{Dealing with time}{subsection.4.1}
+\BOOKMARK [3][-]{subsubsection.4.1.3}{Stereo/Mono and Polyphony support}{subsection.4.1}
+\BOOKMARK [2][-]{subsection.4.2}{Oscillators}{section.4}
+\BOOKMARK [3][-]{subsubsection.4.2.1}{Basic implementation}{subsection.4.2}
+\BOOKMARK [3][-]{subsubsection.4.2.2}{Anti-Aliased implementation}{subsection.4.2}
+\BOOKMARK [2][-]{subsection.4.3}{Filters}{section.4}
+\BOOKMARK [3][-]{subsubsection.4.3.1}{Implementation of a lowpass and highpass filter with FFT}{subsection.4.3}
+\BOOKMARK [3][-]{subsubsection.4.3.2}{Implementation using \(2-pole\) recursive filters}{subsection.4.3}
+\BOOKMARK [2][-]{subsection.4.4}{Other Primitives}{section.4}
+\BOOKMARK [3][-]{subsubsection.4.4.1}{Constants}{subsection.4.4}
+\BOOKMARK [3][-]{subsubsection.4.4.2}{Merger and Copyer}{subsection.4.4}
+\BOOKMARK [3][-]{subsubsection.4.4.3}{Range Modifier}{subsection.4.4}
+\BOOKMARK [2][-]{subsection.4.5}{GUI}{section.4}
+\BOOKMARK [1][-]{section.5}{Results}{}
+\BOOKMARK [1][-]{section.6}{Reflection}{}
+\BOOKMARK [1][-]{section.7}{Acknowledgements}{}
+\BOOKMARK [1][-]{section*.6}{References}{}
+\BOOKMARK [1][-]{appendix.A}{Appendix}{}

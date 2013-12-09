@@ -1,0 +1,146 @@
+\begin{thebibliography}{10}
+
+\bibitem{Eclipse}
+Eclipse {IDE}.
+\newblock \url{http://www.eclipse.org/}.
+\newblock 2013-12-08.
+
+\bibitem{Freenode}
+Freenode {IRC} webserver.
+\newblock \url{http://freenode.net/}.
+\newblock 2013-12-08.
+
+\bibitem{Geogebra}
+Geogebra geometry package.
+\newblock \url{http://www.geogebra.org/cms/en/}.
+\newblock 2013-12-08.
+
+\bibitem{Git}
+Git version control system.
+\newblock \url{http://git-scm.com/}.
+\newblock 2013-12-08.
+
+\bibitem{Github}
+Github.
+\newblock \url{https://github.com/}.
+\newblock 2013-12-08.
+
+\bibitem{Hammond}
+The {H}ammond zone.
+\newblock \url{http://www.hammond-organ.com/index.htm}.
+\newblock 2013-12-08.
+
+\bibitem{Telharmonium}
+History of electroacoustic music - the {T}elharmonium.
+\newblock \url{http://www.personal.psu.edu/meb26/INART55/telharmonium.html}.
+\newblock 2013-12-08.
+
+\bibitem{Java}
+Java programming language.
+\newblock \url{http://www.java.com/en/}.
+\newblock 2013-12-08.
+
+\bibitem{Javasound}
+Java sound {API}.
+\newblock \url{http://docs.oracle.com/javase/tutorial/sound/}.
+\newblock 2013-12-08.
+
+\bibitem{Latex}
+Latex document preparation system.
+\newblock \url{http://www.latex-project.org/}.
+\newblock 2013-12-08.
+
+\bibitem{ModularMoog}
+Modular moog synthesizers.
+\newblock \url{http://www.synthmuseum.com/moog/moomod.html}.
+\newblock 2013-12-08.
+
+\bibitem{Overlapadd}
+Overlap-{A}dd algorithm.
+\newblock \url{http://en.wikipedia.org/wiki/Overlap-add_method}.
+\newblock 2013-12-08.
+
+\bibitem{Python}
+Python programming language.
+\newblock \url{http://www.python.org/}.
+\newblock 2013-12-08.
+
+\bibitem{Reason}
+Reason music production software studio.
+\newblock \url{https://www.propellerheads.se/products/reason/}.
+\newblock 2013-12-08.
+
+\bibitem{Stackoverflow}
+Stackoverflow.
+\newblock \url{http://stackoverflow.com/}.
+\newblock 2013-12-08.
+
+\bibitem{Swing}
+Swing {GUI} library.
+\newblock
+  \url{http://docs.oracle.com/javase/7/docs/api/javax/swing/package-summary.ht%
+ml}.
+\newblock 2013-12-08.
+
+\bibitem{Tikz}
+{TikZ} and {PGF} -- graphic systems for {TeX}.
+\newblock \url{http://sourceforge.net/projects/pgf/}.
+\newblock 2013-12-08.
+
+\bibitem{Veusz}
+Veusz scientific plotting package.
+\newblock \url{http://home.gna.org/veusz/}.
+\newblock 2013-12-08.
+
+\bibitem{ZASF}
+{ZynAddSubFX} synthesizer.
+\newblock \url{http://zynaddsubfx.sourceforge.net/}.
+\newblock 2013-12-08.
+
+\bibitem{Cookbook}
+{\sc Bristow-Johnson, R.}
+\newblock {C}ookbook formulae for audio {EQ}.
+\newblock \url{http://www.musicdsp.org/files/Audio-EQ-Cookbook.txt}.
+\newblock 2013-12-08.
+
+\bibitem{DITFFT}
+{\sc Jones, D.~L.}
+\newblock Decimation-in-time {R}adix-2 {FFT}.
+\newblock \url{http://cnx.org/content/m12016/latest/}.
+\newblock 2013-12-08.
+
+\bibitem{ZoranDFD}
+{\sc Milivojević, Z.}
+\newblock {\em Digital {F}ilter {D}esign}.
+\newblock mikroElektronika, 2009.
+\newblock Can be found online at
+  \url{http://www.mikroe.com/products/view/268/digital-filter-design/}.
+
+\bibitem{SmithDSP}
+{\sc Smith, S.~W.}
+\newblock {\em The {S}cientist and {E}ngineer's {G}uide to {D}igital {S}ignal
+  {P}rocessing}.
+\newblock California Technical Pub, 1997.
+\newblock Can be found online at \url{http://www.dspguide.com/whatdsp.htm}.
+
+\bibitem{WolframSaw}
+{\sc Weisstein, E.~W.}
+\newblock Fourier {S}eries -- {S}awtooth {W}ave.
+\newblock \url{http://mathworld.wolfram.com/FourierSeriesSawtoothWave.html}.
+\newblock From MathWorld -- A Wolfram Web Resource. 2013-12-08.
+
+\bibitem{WolframSquare}
+{\sc Weisstein, E.~W.}
+\newblock Fourier {S}eries -- {S}quare {W}ave.
+\newblock \url{http://mathworld.wolfram.com/FourierSeriesSquareWave.html}.
+\newblock From MathWorld -- A Wolfram Web Resource. 2013-12-08.
+
+\bibitem{LinearCircuit}
+{\sc Zumbahlen, H.}
+\newblock {\em Linear {C}ircuit {D}esign {H}andbook}.
+\newblock Newnes, 2008.
+\newblock Can be found online at
+  \url{http://www.analog.com/library/analogDialogue/archives/43-09/linear_circ%
+uit_design_handbook.html}.
+
+\end{thebibliography}
