@@ -177,14 +177,6 @@ public class EngineMaster
     	main_container.connect_modules(module_1, out_port, module_2, in_port, audio_mode);
     }
     
-    public void set_frequency(double f1, double f2, double f3)
-    {
-    	// FIXME: Remove
-    	main_container.get_input().add_frequency(this, f1);
-//    	main_container.get_input().add_frequency(this, f2);
-//    	main_container.get_input().add_frequency(this, f3);
-    }
-    
     public void add_frequency(double f)
     {
     	main_container.get_input().add_frequency(this, f);

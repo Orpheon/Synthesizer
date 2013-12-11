@@ -96,8 +96,6 @@ public class Functions
     		throw new IllegalArgumentException();
     	}
     	
-    	System.out.println(index+"; "+octave);
-    	
     	double value;
     	// Total note number
     	value = index + 12*octave;

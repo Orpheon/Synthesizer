@@ -34,7 +34,7 @@ public class Constant extends Module
 	public void run(EngineMaster engine)
 	{
 		// Big hack, but in the case of constants I think it's actually a good idea
-		if (engine.is_playing())
+		if (engine.is_playing() && output_pipes[OUTPUT_PIPE] != null)
 		{
 			for (int channel=0; channel<Engine.Constants.NUM_CHANNELS; channel++)
 			{

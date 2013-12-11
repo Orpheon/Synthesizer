@@ -95,7 +95,7 @@ public class Oscillator extends Module
 		switch (osc_type)
 		{
 			case SINE_WAVE:
-				return Math.sin((time*freq + phase)*Constants.pi_times_2);
+				return Math.sin((time*freq + phase));
 			
 			case SAW_WAVE:
 				result = 0;
@@ -112,7 +112,7 @@ public class Oscillator extends Module
 				result = 0;
 				// Square = infinite sum of odd harmonics with A=1/n for nth harmonic
 				// Source: http://en.wikipedia.org/wiki/Square_wave#Examining_the_square_wave
-				for (int k=1; k*freq<Constants.SAMPLING_RATE/2; k+=2)
+				for (int k=1; k*freq*Constants.pi_times_2<Constants.SAMPLING_RATE/2; k+=2)
 				{
 					result += Math.sin((time*freq + phase)*Constants.pi_times_2*k)/k;
 				}
