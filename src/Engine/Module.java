@@ -70,7 +70,7 @@ public abstract class Module
 						if (input_pipes[j].activation_times[channel] > activation_time)
 						{
 							activation_time = input_pipes[j].activation_times[channel];
-							source = channel;
+							source = j;
 						}
 					}
 				}

@@ -43,7 +43,7 @@ public class OscillatorGUI extends DefaultModuleGUI
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					// Change oscillator mode to sine wave
+					// Change oscillator mode to saw wave
 					Modules.Oscillator osc = (Modules.Oscillator) OscRightClickMenu.this.module_gui.module;
 					osc.set_osctype(osc.SAW_WAVE);
 				}
@@ -56,7 +56,7 @@ public class OscillatorGUI extends DefaultModuleGUI
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					// Change oscillator mode to sine wave
+					// Change oscillator mode to square wave
 					Modules.Oscillator osc = (Modules.Oscillator) OscRightClickMenu.this.module_gui.module;
 					osc.set_osctype(osc.SQUARE_WAVE);
 				}

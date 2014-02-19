@@ -4,11 +4,11 @@ import Engine.Module;
 import Engine.Pipe;
 import Engine.Constants;
 
-public class Copyer extends Module
+public class Duplicator extends Module
 {
 	public static final int INPUT_PIPE = 0;
 	
-	public Copyer()
+	public Duplicator()
 	{
 		super();
 		
@@ -18,7 +18,7 @@ public class Copyer extends Module
 		initialize();
 	}
 	
-	public Copyer(int num_outputs)
+	public Duplicator(int num_outputs)
 	{
 		super();
 		
@@ -39,7 +39,7 @@ public class Copyer extends Module
 		input_pipes = new Pipe[NUM_INPUT_PIPES];
 		output_pipes = new Pipe[NUM_OUTPUT_PIPES];
 		
-		MODULE_NAME = "Copyer";
+		MODULE_NAME = "Duplicator";
 	}
 	
 	@Override

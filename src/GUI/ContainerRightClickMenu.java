@@ -91,11 +91,11 @@ public class ContainerRightClickMenu extends JPopupMenu
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_COPYER);
+					ContainerRightClickMenu.this.create_module(Engine.Constants.MODULE_DUPLICATOR);
 				}
 			}
 		);
-		item.setText("Create Copyer");
+		item.setText("Create Duplicator");
 		module_list.add(item);
 		
 		item = new JMenuItem(

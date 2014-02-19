@@ -18,7 +18,7 @@ public class Constants
 	public static final int MODULE_OUTPUT = 2;
 	public static final int MODULE_OSCILLATOR = 3;
 	public static final int MODULE_MERGER = 4;
-	public static final int MODULE_COPYER = 5;
+	public static final int MODULE_DUPLICATOR = 5;
 	public static final int MODULE_CONTAINER = 6;
 	public static final int MODULE_RANGEMODIFIER = 7;
 	public static final int MODULE_DISTORTION = 8;

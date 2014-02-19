@@ -18,7 +18,7 @@ public class Merger extends Module
 	
 	public static final int SIGNAL_OUTPUT = 0;
 	
-	private int operation = MULTIPLICATION;
+	private int operation = ADDITION;
 	
 	public Merger()
 	{
@@ -65,42 +65,40 @@ public class Merger extends Module
 			switch (operation)
 			{
 				case ADDITION:
-					double[] sum;
-					for (i=0; i<Constants.SNAPSHOT_SIZE; i++)
+					double sum;
+					for (int side=0; side<audio_mode; side++)
 					{
-						sum = new double[2];
-						for (int side=0; side<audio_mode; side++)
+						for (i=0; i<Constants.SNAPSHOT_SIZE; i++)
 						{
+							sum = 0;
 							for (j=0; j<NUM_INPUT_PIPES; j++)
 							{
 								if (input_pipes[j] != null)
 								{
-									sum[side] += input_pipes[j].get_pipe(channel)[side][i];
+									sum += input_pipes[j].get_pipe(channel)[side][i];
 								}
 							}
 							// Don't forget to normalize from -1 to 1 again
-							output_pipes[SIGNAL_OUTPUT].get_pipe(channel)[0][i] = sum[0] / NUM_INPUT_PIPES;
+							output_pipes[SIGNAL_OUTPUT].get_pipe(channel)[side][i] = sum / NUM_INPUT_PIPES;
 						}
 					}
 					break;
 					
 				case MULTIPLICATION:
-					double[] product;
-					product = new double[2];
-					for (i=0; i<Constants.SNAPSHOT_SIZE; i++)
+					double product;
+					for (int side=0; side<audio_mode; side++)
 					{
-						product[0] = 1.0;
-						product[1] = 1.0;
-						for (int side=0; side<audio_mode; side++)
+						for (i=0; i<Constants.SNAPSHOT_SIZE; i++)
 						{
+							product = 1.0;
 							for (j=0; j<NUM_INPUT_PIPES; j++)
 							{
 								if (input_pipes[j] != null)
 								{
-									product[side] *= input_pipes[j].get_pipe(channel)[side][i];
+									product *= input_pipes[j].get_pipe(channel)[side][i];
 								}
 							}
-							output_pipes[SIGNAL_OUTPUT].get_pipe(channel)[side][i] = product[side];
+							output_pipes[SIGNAL_OUTPUT].get_pipe(channel)[side][i] = product;
 						}
 					}
 					break;

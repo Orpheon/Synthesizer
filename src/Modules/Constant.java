@@ -38,8 +38,11 @@ public class Constant extends Module
 		{
 			for (int channel=0; channel<Engine.Constants.NUM_CHANNELS; channel++)
 			{
-				run(engine, channel);
-				output_pipes[OUTPUT_PIPE].activation_times[channel] = 0;
+				if (engine.main_container.input_source.get_activation_times()[channel] >= 0)
+				{
+					run(engine, channel);
+					output_pipes[OUTPUT_PIPE].activation_times[channel] = engine.main_container.input_source.get_activation_times()[channel];
+				}
 			}
 			
 		}

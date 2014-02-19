@@ -78,8 +78,8 @@ public class Container extends Module
     			m = new Modules.Merger();
     			break;
     			
-    		case Constants.MODULE_COPYER:
-    			m = new Modules.Copyer();
+    		case Constants.MODULE_DUPLICATOR:
+    			m = new Modules.Duplicator();
     			break;
     			
     		case Constants.MODULE_CONTAINER:

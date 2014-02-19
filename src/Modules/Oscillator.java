@@ -90,12 +90,12 @@ public class Oscillator extends Module
 	{
 		// Sampling at a certain position
 		// 0 <= time <= 1
-		// TODO: Make anti-aliased saws and squares
-		double result;
+		double result, x;
+		x = time*freq + phase;
 		switch (osc_type)
 		{
 			case SINE_WAVE:
-				return Math.sin((time*freq + phase));
+				return Math.sin(x*Constants.pi_times_2);
 			
 			case SAW_WAVE:
 				result = 0;
@@ -103,18 +103,19 @@ public class Oscillator extends Module
 				// Source: http://en.wikipedia.org/wiki/Sawtooth_wave
 				for (int k=1; k*freq<Constants.SAMPLING_RATE/2; k++)
 				{
-					result += Math.sin((time*freq + phase)*Constants.pi_times_2*k)/k;
+					result += Math.sin(x*Constants.pi_times_2*k)/k;
 				}
 				// Keep result -1 <= x <= 1, not -1.0903783642160645 because of imprecision
 				return Math.min(1, Math.max(-1, 2*result/Math.PI));
+//				return x - Math.floor(x);
 				
 			case SQUARE_WAVE:
 				result = 0;
 				// Square = infinite sum of odd harmonics with A=1/n for nth harmonic
 				// Source: http://en.wikipedia.org/wiki/Square_wave#Examining_the_square_wave
-				for (int k=1; k*freq*Constants.pi_times_2<Constants.SAMPLING_RATE/2; k+=2)
+				for (int k=1; k*freq<Constants.SAMPLING_RATE/2; k+=2)
 				{
-					result += Math.sin((time*freq + phase)*Constants.pi_times_2*k)/k;
+					result += Math.sin(x*Constants.pi_times_2*k)/k;
 				}
 				// Keep result -1 <= x <= 1, not -1.0903783642160645 because of imprecision
 				return Math.min(1, Math.max(-1, 4*result/Math.PI));
